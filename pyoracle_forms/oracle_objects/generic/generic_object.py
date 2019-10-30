@@ -1,12 +1,9 @@
-from pyoracle_forms.constants import Properties
-from pyoracle_forms.utils import Property
-from .getters import get_property
-from .misc import has_property
-from .setters import set_property
+from .utils import get_property
+from .utils import set_property
+from .wrapped_functions import has_property
 
 
 class GenericObject:
-    name = Property(Properties.NAME)
 
     def __init__(self, generic_object):
         self._as_parameter_ = generic_object

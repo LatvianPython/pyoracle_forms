@@ -18,6 +18,14 @@ from pyoracle_forms.utils import api_function
 
 # **    d2fprgcn_GetConstName(d2fctx, D2FP_ALT_STY, &pcname)
 # **    returns "ALT_STY" in the pcname [OUT] parameter.
+@handle_error_code
+def property_constant_name(property_number):
+    func = api_function('d2fprgcn_GetConstName', (c_int, c_void_p))
+
+    property_const_name = c_char_p()
+    error_code = func(property_number, pointer(property_const_name))
+
+    return error_code, property_const_name.value.decode('utf-8')
 
 
 # **    d2fprgt_GetType(d2fctx, D2FP_ALT_STY)
