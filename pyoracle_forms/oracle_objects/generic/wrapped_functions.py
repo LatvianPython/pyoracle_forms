@@ -136,4 +136,31 @@ def get_object(generic_object, property_number):
         return error_code, arg
     return error_code, None
 
+
 # d2fobgp_GetBlobProp(ctx, obj, D2FP_PERSIST_CLIENT_INFO, val)
+
+
+# d2fobdu_Duplicate( d2fctx *pd2fctx, d2fob *new_owner, d2fob *pd2fob_src, d2fob **ppd2fob_dst, text *new_name );
+# d2fobfo_FindObj(d2fctx *pd2fctx, d2fob *owner, text *name, d2fotyp objtyp, d2fob **ppd2fob );
+
+# d2fobcr_Create( d2fctx *pd2fctx, d2fob *owner, d2fob **ppd2fob, text *name, d2fotyp objtyp );
+
+
+@handle_error_code
+def destroy(generic_object):
+    # d2fobde_Destroy( d2fctx *pd2fctx, d2fob *pd2fob );
+    func = api_function('d2fobde_Destroy', (c_void_p,))
+
+    error_code = func(generic_object)
+
+    return error_code, None
+
+
+@handle_error_code
+def move(generic_object, next_object):
+    # d2fobmv_Move( d2fctx *pd2fctx, d2fob *pd2fob, d2fob *pd2fob_nxt );
+    func = api_function('d2fobmv_Move', (c_void_p, c_void_p))
+
+    error_code = func(generic_object, next_object)
+
+    return error_code, None

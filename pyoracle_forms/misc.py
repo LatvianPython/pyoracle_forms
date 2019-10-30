@@ -1,7 +1,9 @@
 import enum
+from collections.abc import MutableSequence
 
 from pyoracle_forms.forms_api import api_objects
-from pyoracle_forms.oracle_objects import query_type
+from pyoracle_forms.oracle_objects import query_type, GenericObject
+from pyoracle_forms.oracle_objects.generic.wrapped_functions import destroy
 from pyoracle_forms.properties import property_name, property_constant_name
 
 registered_objects = {}
@@ -36,26 +38,50 @@ class Property:
         instance.set_property(self.property_number, value)
 
 
+# todo: better name
+class ManagedObjects(MutableSequence):
+    def __init__(self, iterable):
+        self.data = list(iterable)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, item):
+        return self.data[item]
+
+    def __delitem__(self, key):
+        item = self[key]
+        destroy(item)
+        self.data[key]._as_parameter_ = 0
+        del self.data[key]
+
+    def __setitem__(self, key, value):
+        if isinstance(value, GenericObject):
+            raise NotImplementedError
+        else:
+            raise TypeError(f'Should be instance of {GenericObject.__name__}')
+
+    def insert(self, index, obj):
+        raise NotImplementedError
+
+
 class Subobjects:
-    def __init__(self, property_number):
-        self.property_number = property_number
+    def __init__(self, property_number, prop_name):
+        self.property_number, self.property_name = property_number, prop_name
 
     def __get__(self, instance, owner):
-        try:
-            return self._subobjects
-        except AttributeError:
-            def gen_subobjects():
-                child = instance.property_value(self.property_number)
+        def gen_subobjects():
+            child = instance.property_value(self.property_number)
+            if child:
+                klass = registered_objects[query_type(child)]
+                child = klass(child)
+                while child:
+                    yield child
+                    child = klass(child.next_object)
 
-                if child:
-                    klass = registered_objects[query_type(child)]
-                    child = klass(child)
-                    while child:
-                        yield child
-                        child = klass(child.next_object)
-
-            self._subobjects = list(gen_subobjects())
-            return self._subobjects
+        subobjects = ManagedObjects(gen_subobjects())
+        setattr(instance, self.property_name, subobjects)
+        return subobjects
 
 
 def forms_object(cls):
@@ -78,6 +104,6 @@ def forms_object(cls):
                 setattr(cls, prop_name, Property(property_number))
         else:
             prop_name = obj_property.name
-            setattr(cls, prop_name, Subobjects(property_number))
+            setattr(cls, prop_name, Subobjects(property_number, prop_name))
 
     return cls
