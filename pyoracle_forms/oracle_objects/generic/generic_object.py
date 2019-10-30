@@ -1,6 +1,6 @@
-from .getters import get_property
-from .misc import has_property, query_type
-from .setters import set_property
+from .utils import get_property
+from .utils import set_property
+from .wrapped_functions import has_property
 
 
 class GenericObject:

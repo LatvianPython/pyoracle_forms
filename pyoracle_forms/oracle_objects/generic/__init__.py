@@ -1,2 +1,3 @@
 from .generic_object import GenericObject
-from .misc import query_type, type_name
+from .wrapped_functions import query_type
+from .wrapped_functions import type_name

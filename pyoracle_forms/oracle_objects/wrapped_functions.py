@@ -1,11 +1,7 @@
 from ctypes import *
 
-from pyoracle_forms.constants import FormsObjects
 from pyoracle_forms.error_handling import handle_error_code
-from pyoracle_forms.misc import forms_object
 from pyoracle_forms.utils import api_function
-
-from . import GenericObject
 
 
 @handle_error_code
@@ -44,31 +40,3 @@ def save_module(module, path):
     error_code = func(module, path.encode('utf-8'), False)
 
     return error_code,
-
-
-@forms_object(object_type=FormsObjects.module)
-class Module(GenericObject):
-
-    def __init__(self, module, path=None):
-        super().__init__(module)
-        self.path = path
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.destroy()
-
-    @classmethod
-    def create(cls, module):
-        return cls(create_module(module))
-
-    @classmethod
-    def load(cls, path):
-        return cls(load_module(path), path=path)
-
-    def save(self, path=None):
-        save_module(self, path or self.path)
-
-    def destroy(self):
-        destroy_module(self)

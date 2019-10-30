@@ -16,4 +16,4 @@ from .forms_objects import Trigger
 from .forms_objects import VisualAttribute
 from .forms_objects import Window
 
-from .module import Module
+from .forms_objects import Module
