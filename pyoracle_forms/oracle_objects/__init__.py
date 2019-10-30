@@ -1,18 +1,19 @@
-from .alert import Alert
-from .attached_library import AttachedLibrary
-from .canvas import Canvas
-from .data_block import DataBlock
-from .form_parameter import FormParameter
-from .graphic import Graphic
-from .item import Item
-from .module import Module
-from .program_unit import ProgramUnit
-from .property_class import PropertyClass
-from .radio_button import RadioButton
-from .relation import Relation
-from .tab_page import TabPage
-from .trigger import Trigger
-from .visual_attribute import VisualAttribute
-from .window import Window
-
 from .generic import *
+
+from .forms_objects import Alert
+from .forms_objects import AttachedLibrary
+from .forms_objects import Canvas
+from .forms_objects import DataBlock
+from .forms_objects import FormParameter
+from .forms_objects import Graphic
+from .forms_objects import Item
+from .forms_objects import ProgramUnit
+from .forms_objects import PropertyClass
+from .forms_objects import RadioButton
+from .forms_objects import Relation
+from .forms_objects import TabPage
+from .forms_objects import Trigger
+from .forms_objects import VisualAttribute
+from .forms_objects import Window
+
+from .module import Module

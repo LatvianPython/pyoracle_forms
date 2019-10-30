@@ -1,11 +1,11 @@
-import logging
 from ctypes import *
 
 from pyoracle_forms.constants import FormsObjects
 from pyoracle_forms.error_handling import handle_error_code
 from pyoracle_forms.misc import forms_object
-from pyoracle_forms.oracle_objects.generic import GenericObject
 from pyoracle_forms.utils import api_function
+
+from . import GenericObject
 
 
 @handle_error_code
@@ -14,7 +14,6 @@ def load_module(form_path):
     form = c_void_p()
 
     error_code = func(pointer(form), form_path.encode('utf-8'), False)
-    logging.debug(f'form = {form}')
 
     return error_code, form
 
@@ -25,7 +24,6 @@ def create_module(name):
     form = c_void_p()
 
     error_code = func(pointer(form), name.encode('utf-8'))
-    logging.debug(f'form = {form}')
 
     return error_code, form
 
@@ -34,7 +32,6 @@ def create_module(name):
 def destroy_module(module):
     func = api_function('d2ffmdde_Destroy', (c_void_p,))
 
-    logging.debug(f'destroying module = {module})')
     error_code = func(module)
 
     return error_code,
@@ -44,7 +41,6 @@ def destroy_module(module):
 def save_module(module, path):
     func = api_function('d2ffmdsv_Save', (c_void_p, c_char_p, c_bool))
 
-    logging.debug(f'saving module = {module})')
     error_code = func(module, path.encode('utf-8'), False)
 
     return error_code,

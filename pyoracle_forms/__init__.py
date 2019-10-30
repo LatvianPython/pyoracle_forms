@@ -1,4 +1,3 @@
-from .oracle_objects import Module
-from .oracle_objects import GenericObject, type_name, query_type
+from .oracle_objects import *
 from .constants import FormsObjects
 from .utils import api_function
