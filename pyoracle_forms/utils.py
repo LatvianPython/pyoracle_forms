@@ -1,7 +1,6 @@
 from ctypes import c_char_p, c_void_p
 from functools import partial
 
-from pyoracle_forms.constants import Properties
 from pyoracle_forms.context import context
 from pyoracle_forms.forms_api import api, free
 
@@ -18,16 +17,22 @@ class Property:
 
 
 class Subobjects:
-    def __init__(self, property_number, klass):
+    def __init__(self, property_number, klass=None):
         self.property_number, self.klass = property_number, klass
 
     def __get__(self, instance, owner):
-        # todo: make determining classes automatic?
+        from pyoracle_forms.oracle_objects.generic.misc import query_type
+        from pyoracle_forms.misc import registered_objects
+
         def gen_subobjects():
-            child = self.klass(instance.property_value(self.property_number))
-            while child:
-                yield child
-                child = self.klass(child.property_value(Properties.NEXT))
+            child = instance.property_value(self.property_number)
+
+            if child:
+                klass = self.klass or registered_objects[query_type(child)]
+                child = klass(child)
+                while child:
+                    yield child
+                    child = klass(child.next_object)
 
         return list(gen_subobjects())
 

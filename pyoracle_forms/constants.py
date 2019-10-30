@@ -27,57 +27,22 @@ class FormsObjects(enum.Enum):
     trigger = 'D2FFO_TRIGGER'
     visual_attribute = 'D2FFO_VIS_ATTR'
     window = 'D2FFO_WINDOW'
+    module = 'D2FFO_FORM_MODULE'
 
 
-# todo: should scrape these from the C headers
-#  should really scrape these from the C headers..., sorta have already, only need to implement them...
-if version in ('12c', '10g'):
-    class Properties(enum.IntEnum):
-        LABEL = 118
-        NAME = 154
-        NEXT = 159
-        CANVAS = 24
-        BLOCK = 21
-        ALERT = 3
-        ATTACHED_LIBRARY = 11
-        EDITOR = 64
-        FORM_PARAMETER = 89
-        PROGRAM_UNIT = 179
-        PROPERTY_CLASS = 180
-        TRIGGER = 232
-        VISUAL_ATTRIBUTE = 258
-        WINDOW = 264
-        GRAPHIC = 23
-        GRAPHIC_FONT_NAME = 493
-        TAB_PAGE = 356
-        ITEM = 105
-        PROMPT = 288
-        FOREGROUND_COLOR = 87
-        BACKGROUND_COLOR = 17
-        FONT_NAME = 82
-        FONT_NAME_PROMPT = 214
-else:
-    class Properties(enum.IntEnum):
-        LABEL = 243
-        NAME = 300
-        NEXT = 302
-        CANVAS = 40
-        BLOCK = 29
-        ALERT = 3
-        ATTACHED_LIBRARY = 15
-        EDITOR = 8
-        FORM_PARAMETER = 11
-        PROGRAM_UNIT = 376
-        PROPERTY_CLASS = 377
-        TRIGGER = 232
-        VISUAL_ATTRIBUTE = 516
-        WINDOW = 530
-        GRAPHIC = 180
-        GRAPHIC_FONT_NAME = 184
-        TAB_PAGE = 465
-        ITEM = 229
-        PROMPT = 355
-        FOREGROUND_COLOR = 159
-        BACKGROUND_COLOR = 25
-        FONT_NAME = 153
-        FONT_NAME_PROMPT = 363
+class ObjectProperties(enum.Enum):
+    canvases = 'D2FP_CANVAS'
+    alerts = 'D2FP_ALERT'
+    attached_libraries = 'D2FP_ATT_LIB'
+    data_blocks = 'D2FP_BLOCK'
+    form_parameters = 'D2FP_FORM_PARAM'
+    graphics = 'D2FP_GRAPHIC'
+    items = 'D2FP_ITEM'
+    program_units = 'D2FP_PROG_UNIT'
+    property_classes = 'D2FP_PROP_CLASS'
+    radio_buttons = 'D2FP_RADIO_BUTTON'
+    relations = 'D2FP_RELATION'
+    tab_pages = 'D2FP_TAB_PAGE'
+    triggers = 'D2FP_TRIGGER'
+    visual_attributes = 'D2FP_VIS_ATTR'
+    windows = 'D2FP_WINDOW'

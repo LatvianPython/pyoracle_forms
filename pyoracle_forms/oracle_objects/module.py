@@ -1,20 +1,11 @@
 import logging
 from ctypes import *
 
-from pyoracle_forms.oracle_objects.alert import Alert
-from pyoracle_forms.oracle_objects.attached_library import AttachedLibrary
-from pyoracle_forms.oracle_objects.canvas import Canvas
-from pyoracle_forms.constants import Properties
-from pyoracle_forms.oracle_objects.data_block import DataBlock
+from pyoracle_forms.constants import FormsObjects
 from pyoracle_forms.error_handling import handle_error_code
-from pyoracle_forms.oracle_objects.form_parameter import FormParameter
+from pyoracle_forms.misc import forms_object
 from pyoracle_forms.oracle_objects.generic import GenericObject
-from pyoracle_forms.oracle_objects.program_unit import ProgramUnit
-from pyoracle_forms.oracle_objects.property_class import PropertyClass
-from pyoracle_forms.oracle_objects.trigger import Trigger
-from pyoracle_forms.oracle_objects.visual_attribute import VisualAttribute
-from pyoracle_forms.oracle_objects.window import Window
-from pyoracle_forms.utils import api_function, Subobjects
+from pyoracle_forms.utils import api_function
 
 
 @handle_error_code
@@ -59,6 +50,7 @@ def save_module(module, path):
     return error_code,
 
 
+@forms_object(object_type=FormsObjects.module)
 class Module(GenericObject):
 
     def __init__(self, module, path=None):
@@ -84,14 +76,3 @@ class Module(GenericObject):
 
     def destroy(self):
         destroy_module(self)
-
-    canvases = Subobjects(Properties.CANVAS, Canvas)
-    data_blocks = Subobjects(Properties.BLOCK, DataBlock)
-    alerts = Subobjects(Properties.ALERT, Alert)
-    attached_libraries = Subobjects(Properties.ATTACHED_LIBRARY, AttachedLibrary)
-    program_units = Subobjects(Properties.PROGRAM_UNIT, ProgramUnit)
-    form_parameters = Subobjects(Properties.FORM_PARAMETER, FormParameter)
-    property_classes = Subobjects(Properties.PROPERTY_CLASS, PropertyClass)
-    triggers = Subobjects(Properties.TRIGGER, Trigger)
-    visual_attributes = Subobjects(Properties.VISUAL_ATTRIBUTE, VisualAttribute)
-    windows = Subobjects(Properties.WINDOW, Window)
