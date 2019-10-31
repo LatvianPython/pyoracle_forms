@@ -3,7 +3,6 @@ from collections.abc import MutableSequence
 
 from pyoracle_forms.forms_api import api_objects
 from pyoracle_forms.oracle_objects import query_type, GenericObject
-from pyoracle_forms.oracle_objects.generic.wrapped_functions import destroy
 from pyoracle_forms.properties import property_name, property_constant_name
 
 registered_objects = {}
@@ -50,9 +49,8 @@ class ManagedObjects(MutableSequence):
         return self.data[item]
 
     def __delitem__(self, key):
-        item = self[key]
-        destroy(item)
-        self.data[key]._as_parameter_ = 0
+        item = self.data[key]
+        item.destroy()
         del self.data[key]
 
     def __setitem__(self, key, value):
@@ -79,8 +77,10 @@ class Subobjects:
                     yield child
                     child = klass(child.next_object)
 
-        subobjects = ManagedObjects(gen_subobjects())
-        setattr(instance, self.property_name, subobjects)
+        # subobjects = ManagedObjects(gen_subobjects())
+        # setattr(instance, self.property_name, subobjects)
+
+        subobjects = list(gen_subobjects())
         return subobjects
 
 

@@ -25,18 +25,9 @@ def create_module(name):
 
 
 @handle_error_code
-def destroy_module(module):
-    func = api_function('d2ffmdde_Destroy', (c_void_p,))
-
-    error_code = func(module)
-
-    return error_code,
-
-
-@handle_error_code
 def save_module(module, path):
     func = api_function('d2ffmdsv_Save', (c_void_p, c_char_p, c_bool))
 
     error_code = func(module, path.encode('utf-8'), False)
 
-    return error_code,
+    return error_code, None

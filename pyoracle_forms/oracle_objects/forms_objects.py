@@ -3,7 +3,6 @@ import enum
 from pyoracle_forms.misc import forms_object
 from . import GenericObject
 from .wrapped_functions import create_module
-from .wrapped_functions import destroy_module
 from .wrapped_functions import load_module
 from .wrapped_functions import save_module
 
@@ -42,7 +41,7 @@ class Module(GenericObject):
         self.destroy()
 
     @classmethod
-    def create(cls, module):
+    def create(cls, module, **kwargs):
         return cls(create_module(module))
 
     @classmethod
@@ -51,9 +50,6 @@ class Module(GenericObject):
 
     def save(self, path=None):
         save_module(self, path or self.path)
-
-    def destroy(self):
-        destroy_module(self)
 
 
 @forms_object

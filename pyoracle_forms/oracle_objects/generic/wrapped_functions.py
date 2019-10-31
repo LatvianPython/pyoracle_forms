@@ -143,7 +143,16 @@ def get_object(generic_object, property_number):
 # d2fobdu_Duplicate( d2fctx *pd2fctx, d2fob *new_owner, d2fob *pd2fob_src, d2fob **ppd2fob_dst, text *new_name );
 # d2fobfo_FindObj(d2fctx *pd2fctx, d2fob *owner, text *name, d2fotyp objtyp, d2fob **ppd2fob );
 
-# d2fobcr_Create( d2fctx *pd2fctx, d2fob *owner, d2fob **ppd2fob, text *name, d2fotyp objtyp );
+
+@handle_error_code
+def create(owner, name, object_number):
+    # d2fobcr_Create(ctx, d2fob *owner, d2fob **ppd2fob, text *name, d2fotyp objtyp );
+    func = api_function('d2fobcr_Create', (c_void_p, c_void_p, c_char_p, c_int))
+
+    new_obj = c_void_p()
+    error_code = func(owner, pointer(new_obj), name.encode('utf-8'), object_number)
+
+    return error_code, new_obj
 
 
 @handle_error_code
