@@ -12,6 +12,7 @@ Example usage
 ###########
 
 .. code-block:: python
+
     from pyoracle_forms import Module
 
     with Module.load('./your_form.fmb') as module:
