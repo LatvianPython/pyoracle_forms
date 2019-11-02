@@ -39,13 +39,17 @@ error_mapping = {
 }
 
 
+class FormsException(Exception):
+    pass
+
+
 def handle_error_code(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         error_code, *return_values = func(*args, **kwargs)
 
         if error_code:
-            raise RuntimeError(f'{func.__name__}({args}) failed with ({error_code}: {error_mapping[error_code]})')
+            raise FormsException(f'{func.__name__}({args}) failed with ({error_code}: {error_mapping[error_code]})')
 
         if len(return_values) == 1:
             return return_values.pop()

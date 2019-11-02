@@ -1,12 +1,12 @@
 import enum
 
 from pyoracle_forms.properties import property_type
-from .wrapped_functions import get_bool
+from .wrapped_functions import get_boolean
 from .wrapped_functions import get_number
 from .wrapped_functions import get_object
 from .wrapped_functions import get_text
 from .wrapped_functions import set_boolean
-from .wrapped_functions import set_numeric
+from .wrapped_functions import set_number
 from .wrapped_functions import set_object
 from .wrapped_functions import set_text
 
@@ -21,10 +21,18 @@ class ValueTypes(enum.IntEnum):
 
 property_getters = {
     # ValueTypes.UNKNOWN: None,
-    ValueTypes.BOOLEAN: get_bool,
+    ValueTypes.BOOLEAN: get_boolean,
     ValueTypes.NUMBER: get_number,
     ValueTypes.TEXT: get_text,
     ValueTypes.OBJECT: get_object
+}
+
+property_setters = {
+    # ValueTypes.UNKNOWN: None,
+    ValueTypes.BOOLEAN: set_boolean,
+    ValueTypes.NUMBER: set_number,
+    ValueTypes.TEXT: set_text,
+    ValueTypes.OBJECT: set_object
 }
 
 
@@ -36,15 +44,6 @@ def get_property(generic_object, property_number):
         return f'UNKNOWN PROPERTY TYPE({value_type})'  # todo: decide what to do with these?
     else:
         return func(generic_object, property_number=property_number)
-
-
-property_setters = {
-    # ValueTypes.UNKNOWN: None,
-    ValueTypes.BOOLEAN: set_boolean,
-    ValueTypes.NUMBER: set_numeric,
-    ValueTypes.TEXT: set_text,
-    ValueTypes.OBJECT: set_object
-}
 
 
 def set_property(generic_object, property_number, property_value):

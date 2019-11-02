@@ -25,7 +25,7 @@ def destroy_context(ctx):
     error_code = func(ctx)
     ctx.value = 0
 
-    return error_code,
+    return error_code, None
 
 
 class Context:

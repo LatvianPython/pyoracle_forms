@@ -5,19 +5,19 @@
 > -- _Reid Hoffman_
 
 
+.. image:: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
+
 # Example usage
 
-```python
-from pyoracle_forms import Module
+.. code-block:: python
+    from pyoracle_forms import Module
 
-with Module.load('./your_form.fmb') as module:
-    for data_block in module.data_blocks:
-        for item in data_block.items:
-            item.font_name = 'Comic Sans MS'
+    with Module.load('./your_form.fmb') as module:
+        for data_block in module.data_blocks:
+            for item in data_block.items:
+                item.font_name = 'Comic Sans MS'
 
-    module.save()
-
-```
+        module.save()
 
 Best used with an interactive environment, such as Jupyter Notebook, as you get better autocomplete there due to attributes getting determined dynamically.
 
