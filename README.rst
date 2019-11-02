@@ -1,13 +1,15 @@
-# pyoracle_forms
+pyoracle_forms
+###########
 
-> If you're not embarrassed by the first version of your product, you've launched too late
->
-> -- _Reid Hoffman_
+    If you're not embarrassed by the first version of your product, you've launched too late
+    
+    -- _Reid Hoffman_
 
 
 .. image:: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
 
-# Example usage
+Example usage
+###########
 
 .. code-block:: python
     from pyoracle_forms import Module
