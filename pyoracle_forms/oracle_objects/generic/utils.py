@@ -24,7 +24,7 @@ property_getters = {
     ValueTypes.BOOLEAN: get_boolean,
     ValueTypes.NUMBER: get_number,
     ValueTypes.TEXT: get_text,
-    ValueTypes.OBJECT: get_object
+    ValueTypes.OBJECT: get_object,
 }
 
 property_setters = {
@@ -32,7 +32,7 @@ property_setters = {
     ValueTypes.BOOLEAN: set_boolean,
     ValueTypes.NUMBER: set_number,
     ValueTypes.TEXT: set_text,
-    ValueTypes.OBJECT: set_object
+    ValueTypes.OBJECT: set_object,
 }
 
 
@@ -41,7 +41,7 @@ def get_property(generic_object, property_number):
     try:
         func = property_getters[value_type]
     except KeyError:
-        return f'UNKNOWN PROPERTY TYPE({value_type})'  # todo: decide what to do with these?
+        return f"UNKNOWN PROPERTY TYPE({value_type})"  # todo: decide what to do with these?
     else:
         return func(generic_object, property_number=property_number)
 

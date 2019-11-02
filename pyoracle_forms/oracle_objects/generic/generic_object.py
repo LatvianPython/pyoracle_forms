@@ -30,7 +30,7 @@ class GenericObject:
         return new_object
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({repr(self._as_parameter_)})'
+        return f"{self.__class__.__name__}({repr(self._as_parameter_)})"
 
     def __bool__(self):
         return bool(self._as_parameter_)
