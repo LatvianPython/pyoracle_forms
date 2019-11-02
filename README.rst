@@ -7,6 +7,10 @@ pyoracle_forms
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
+.. image:: https://img.shields.io/github/languages/top/LatvianPython/pyoracle_forms   
+    :target: https://github.com/LatvianPython/pyoracle_forms
+    
+
 Example usage
 ###########
 
