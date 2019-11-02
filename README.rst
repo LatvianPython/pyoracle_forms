@@ -3,7 +3,7 @@ pyoracle_forms
 
     If you're not embarrassed by the first version of your product, you've launched too late
     
-    -- _Reid Hoffman_
+    -- *Reid Hoffman*
 
 
 .. image:: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
