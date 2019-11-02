@@ -1,5 +1,6 @@
 import enum
-from collections.abc import MutableSequence
+# from collections import deque, Sequence
+from collections.abc import MutableSequence, Sequence
 
 from pyoracle_forms.forms_api import api_objects
 from pyoracle_forms.oracle_objects import query_type, GenericObject
@@ -38,29 +39,28 @@ class Property:
 
 
 # todo: better name
-class ManagedObjects(MutableSequence):
-    def __init__(self, iterable):
-        self.data = list(iterable)
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, item):
-        return self.data[item]
-
-    def __delitem__(self, key):
-        item = self.data[key]
-        item.destroy()
-        del self.data[key]
-
-    def __setitem__(self, key, value):
-        if isinstance(value, GenericObject):
-            raise NotImplementedError
-        else:
-            raise TypeError(f'Should be instance of {GenericObject.__name__}')
-
-    def insert(self, index, obj):
-        raise NotImplementedError
+# class ManagedObjects(Sequence):
+#     def __init__(self, iterable):
+#         self.data = list(iterable)
+#
+#     def __len__(self):
+#         return len(self.data)
+#
+#     def __getitem__(self, item):
+#         return self.data[item]
+#
+#     def __delitem__(self, key):
+#         self.data[key].destroy()
+#         del self.data[key]
+#
+#     def __setitem__(self, key, value):
+#         if isinstance(value, GenericObject):
+#             raise NotImplementedError
+#         else:
+#             raise TypeError(f'Should be instance of {GenericObject.__name__}')
+#
+#     def insert(self, index, obj):
+#         raise NotImplementedError
 
 
 class Subobjects:

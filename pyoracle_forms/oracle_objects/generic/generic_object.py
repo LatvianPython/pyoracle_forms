@@ -26,7 +26,8 @@ class GenericObject:
 
     @classmethod
     def create(cls, owner, name):
-        return cls(create(owner, name, cls._object_number))
+        new_object = cls(create(owner, name, cls._object_number))
+        return new_object
 
     def __repr__(self):
         return f'{self.__class__.__name__}({repr(self._as_parameter_)})'

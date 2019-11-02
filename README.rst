@@ -1,11 +1,6 @@
 pyoracle_forms
 ###########
 
-    If you're not embarrassed by the first version of your product, you've launched too late
-    
-    -- *Reid Hoffman*
-
-
 .. image:: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
 
 Example usage
@@ -22,6 +17,8 @@ Example usage
 
         module.save()
 
-Best used with an interactive environment, such as Jupyter Notebook, as you get better autocomplete there due to attributes getting determined dynamically.
+Best used with an interactive environment, such as Jupyter Notebook, as you get better autocomplete
+there due to attributes getting determined dynamically.
 
-You also need access to successfully installed version of Oracle Forms, otherwise the scripts won't work, as this solution depends on the Oracle Forms API.
+You also need access to successfully installed version of Oracle Forms, otherwise the scripts won't work,
+as this solution depends on the Oracle Forms API.

@@ -49,7 +49,7 @@ def handle_error_code(func):
         error_code, *return_values = func(*args, **kwargs)
 
         if error_code:
-            raise FormsException(f'{func.__name__}({args}) failed with ({error_code}: {error_mapping[error_code]})')
+            raise FormsException(f'{error_code}: {error_mapping[error_code]}')
 
         if len(return_values) == 1:
             return return_values.pop()
