@@ -1,4 +1,9 @@
+from pyoracle_forms import type_name
 from pyoracle_forms.properties import property_name, property_constant_name, property_type
+
+
+def test_type_name():
+    assert type_name(1) == 'ALERT'
 
 
 def test_property_name():

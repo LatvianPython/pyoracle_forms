@@ -6,9 +6,9 @@ from os.path import exists, abspath, join
 
 # todo: this does not really work, ambiguity with 10g and 12c, and should be revised, user chooses during startup?
 dll_names = {
-    '12c': ('frmd2f.dll', 'msvcr100'),
-    '10g': ('frmd2f.dll', 'msvcrt'),
-    '6i': ('ifd2f60.dll', 'msvcrt'),
+    "12c": ("frmd2f.dll", "msvcr100"),
+    "10g": ("frmd2f.dll", "msvcrt"),
+    "6i": ("ifd2f60.dll", "msvcrt"),
 }
 
 
@@ -25,9 +25,11 @@ for version, (api_dll, msvcrt) in dll_names.items():
         free = cdll.LoadLibrary(msvcrt).free
         break
 else:
-    raise ImportError('No Oracle Forms API found')
+    raise ImportError("No Oracle Forms API found")
 
-file_path = pathlib.Path(__file__).parent.parent / 'forms_api' / f'parsed_{version}.json'
+file_path = (
+    pathlib.Path(__file__).parent.parent / "forms_api" / f"parsed_{version}.json"
+)
 
-with open(file_path, mode='r', encoding='utf-8') as file:
+with open(file_path, mode="r", encoding="utf-8") as file:
     api_objects = json.load(file)

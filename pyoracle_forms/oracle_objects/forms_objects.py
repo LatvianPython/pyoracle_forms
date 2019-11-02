@@ -8,22 +8,22 @@ from .wrapped_functions import save_module
 
 
 class FormsObjects(enum.Enum):
-    canvas = 'D2FFO_CANVAS'
-    alert = 'D2FFO_ALERT'
-    attached_library = 'D2FFO_ATT_LIB'
-    data_block = 'D2FFO_BLOCK'
-    form_parameter = 'D2FFO_FORM_PARAM'
-    graphic = 'D2FFO_GRAPHIC'
-    item = 'D2FFO_ITEM'
-    program_unit = 'D2FFO_PROG_UNIT'
-    property_class = 'D2FFO_PROP_CLASS'
-    radio_button = 'D2FFO_RADIO_BUTTON'
-    relation = 'D2FFO_RELATION'
-    tab_page = 'D2FFO_TAB_PAGE'
-    trigger = 'D2FFO_TRIGGER'
-    visual_attribute = 'D2FFO_VIS_ATTR'
-    window = 'D2FFO_WINDOW'
-    module = 'D2FFO_FORM_MODULE'
+    canvas = "D2FFO_CANVAS"
+    alert = "D2FFO_ALERT"
+    attached_library = "D2FFO_ATT_LIB"
+    data_block = "D2FFO_BLOCK"
+    form_parameter = "D2FFO_FORM_PARAM"
+    graphic = "D2FFO_GRAPHIC"
+    item = "D2FFO_ITEM"
+    program_unit = "D2FFO_PROG_UNIT"
+    property_class = "D2FFO_PROP_CLASS"
+    radio_button = "D2FFO_RADIO_BUTTON"
+    relation = "D2FFO_RELATION"
+    tab_page = "D2FFO_TAB_PAGE"
+    trigger = "D2FFO_TRIGGER"
+    visual_attribute = "D2FFO_VIS_ATTR"
+    window = "D2FFO_WINDOW"
+    module = "D2FFO_FORM_MODULE"
 
 
 @forms_object
