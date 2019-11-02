@@ -1,33 +1,35 @@
-from pyoracle_forms import Module
+import glob
 
 
-def test_module_has_name(simple_module):
-    assert simple_module.name == 'MODULE1'
+def test_module_has_name(module):
+    assert module.name == 'MODULE1'
 
 
-def test_can_set_module_name(simple_module):
-    old_name = simple_module.name
-    new_name = old_name[::-1]
-
-    simple_module.name = new_name
-
-    assert simple_module.name == new_name
+def test_can_set_module_name(module):
+    new_name = 'DUMMY'
+    module.name = new_name
+    assert module.name == new_name
 
 
-def test_module_has_data_blocks(simple_module):
-    assert len(list(simple_module.data_blocks)) > 0
+def test_module_has_data_blocks(module):
+    assert len(module.data_blocks) > 0
 
 
-def test_module_has_canvases(simple_module):
-    assert len(list(simple_module.canvases)) > 0
+def test_module_has_canvases(module):
+    assert len(module.canvases) > 0
 
 
-def test_data_block_has_five_items(simple_data_block):
-    assert len(simple_data_block.items) == 5
+def test_data_block_has_items(data_block):
+    assert len(data_block.items) > 0
 
 
-def test_can_create_new_modules():
-    name = 'test_module'
+def test_can_create_new_modules(new_module):
+    assert new_module.name == 'new_module'.upper()
 
-    with Module.create(name) as module:
-        assert module.name == name.upper()
+
+def test_can_save_module(new_module, test_dir):
+    save_to = f'{test_dir}/test_module1.fmb'
+
+    new_module.save(save_to)
+
+    assert glob.glob(save_to)

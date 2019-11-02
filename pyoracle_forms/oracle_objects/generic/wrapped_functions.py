@@ -13,7 +13,7 @@ def set_text(generic_object, property_number, text):
     text = text.encode('utf-8')
     error_code = func(generic_object, property_number, text)
 
-    return error_code,
+    return error_code, None
 
 
 @handle_error_code
@@ -23,17 +23,17 @@ def set_boolean(generic_object, property_number, boolean):
 
     error_code = func(generic_object, property_number, boolean)
 
-    return error_code,
+    return error_code, None
 
 
 @handle_error_code
-def set_numeric(generic_object, property_number, numeric):
+def set_number(generic_object, property_number, numeric):
     # d2fobsn_SetNumProp( d2fctx *pd2fctx, d2fob *pd2fob, ub2 pnum, number prp );
     func = api_function('d2fobsn_SetNumProp', (c_void_p, c_int, c_int))
 
     error_code = func(generic_object, property_number, numeric)
 
-    return error_code,
+    return error_code, None
 
 
 @handle_error_code
@@ -43,7 +43,7 @@ def set_object(generic_object, property_number, obj):
 
     error_code = func(generic_object, property_number, obj)
 
-    return error_code,
+    return error_code, None
 
 
 # ORA_RETTYPE(d2fstatus) d2fobsp_SetBlobProp( d2fctx *pd2fctx, d2fob *pd2fob, ub2 pnum, dvoid *prp );
@@ -84,7 +84,7 @@ def has_property(generic_object, property_number):
 
 
 @handle_error_code
-def get_bool(generic_object, property_number):
+def get_boolean(generic_object, property_number):
     # d2fobgb_GetBoolProp(ctx, p_obj, prop_num, &v_value)
     func = api_function('d2fobgb_GetBoolProp', (c_void_p, c_int, c_void_p))
 
@@ -143,7 +143,16 @@ def get_object(generic_object, property_number):
 # d2fobdu_Duplicate( d2fctx *pd2fctx, d2fob *new_owner, d2fob *pd2fob_src, d2fob **ppd2fob_dst, text *new_name );
 # d2fobfo_FindObj(d2fctx *pd2fctx, d2fob *owner, text *name, d2fotyp objtyp, d2fob **ppd2fob );
 
-# d2fobcr_Create( d2fctx *pd2fctx, d2fob *owner, d2fob **ppd2fob, text *name, d2fotyp objtyp );
+
+@handle_error_code
+def create(owner, name, object_number):
+    # d2fobcr_Create(ctx, d2fob *owner, d2fob **ppd2fob, text *name, d2fotyp objtyp );
+    func = api_function('d2fobcr_Create', (c_void_p, c_void_p, c_char_p, c_int))
+
+    new_obj = c_void_p()
+    error_code = func(owner, pointer(new_obj), name.encode('utf-8'), object_number)
+
+    return error_code, new_obj
 
 
 @handle_error_code

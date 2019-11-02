@@ -1,5 +1,4 @@
 import atexit
-import logging
 from ctypes import *
 
 from pyoracle_forms.error_handling import handle_error_code
@@ -16,8 +15,6 @@ def create_context():
 
     error_code = func(pointer(ctx), pointer(attributes))
 
-    logging.debug(f'context = {ctx}')
-
     return error_code, ctx
 
 
@@ -25,10 +22,10 @@ def create_context():
 def destroy_context(ctx):
     func = api.d2fctxde_Destroy
     func.argtypes = (c_void_p,)
-    logging.debug(f'destroying context = {ctx}')
     error_code = func(ctx)
+    ctx.value = 0
 
-    return error_code,
+    return error_code, None
 
 
 class Context:
