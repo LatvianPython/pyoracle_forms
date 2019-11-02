@@ -1,10 +1,7 @@
 import enum
 
-# from collections import deque, Sequence
-# from collections.abc import MutableSequence, Sequence
-
 from pyoracle_forms.forms_api import api_objects
-from pyoracle_forms.oracle_objects import query_type  # , GenericObject
+from pyoracle_forms.oracle_objects import query_type
 from pyoracle_forms.properties import property_name, property_constant_name
 
 registered_objects = {}
@@ -39,31 +36,6 @@ class Property:
         instance.set_property(self.property_number, value)
 
 
-# todo: better name
-# class ManagedObjects(Sequence):
-#     def __init__(self, iterable):
-#         self.data = list(iterable)
-#
-#     def __len__(self):
-#         return len(self.data)
-#
-#     def __getitem__(self, item):
-#         return self.data[item]
-#
-#     def __delitem__(self, key):
-#         self.data[key].destroy()
-#         del self.data[key]
-#
-#     def __setitem__(self, key, value):
-#         if isinstance(value, GenericObject):
-#             raise NotImplementedError
-#         else:
-#             raise TypeError(f'Should be instance of {GenericObject.__name__}')
-#
-#     def insert(self, index, obj):
-#         raise NotImplementedError
-
-
 class Subobjects:
     def __init__(self, property_number, prop_name):
         self.property_number, self.property_name = property_number, prop_name
@@ -77,9 +49,6 @@ class Subobjects:
                 while child:
                     yield child
                     child = klass(child.next_object)
-
-        # subobjects = ManagedObjects(gen_subobjects())
-        # setattr(instance, self.property_name, subobjects)
 
         subobjects = list(gen_subobjects())
         return subobjects
