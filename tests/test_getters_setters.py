@@ -4,7 +4,7 @@ from pyoracle_forms import FormsException
 
 
 def test_text(new_item):
-    value = 'aoeu'
+    value = "aoeu"
     new_item.name = value
     assert new_item.name == value
 
@@ -22,7 +22,7 @@ def test_boolean(new_item):
 
 
 def test_object(new_module, new_canvas, make_window):
-    value = 'WND2'
+    value = "WND2"
     new_window = make_window(value)
     new_canvas.window_object_pointer = new_window
     assert new_canvas.window == value
