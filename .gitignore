@@ -102,3 +102,13 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# forms api headers and whitepaper
+/forms_api/*/
+/forms_api/*.pdf
+
+# pycharm IDE
+.idea
+
+# scratch files
+*scratch*.*py*
