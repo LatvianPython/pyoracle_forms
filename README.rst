@@ -33,10 +33,10 @@ Usage
 
     from pyoracle_forms import Module
 
-    with Module.load('./your_form.fmb') as module:
+    with Module.load("./your_form.fmb") as module:
         for data_block in module.data_blocks:
             for item in data_block.items:
-                item.font_name = 'Comic Sans MS'
+                item.font_name = "Comic Sans MS"
 
         module.save()
 
@@ -45,3 +45,21 @@ there due to attributes getting determined dynamically.
 
 You also need access to successfully installed version of Oracle Forms, otherwise the scripts won't work,
 as this solution depends on the Oracle Forms API.
+
+
+******************************************************************
+Caveats
+******************************************************************
+
+By default forms API version is assumed to be 12c, and the encoding of .fmb file text as utf-8,
+to use a different version or encoding you must currently use the following code before importing ``pyoracle_forms``.
+Versions supported are 12c, 10g and 6i of the Oracle forms API.
+
+.. code-block:: python
+
+    import builtins
+
+    builtins.pyoracle_forms_VERSION = "12c"
+    builtins.pyoracle_forms_ENCODING = "utf-8"
+
+    from pyoracle_forms import ...

@@ -4,4 +4,6 @@ coverage
 pytest-cov
 coverage-badge
 pygments
+wheel
+twine
 -e .
