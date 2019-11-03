@@ -1,6 +1,11 @@
+import builtins
 import shutil
 
 import pytest
+
+builtins.pyoracle_forms_VERSION = "12c"
+builtins.pyoracle_forms_ENCODING = "utf-8"
+
 
 from pyoracle_forms import Module, Item, DataBlock, Canvas, Window
 

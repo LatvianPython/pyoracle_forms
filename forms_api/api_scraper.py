@@ -125,7 +125,11 @@ def parse_all():
     versions = ["6i", "10g", "12c"]
 
     for version in versions:
-        with open(f"parsed_{version}.json", mode="w", encoding="utf-8") as file:
+        with open(
+            f"../pyoracle_forms/forms_api/parsed_{version}.json",
+            mode="w",
+            encoding="utf-8",
+        ) as file:
             json.dump(parse_headers(version), file, indent=2)
 
 

@@ -1,7 +1,14 @@
 from ctypes import *
+import builtins
 
 from pyoracle_forms.error_handling import handle_error_code
 from pyoracle_forms.utils import api_function, String
+
+
+if hasattr(builtins, "pyoracle_forms_ENCODING"):
+    encoding = builtins.pyoracle_forms_ENCODING
+else:
+    encoding = "utf-8"
 
 
 @handle_error_code
@@ -9,8 +16,7 @@ def set_text(generic_object, property_number, text):
     # d2fobst_SetTextProp(ctx, obj, pnum, text);
     func = api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))
 
-    # todo: encoding should not be hardcoded
-    text = text.encode("utf-8")
+    text = text.encode(encoding)
     error_code = func(generic_object, property_number, text)
 
     return error_code, None
@@ -114,12 +120,7 @@ def get_text(generic_object, property_number):
     error_code = func(generic_object, property_number, pointer(arg))
 
     try:
-        # todo: decoding is broken, forms can be created with any NLS_LANG setting,
-        #  should have user decide which encoding to use with what form upon creation of module or context?
-        try:
-            return error_code, arg.value.decode("utf-8")
-        except UnicodeDecodeError:
-            return error_code, arg.value.decode("cp1257")
+        return error_code, arg.value.decode(encoding)
     except AttributeError:
         return error_code, None
 

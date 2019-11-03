@@ -1,8 +1,8 @@
 import atexit
 from ctypes import *
 
+from .forms_api import api
 from pyoracle_forms.error_handling import handle_error_code
-from pyoracle_forms.forms_api import api
 
 
 @handle_error_code

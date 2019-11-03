@@ -1,5 +1,5 @@
 pyoracle_forms
-###########
+##################################################################
 
 .. image:: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
     :target: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
@@ -12,7 +12,7 @@ pyoracle_forms
     
 
 Example usage
-###########
+##################################################################
 
 .. code-block:: python
 
