@@ -3,7 +3,7 @@ import pathlib
 import builtins
 
 from ctypes import *
-from os import pathsep, environ
+from os import pathsep, environ, add_dll_directory
 from os.path import exists, abspath, join
 
 
@@ -27,8 +27,9 @@ def find_dll(dll_name):
 
 
 api_dll, msvcrt = dll_names[version]
-if find_dll(api_dll):
-    api = cdll.LoadLibrary(api_dll)
+if dll_path := find_dll(api_dll):
+    with add_dll_directory(dll_path):
+        api = cdll.LoadLibrary(api_dll)
     free = cdll.LoadLibrary(msvcrt).free
 else:
     raise ImportError("No Oracle Forms API found")
