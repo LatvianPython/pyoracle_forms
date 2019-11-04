@@ -9,7 +9,7 @@ script:
 - echo "skipping tests"
 deploy:
   provider: pypi
-  user: pyoracle_forms
+  user: __token__
   distributions: sdist bdist_wheel
   on:
     branch: master
