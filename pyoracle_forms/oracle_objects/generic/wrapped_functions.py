@@ -2,7 +2,7 @@ from ctypes import *
 import builtins
 
 from pyoracle_forms.error_handling import handle_error_code
-from pyoracle_forms.utils import api_function, String
+from pyoracle_forms.context import api_function, String
 
 
 if hasattr(builtins, "pyoracle_forms_ENCODING"):

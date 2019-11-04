@@ -1,7 +1,7 @@
 from ctypes import *
 
 from pyoracle_forms.error_handling import handle_error_code
-from pyoracle_forms.utils import api_function
+from pyoracle_forms.context import api_function
 
 
 # **    d2fprgvn_GetValueName(d2fctx, D2FP_ALT_STY, D2FC_ALST_CAUTION, &vname)
