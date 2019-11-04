@@ -1,17 +1,17 @@
 language: python
 python:
-  - '3.7'
-  - '3.8'
+- '3.7'
+- '3.8'
 install:
-  - pip install -r requirements.txt
-  - pip install .
+- pip install -r requirements.txt
+- pip install .
 script:
-  - echo "skipping tests"
+- echo "skipping tests"
 deploy:
   provider: pypi
-  user: travis_ci
+  user: pyoracle_forms
   distributions: sdist bdist_wheel
   on:
     branch: master
   password:
-    secure: jVl3KOMBRdEfnDTRVduvpoE7FvzKXsLhjQt93vl9aG42OJjczYADeS4s3o7MOD8asT1a1umTk645PK4XKcIG5j1uORZIRMqwWIzl7fFaq4k06JQ2KvBl69lwNEsTxxWSGwtoHBPq0eeiaOw0UBZMw/daybNr3AexAFOqcu8osc94i30NEomkkFph51URaASje34/to2B7zsAi3NfltzTz1bK5nw2nznry5S5LfD1qCF8u8EWBn99rhLG+qzuMTj8QLL9bDxQoXwT8pLOYgPKsYN1Vzw862mtiGEWoPm6zcwTzCwOgZ/lLTqhfH3hqvOSS2lZ55TWCSfVVsuK76DFZ6rGaR9bYLDFz785lDBZcjr2jiuK8V8NeMsVOR062ZxVKS9P+4WNTSmCD9jVtCoO4NSz+oNhg5SXjMMSunhi4sds5CrIQ8r9cI5A9WKJecFYVuZ4lLLWhU3J8lQVQLyPFFO2esUVz+DA40vIgUClP/wmL1hqnmO15Co//mbMduA8ZqQJzt7gA8h+f2WB8xm7Do7SSRErurbv6A+fqIxQoVntDVBCcrvRVJZN/Qph329vdWOc1TJ02qXW2yUnnzgLVgw2ps7TvfgaLDEdbvFeGErHfC1i77sMYgGXVA5sG22Ux8jao6H9sLM8nT4sLf0RFN6mnyddQoSkwfnbMnaqmkg=
+    secure: GQEFPj9dLG677gXQWPnatlEC7GLGx1aJLRI5nqzPj6nO9K0akM66vks9DCwpY6si8/hKBa7ezEtHChHOg/6FUjxJJ+Lhm06utl7bZbzYHfgSSSC01ePXkGI0mSue3tD9YeyJXtICdvxrVKdB+mWxjMlSeVOuw+WJKjv6I9JCAZwfVbnb6CNh8q7UD9iiO8MxqTzyMZpIipyc7eGC34SPjNwGsr432uDc5I4bUj2cpgPMOOf91eENckSs0jz9pxPzRv0yoh7rxHpqFnymzFess/xDORdD16yhPVPnsupW26+g5Vp1THu+1vgJ43ok2JXtBf0Iw2HYAmjf8h8dlh0VTHHARRwKw3/wDTmOm0IBShCWFHDB3IJ4L/cRcKbCDvYIs1eGhzHi0hHyzLmFRxDWamoVZk7yxU04OjJEhXhP3AYzKhnpYeXtcakppfbN0Dfmz5F0uLQp7nXKrEA9CcZZo5suOQtXWhsPwbeiv9xozBro0oHRIZfG5sepHOfbwO/JTQaSp1h5b+87yuCTPKgw0Q85xObdmzsqUenWuiLPpYBpu3saZcXY2d6rGgt5geJIa6TSjI5WZfnGdXeKNQrLnTikMVapT9e4w7RluHol5M9dKflx8BtXWJ8mwa7dsI10Xo0p9GP7FUIpmRiiwlDVHcxta6U5Xuz0WIu2CufSSmA=
