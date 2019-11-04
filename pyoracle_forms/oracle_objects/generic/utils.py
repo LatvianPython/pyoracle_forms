@@ -1,6 +1,6 @@
 import enum
 
-from pyoracle_forms.properties import property_type
+from .wrapped_functions import property_type
 from .wrapped_functions import get_boolean
 from .wrapped_functions import get_number
 from .wrapped_functions import get_object

@@ -1,8 +1,23 @@
 import atexit
+from functools import partial
 from ctypes import *
 
-from .forms_api import api
+from .forms_api import api, free
 from pyoracle_forms.error_handling import handle_error_code
+
+
+def api_function(func, arguments):
+    api_func = getattr(api, func)
+    api_func.argtypes = (c_void_p,) + arguments
+
+    api_func = partial(api_func, context)
+
+    return api_func
+
+
+class String(c_char_p):
+    def __del__(self):
+        free(self)
 
 
 @handle_error_code
