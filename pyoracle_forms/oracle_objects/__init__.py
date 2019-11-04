@@ -17,3 +17,7 @@ from .forms_objects import VisualAttribute
 from .forms_objects import Window
 
 from .forms_objects import Module
+
+from .generic.wrapped_functions import property_constant_name
+from .generic.wrapped_functions import property_name
+from .generic.wrapped_functions import property_type
