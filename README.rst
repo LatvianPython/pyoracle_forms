@@ -14,6 +14,9 @@ pyoracle_forms
 .. image:: https://img.shields.io/pypi/v/pyoracle_forms
     :target: https://pypi.org/project/pyoracle-forms/
 
+.. image:: https://travis-ci.org/LatvianPython/pyoracle_forms.svg?branch=master
+    :target: https://travis-ci.org/LatvianPython/pyoracle_forms
+
 Wraps the Oracle Forms API under Python, so that you can write scripts to
 make programmatic changes to Oracle Forms .fmb files with ease.
 
