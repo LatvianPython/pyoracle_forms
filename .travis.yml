@@ -1,8 +1,7 @@
 language: python
 python:
-  - "3.7"
-  - "3.8"
-# command to install dependencies
+  - '3.7'
+  - '3.8'
 install:
   - pip install -r requirements.txt
   - pip install .
@@ -12,7 +11,7 @@ deploy:
   provider: pypi
   user: travis_ci
   distributions: sdist bdist_wheel
-  password:
-    secure: HuS7Qd7yh/+0P7bU1MeaPiUGw1fl6KGtGX3rSIDs0mo4gTawhgS+LQ/wxOH4ZYr+/XSDD/zEMLEkvHBKy+VWAaVnxU0ZY85N5FLxT3mmDd0szehPbVfAdNpjtNkF+8fHEbffFnE5AMECXghgiguOsw6FB8Wh4f7zSRCv5yCpZamtkiKrzTVJGOGcld+k3KJqKaWdxGeZ7AgOs5ECRmSWkUvB+BDdQs//BowIyRnOGCqBTwn9TAIv8Qm7fIRFaVr3ZVmp8W1xxRxL4iSaE/ez3OBWh3hWz2EzKDQQF2raloKzNhfDRitthhjXz+hjTjiVi+OKmC46pFncenItRtCTL76dsVM38Yvv5Rgwr50XLv68dBL0MFkdvbCVi/CtYdMnSGVJxX9E3XsDHclKBSxZPI89NlY/VE8DSP80pELVf7waE74j3PfkyuKJYX0/GhdJ14+HzOpGv3dTriGWrLsUYYj+4Uu5r/kAxr984CFYlVoscWkrJVw+DbSmle+1xpZ92PnHnG+P3PIUSzeonWtY8vA8O+5bzH7+aCdb1lrACig01S6KfKUdXkAOzajJy4nc6gH6zgOp7ZvpozCUDt4S/+iRjaqRsKqHCnnvvAF74wS9hQJsaNLZO76O4KXUQ5kNnNtQn0vWRdP3VNZuH7U33i5plSSenFi/aruPiDqNEOI=
   on:
     branch: master
+  password:
+    secure: jVl3KOMBRdEfnDTRVduvpoE7FvzKXsLhjQt93vl9aG42OJjczYADeS4s3o7MOD8asT1a1umTk645PK4XKcIG5j1uORZIRMqwWIzl7fFaq4k06JQ2KvBl69lwNEsTxxWSGwtoHBPq0eeiaOw0UBZMw/daybNr3AexAFOqcu8osc94i30NEomkkFph51URaASje34/to2B7zsAi3NfltzTz1bK5nw2nznry5S5LfD1qCF8u8EWBn99rhLG+qzuMTj8QLL9bDxQoXwT8pLOYgPKsYN1Vzw862mtiGEWoPm6zcwTzCwOgZ/lLTqhfH3hqvOSS2lZ55TWCSfVVsuK76DFZ6rGaR9bYLDFz785lDBZcjr2jiuK8V8NeMsVOR062ZxVKS9P+4WNTSmCD9jVtCoO4NSz+oNhg5SXjMMSunhi4sds5CrIQ8r9cI5A9WKJecFYVuZ4lLLWhU3J8lQVQLyPFFO2esUVz+DA40vIgUClP/wmL1hqnmO15Co//mbMduA8ZqQJzt7gA8h+f2WB8xm7Do7SSRErurbv6A+fqIxQoVntDVBCcrvRVJZN/Qph329vdWOc1TJ02qXW2yUnnzgLVgw2ps7TvfgaLDEdbvFeGErHfC1i77sMYgGXVA5sG22Ux8jao6H9sLM8nT4sLf0RFN6mnyddQoSkwfnbMnaqmkg=
