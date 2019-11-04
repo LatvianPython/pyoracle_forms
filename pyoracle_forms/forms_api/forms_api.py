@@ -3,7 +3,7 @@ import pathlib
 import builtins
 
 from ctypes import *
-from os import pathsep, environ, add_dll_directory
+from os import pathsep, environ
 from os.path import exists, abspath, join
 
 
@@ -27,8 +27,14 @@ def find_dll(dll_name):
 
 
 api_dll, msvcrt = dll_names[version]
-if dll_path := find_dll(api_dll):
-    with add_dll_directory(dll_path):
+dll_path = find_dll(api_dll)
+if dll_path:
+    try:
+        from os import add_dll_directory
+
+        with add_dll_directory(dll_path):
+            api = cdll.LoadLibrary(api_dll)
+    except ImportError:
         api = cdll.LoadLibrary(api_dll)
     free = cdll.LoadLibrary(msvcrt).free
 else:
