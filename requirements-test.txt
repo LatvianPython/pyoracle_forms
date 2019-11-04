@@ -6,4 +6,5 @@ coverage-badge
 pygments
 wheel
 twine
+tox
 -e .
