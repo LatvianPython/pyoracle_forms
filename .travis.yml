@@ -1,16 +1,17 @@
 language: python
 python:
-- '3.7'
-- '3.8'
+  - '3.7'
+  - '3.8'
 install:
-- pip install -r requirements.txt
-- pip install .
+  - pip install -r requirements.txt
+  - pip install .
 script:
-- echo "skipping tests"
+  - echo "skipping tests"
 deploy:
   provider: pypi
   user: __token__
   distributions: sdist bdist_wheel
+  skip_existing: true
   on:
     branch: master
   password:
