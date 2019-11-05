@@ -1,5 +1,3 @@
-from pyoracle_forms.__version__ import __version__
-
 import setuptools
 
 with open("README.rst", mode="r", encoding="utf-8") as fh:
@@ -7,7 +5,7 @@ with open("README.rst", mode="r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pyoracle_forms",
-    version=__version__,
+    version="0.1.5",
     author="LatvianPython",
     author_email="kalvans.rolands@gmail.com",
     description="Python wrapper of the Oracle Forms API",
