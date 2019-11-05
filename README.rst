@@ -17,6 +17,9 @@ pyoracle_forms
 .. image:: https://travis-ci.org/LatvianPython/pyoracle_forms.svg?branch=master
     :target: https://travis-ci.org/LatvianPython/pyoracle_forms
 
+.. image:: https://readthedocs.org/projects/pyoracle-forms/badge/?version=latest
+    :target: https://pyoracle-forms.readthedocs.io/en/latest/?badge=latest
+
 Wraps the Oracle Forms API under Python, so that you can write scripts to
 make programmatic changes to Oracle Forms .fmb files with ease.
 
@@ -51,18 +54,7 @@ as this solution depends on the Oracle Forms API.
 
 
 ******************************************************************
-Caveats
+Documentation
 ******************************************************************
 
-By default forms API version is assumed to be 12c, and the encoding of .fmb file text as utf-8,
-to use a different version or encoding you must currently use the following code before importing ``pyoracle_forms``.
-Versions supported are 12c, 10g and 6i of the Oracle forms API.
-
-.. code-block:: python
-
-    import builtins
-
-    builtins.pyoracle_forms_VERSION = "12c"
-    builtins.pyoracle_forms_ENCODING = "utf-8"
-
-    from pyoracle_forms import ...
+More detailed documentation is available on `Read the Docs <https://pyoracle-forms.readthedocs.io/en/latest/>`_

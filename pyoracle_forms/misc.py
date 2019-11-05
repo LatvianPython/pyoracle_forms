@@ -72,9 +72,12 @@ def forms_object(cls):
         try:
             obj_property = ObjectProperties(const_name)
         except ValueError:
-            prop_name = "_".join(
-                property_name(property_number).lower().split()
-            ).replace("'", "")
+            prop_name = (
+                "_".join(property_name(property_number).lower().split())
+                .replace("'", "")
+                .replace("-", "_")
+                .replace("/", "_")
+            )
             if prop_name and "(obsolete)" not in prop_name:
                 setattr(cls, prop_name, Property(property_number))
         else:
