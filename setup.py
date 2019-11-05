@@ -1,4 +1,4 @@
-from pyoracle_forms import __version__
+from pyoracle_forms.__version__ import __version__
 
 import setuptools
 
@@ -25,5 +25,3 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.7",
 )
-
-import requests
