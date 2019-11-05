@@ -7,4 +7,5 @@ pygments
 wheel
 twine
 tox
+sphinx
 -e .
