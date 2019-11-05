@@ -1,5 +1,3 @@
-from pyoracle_forms import __version__
-
 import setuptools
 
 with open("README.rst", mode="r", encoding="utf-8") as fh:
@@ -25,5 +23,3 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.7",
 )
-
-import requests
