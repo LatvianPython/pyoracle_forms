@@ -18,11 +18,16 @@ else:
 
 
 class Context:
-    def __init__(self, version, encoding):
+    def __init__(self):
+        self.version, self.encoding = None, None
+        self.api, self.free = None, None
+        self._as_parameter_ = None
+
+    def init(self, version, encoding):
         self.version, self.encoding = version, encoding
         self.api, self.free = dlls(self.version)
         self._as_parameter_ = self.create_context()
-        atexit.register(self.destroy)
+        atexit.register(self.destroy_context)
 
     def api_function(self, func, arguments):
         api_func = getattr(self.api, func)
@@ -52,7 +57,7 @@ class Context:
         return error_code, ctx
 
     @handle_error_code
-    def destroy(self):
+    def destroy_context(self):
         func = api.d2fctxde_Destroy
         func.argtypes = (c_void_p,)
         error_code = func(self)
@@ -122,133 +127,92 @@ class Context:
 
         return arg.value
 
+    def load_module(self, form_path):
+        func = self.handled_api_function("d2ffmdld_Load", (c_void_p, c_char_p, c_bool))
 
-context = Context(version=VERSION, encoding=ENCODING)
+        form = c_void_p()
+        func(pointer(form), form_path.encode("utf-8"), False)
+
+        return form
+
+    def create_module(self, name):
+        func = self.handled_api_function("d2ffmdcr_Create", (c_void_p, c_char_p))
+
+        form = c_void_p()
+        func(pointer(form), name.encode("utf-8"))
+
+        return form
+
+    def save_module(self, module, path):
+        self.handled_api_function("d2ffmdsv_Save", (c_void_p, c_char_p, c_bool))(
+            module, path.encode("utf-8"), False
+        )
+
+    @handle_error_code
+    def has_property(self, generic_object, property_number):
+        func = api_function("d2fobhp_HasProp", (c_void_p, c_int))
+
+        error_code = func(generic_object, property_number)
+
+        if error_code in (2, 3):
+            return 0, error_code == 2
+        return error_code, None
+
+    def create(self, owner, name, object_number):
+        func = self.handled_api_function(
+            "d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int)
+        )
+        new_obj = c_void_p()
+        func(owner, pointer(new_obj), name.encode("utf-8"), object_number)
+        return new_obj
+
+    def destroy(self, generic_object):
+        self.handled_api_function("d2fobde_Destroy", (c_void_p,))(generic_object)
+
+    def move(self, generic_object, next_object):
+        self.handled_api_function("d2fobmv_Move", (c_void_p, c_void_p))(
+            generic_object, next_object
+        )
+
+    @handle_error_code
+    def query_type(self, generic_object):
+        # d2fobqt_QueryType(ctx, p_obj, &v_obj_typ)
+        func = api_function("d2fobqt_QueryType", (c_void_p,))
+
+        object_type = c_int()
+        error_code = func(generic_object, pointer(object_type))
+
+        return error_code, object_type.value
+
+    @handle_error_code
+    def property_constant_name(self, property_number):
+        func = api_function("d2fprgcn_GetConstName", (c_int, c_void_p))
+
+        property_const_name = c_char_p()
+        error_code = func(property_number, pointer(property_const_name))
+
+        return error_code, property_const_name.value.decode("utf-8")
+
+    @handle_error_code
+    def property_name(self, property_number):
+        # d2fprgn_GetName(d2fctx, D2FP_ALT_STY, &pname)
+        func = api_function("d2fprgn_GetName", (c_int, c_void_p))
+
+        object_type = c_char_p()
+        error_code = func(property_number, pointer(object_type))
+
+        try:
+            return error_code, object_type.value.decode("utf-8")
+        except AttributeError:
+            return 0, ""
+
+
+context = Context()
+context.init(version=VERSION, encoding=ENCODING)
 
 api, free = context.api, context.free
 api_function = context.api_function
 
 
-@handle_error_code
-def query_type(generic_object):
-    # d2fobqt_QueryType(ctx, p_obj, &v_obj_typ)
-    func = api_function("d2fobqt_QueryType", (c_void_p,))
-
-    object_type = c_int()
-    error_code = func(generic_object, pointer(object_type))
-
-    return error_code, object_type.value
-
-
-@handle_error_code
-def type_name(object_type):
-    # d2fobgcn_GetConstName(ctx, v_obj_typ, &v_typ_name)
-    func = api_function("d2fobgcn_GetConstName", (c_uint, c_void_p))
-
-    return_val = c_char_p()
-    error_code = func(object_type, pointer(return_val))
-
-    return error_code, return_val.value.decode("utf-8")
-
-
-@handle_error_code
-def has_property(generic_object, property_number):
-    # d2fobhp_HasProp(ctx, p_obj, D2FP_NAME)
-    func = api_function("d2fobhp_HasProp", (c_void_p, c_int))
-
-    error_code = func(generic_object, property_number)
-
-    if error_code in (2, 3):
-        return 0, error_code == 2
-    return error_code, None
-
-
-@handle_error_code
-def create(owner, name, object_number):
-    # d2fobcr_Create(ctx, d2fob *owner, d2fob **ppd2fob, text *name, d2fotyp objtyp );
-    func = api_function("d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int))
-
-    new_obj = c_void_p()
-    error_code = func(owner, pointer(new_obj), name.encode("utf-8"), object_number)
-
-    return error_code, new_obj
-
-
-@handle_error_code
-def destroy(generic_object):
-    # d2fobde_Destroy( d2fctx *pd2fctx, d2fob *pd2fob );
-    func = api_function("d2fobde_Destroy", (c_void_p,))
-
-    error_code = func(generic_object)
-
-    return error_code, None
-
-
-@handle_error_code
-def move(generic_object, next_object):
-    # d2fobmv_Move( d2fctx *pd2fctx, d2fob *pd2fob, d2fob *pd2fob_nxt );
-    func = api_function("d2fobmv_Move", (c_void_p, c_void_p))
-
-    error_code = func(generic_object, next_object)
-
-    return error_code, None
-
-
-@handle_error_code
-def load_module(form_path):
-    func = api_function("d2ffmdld_Load", (c_void_p, c_char_p, c_bool))
-
-    form = c_void_p()
-    error_code = func(pointer(form), form_path.encode("utf-8"), False)
-
-    return error_code, form
-
-
-@handle_error_code
-def create_module(name):
-    func = api_function("d2ffmdcr_Create", (c_void_p, c_char_p))
-
-    form = c_void_p()
-    error_code = func(pointer(form), name.encode("utf-8"))
-
-    return error_code, form
-
-
-@handle_error_code
-def save_module(module, path):
-    func = api_function("d2ffmdsv_Save", (c_void_p, c_char_p, c_bool))
-
-    error_code = func(module, path.encode("utf-8"), False)
-
-    return error_code, None
-
-
-@handle_error_code
-def property_constant_name(property_number):
-    func = api_function("d2fprgcn_GetConstName", (c_int, c_void_p))
-
-    property_const_name = c_char_p()
-    error_code = func(property_number, pointer(property_const_name))
-
-    return error_code, property_const_name.value.decode("utf-8")
-
-
-@handle_error_code
-def property_name(property_number):
-    # d2fprgn_GetName(d2fctx, D2FP_ALT_STY, &pname)
-    func = api_function("d2fprgn_GetName", (c_int, c_void_p))
-
-    object_type = c_char_p()
-    error_code = func(property_number, pointer(object_type))
-
-    try:
-        return error_code, object_type.value.decode("utf-8")
-    except AttributeError:
-        return 0, ""
-
-
 def property_type(property_number):
-    # d2fprgt_GetType(ctx, prop_num)
-    func = api_function("d2fprgt_GetType", (c_uint,))
-
-    return func(property_number)
+    return api_function("d2fprgt_GetType", (c_uint,))(property_number)

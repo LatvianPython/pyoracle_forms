@@ -17,3 +17,13 @@ def test_created_items_have_passed_name(data_block):
 
 def test_has_property(item):
     assert item.has_property(154)
+
+
+def test_can_delete_items(data_block, make_item):
+    for i in range(10):
+        make_item(data_block, f"ITM_{i}")
+
+    items = len(data_block.items)
+
+    data_block.items[0].destroy()
+    assert len(data_block.items) < items
