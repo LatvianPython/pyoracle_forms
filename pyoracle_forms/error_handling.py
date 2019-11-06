@@ -43,22 +43,18 @@ class FormsException(Exception):
     pass
 
 
+def raise_for_code(error_code):
+    raise FormsException(error_code, f"{error_mapping[error_code]}")
+
+
 def handle_error_code(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-
         packed = func(*args, **kwargs)
 
-        try:
-            error_code, *return_values = packed
-        except TypeError:
-            error_code, return_values = packed, [None]
-
+        error_code, return_value = packed
         if error_code:
-            raise FormsException(error_code, f"{error_mapping[error_code]}")
-
-        if len(return_values) == 1:
-            return return_values.pop()
-        return return_values
+            raise_for_code(error_code)
+        return return_value
 
     return wrapper

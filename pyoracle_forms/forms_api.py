@@ -37,8 +37,7 @@ def dlls(version):
                 return cdll.LoadLibrary(api_dll), msvcrt.free
         except ImportError:
             return cdll.LoadLibrary(api_dll), msvcrt.free
-    else:
-        raise ImportError("No Oracle Forms API found")
+    raise ImportError("No Oracle Forms API found")
 
 
 def read_api_objects(version):
