@@ -18,4 +18,4 @@ from .oracle_objects import Trigger
 from .oracle_objects import VisualAttribute
 from .oracle_objects import Window
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"

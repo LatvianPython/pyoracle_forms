@@ -5,7 +5,7 @@ with open("README.rst", mode="r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pyoracle_forms",
-    version="0.1.5",
+    version="0.1.6",
     author="LatvianPython",
     author_email="kalvans.rolands@gmail.com",
     description="Python wrapper of the Oracle Forms API",
