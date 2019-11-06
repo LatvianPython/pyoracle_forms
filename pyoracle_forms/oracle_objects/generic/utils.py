@@ -1,7 +1,6 @@
 import enum
 
 from pyoracle_forms.oracle_objects.generic.context import context
-from pyoracle_forms.oracle_objects.generic.context import property_type
 
 
 class ValueTypes(enum.IntEnum):
@@ -30,7 +29,7 @@ property_setters = {
 
 
 def get_property(generic_object, property_number):
-    value_type = property_type(property_number=property_number)
+    value_type = context.property_type(property_number=property_number)
     try:
         func = property_getters[value_type]
     except KeyError:
@@ -40,7 +39,7 @@ def get_property(generic_object, property_number):
 
 
 def set_property(generic_object, property_number, property_value):
-    value_type = property_type(property_number=property_number)
+    value_type = context.property_type(property_number=property_number)
 
     func = property_setters[value_type]
 

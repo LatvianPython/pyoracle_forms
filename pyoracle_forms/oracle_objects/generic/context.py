@@ -57,13 +57,21 @@ class Context:
         return error_code, ctx
 
     @handle_error_code
-    def destroy_context(self):
-        func = api.d2fctxde_Destroy
-        func.argtypes = (c_void_p,)
-        error_code = func(self)
-        self._as_parameter_.value = 0
+    def has_property(self, generic_object, property_number):
+        func = self.api_function("d2fobhp_HasProp", (c_void_p, c_int))
 
+        error_code = func(generic_object, property_number)
+
+        if error_code in (2, 3):
+            return 0, error_code == 2
         return error_code, None
+
+    def property_type(self, property_number):
+        return self.api_function("d2fprgt_GetType", (c_uint,))(property_number)
+
+    def destroy_context(self):
+        self.handled_api_function("d2fctxde_Destroy", tuple())(self)
+        self._as_parameter_ = None
 
     def set_text(self, generic_object, property_number, text):
         self.handled_api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))(
@@ -115,7 +123,7 @@ class Context:
         except AttributeError:
             text = ""
         else:
-            free(arg)
+            self.free(arg)
         return text
 
     def get_object(self, generic_object, property_number):
@@ -148,16 +156,6 @@ class Context:
             module, path.encode("utf-8"), False
         )
 
-    @handle_error_code
-    def has_property(self, generic_object, property_number):
-        func = api_function("d2fobhp_HasProp", (c_void_p, c_int))
-
-        error_code = func(generic_object, property_number)
-
-        if error_code in (2, 3):
-            return 0, error_code == 2
-        return error_code, None
-
     def create(self, owner, name, object_number):
         func = self.handled_api_function(
             "d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int)
@@ -174,45 +172,33 @@ class Context:
             generic_object, next_object
         )
 
-    @handle_error_code
     def query_type(self, generic_object):
-        # d2fobqt_QueryType(ctx, p_obj, &v_obj_typ)
-        func = api_function("d2fobqt_QueryType", (c_void_p,))
+        func = self.handled_api_function("d2fobqt_QueryType", (c_void_p,))
 
         object_type = c_int()
-        error_code = func(generic_object, pointer(object_type))
+        func(generic_object, pointer(object_type))
 
-        return error_code, object_type.value
+        return object_type.value
 
-    @handle_error_code
     def property_constant_name(self, property_number):
-        func = api_function("d2fprgcn_GetConstName", (c_int, c_void_p))
+        func = self.handled_api_function("d2fprgcn_GetConstName", (c_int, c_void_p))
 
         property_const_name = c_char_p()
-        error_code = func(property_number, pointer(property_const_name))
+        func(property_number, pointer(property_const_name))
 
-        return error_code, property_const_name.value.decode("utf-8")
+        return property_const_name.value.decode("utf-8")
 
-    @handle_error_code
     def property_name(self, property_number):
-        # d2fprgn_GetName(d2fctx, D2FP_ALT_STY, &pname)
-        func = api_function("d2fprgn_GetName", (c_int, c_void_p))
+        func = self.handled_api_function("d2fprgn_GetName", (c_int, c_void_p))
 
         object_type = c_char_p()
-        error_code = func(property_number, pointer(object_type))
+        func(property_number, pointer(object_type))
 
         try:
-            return error_code, object_type.value.decode("utf-8")
+            return object_type.value.decode("utf-8")
         except AttributeError:
-            return 0, ""
+            return ""
 
 
 context = Context()
 context.init(version=VERSION, encoding=ENCODING)
-
-api, free = context.api, context.free
-api_function = context.api_function
-
-
-def property_type(property_number):
-    return api_function("d2fprgt_GetType", (c_uint,))(property_number)
