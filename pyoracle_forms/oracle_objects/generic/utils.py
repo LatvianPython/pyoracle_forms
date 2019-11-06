@@ -1,14 +1,7 @@
 import enum
 
+from pyoracle_forms.oracle_objects.generic.context import context
 from pyoracle_forms.oracle_objects.generic.context import property_type
-from pyoracle_forms.oracle_objects.generic.context import get_boolean
-from pyoracle_forms.oracle_objects.generic.context import get_number
-from pyoracle_forms.oracle_objects.generic.context import get_object
-from pyoracle_forms.oracle_objects.generic.context import get_text
-from pyoracle_forms.oracle_objects.generic.context import set_boolean
-from pyoracle_forms.oracle_objects.generic.context import set_number
-from pyoracle_forms.oracle_objects.generic.context import set_object
-from pyoracle_forms.oracle_objects.generic.context import set_text
 
 
 class ValueTypes(enum.IntEnum):
@@ -21,18 +14,18 @@ class ValueTypes(enum.IntEnum):
 
 property_getters = {
     # ValueTypes.UNKNOWN: None,
-    ValueTypes.BOOLEAN: get_boolean,
-    ValueTypes.NUMBER: get_number,
-    ValueTypes.TEXT: get_text,
-    ValueTypes.OBJECT: get_object,
+    ValueTypes.BOOLEAN: context.get_boolean,
+    ValueTypes.NUMBER: context.get_number,
+    ValueTypes.TEXT: context.get_text,
+    ValueTypes.OBJECT: context.get_object,
 }
 
 property_setters = {
     # ValueTypes.UNKNOWN: None,
-    ValueTypes.BOOLEAN: set_boolean,
-    ValueTypes.NUMBER: set_number,
-    ValueTypes.TEXT: set_text,
-    ValueTypes.OBJECT: set_object,
+    ValueTypes.BOOLEAN: context.set_boolean,
+    ValueTypes.NUMBER: context.set_number,
+    ValueTypes.TEXT: context.set_text,
+    ValueTypes.OBJECT: context.set_object,
 }
 
 

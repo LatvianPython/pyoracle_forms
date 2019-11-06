@@ -1,3 +1,4 @@
+import atexit
 import builtins
 from ctypes import *
 from functools import partial
@@ -17,6 +18,27 @@ else:
 
 
 class Context:
+    def __init__(self, version, encoding):
+        self.version, self.encoding = version, encoding
+        self.api, self.free = dlls(self.version)
+        self._as_parameter_ = self.create_context()
+        atexit.register(self.destroy)
+
+    def api_function(self, func, arguments):
+        api_func = getattr(self.api, func)
+        api_func.argtypes = (c_void_p,) + arguments
+
+        api_func = partial(api_func, self)
+
+        return api_func
+
+    def handled_api_function(self, func, arguments):
+        @handle_error_code
+        def wrapped(*args):
+            return self.api_function(func, arguments)(*args), None
+
+        return wrapped
+
     @handle_error_code
     def create_context(self):
         ctx = c_void_p()
@@ -29,21 +51,6 @@ class Context:
 
         return error_code, ctx
 
-    def __init__(self, version, encoding):
-        self.version, self.encoding = version, encoding
-
-        self.api, self.free = dlls(version)
-
-        self._as_parameter_ = self.create_context()
-
-    def api_function(self, func, arguments):
-        api_func = getattr(self.api, func)
-        api_func.argtypes = (c_void_p,) + arguments
-
-        api_func = partial(api_func, self)
-
-        return api_func
-
     @handle_error_code
     def destroy(self):
         func = api.d2fctxde_Destroy
@@ -53,58 +60,75 @@ class Context:
 
         return error_code, None
 
-    def __enter__(self):
-        return self
+    def set_text(self, generic_object, property_number, text):
+        self.handled_api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))(
+            generic_object, property_number, text.encode(self.encoding)
+        )
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.destroy()
+    def set_boolean(self, generic_object, property_number, boolean):
+        self.handled_api_function("d2fobsb_SetBoolProp", (c_void_p, c_int, c_bool))(
+            generic_object, property_number, boolean
+        )
+
+    def set_number(self, generic_object, property_number, number):
+        self.handled_api_function("d2fobsn_SetNumProp", (c_void_p, c_int, c_int))(
+            generic_object, property_number, number
+        )
+
+    def set_object(self, generic_object, property_number, obj):
+        self.handled_api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void_p))(
+            generic_object, property_number, obj
+        )
+
+    @handle_error_code
+    def get_boolean(self, generic_object, property_number):
+        func = self.api_function("d2fobgb_GetBoolProp", (c_void_p, c_int, c_void_p))
+
+        arg = c_bool(False)
+        error_code = func(generic_object, property_number, pointer(arg))
+
+        return error_code, arg.value
+
+    @handle_error_code
+    def get_number(self, generic_object, property_number):
+        func = self.api_function("d2fobgn_GetNumProp", (c_void_p, c_int, c_void_p))
+
+        arg = c_int()
+        error_code = func(generic_object, property_number, pointer(arg))
+
+        return error_code, arg.value
+
+    @handle_error_code
+    def get_text(self, generic_object, property_number):
+        func = self.api_function("d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p))
+
+        arg = c_char_p()
+        error_code = func(generic_object, property_number, pointer(arg))
+
+        try:
+            text = arg.value.decode(ENCODING)
+        except AttributeError:
+            return error_code, None
+        else:
+            free(arg)
+            return error_code, text
+
+    @handle_error_code
+    def get_object(self, generic_object, property_number):
+        func = self.api_function("d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p))
+
+        arg = c_void_p()
+        error_code = func(generic_object, property_number, pointer(arg))
+
+        if arg.value:
+            return error_code, arg
+        return error_code, None
 
 
 context = Context(version=VERSION, encoding=ENCODING)
 
 api, free = context.api, context.free
 api_function = context.api_function
-
-
-@handle_error_code
-def set_text(generic_object, property_number, text):
-    # d2fobst_SetTextProp(ctx, obj, pnum, text);
-    func = api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))
-
-    text = text.encode(ENCODING)
-    error_code = func(generic_object, property_number, text)
-
-    return error_code, None
-
-
-@handle_error_code
-def set_boolean(generic_object, property_number, boolean):
-    # d2fobsb_SetBoolProp( d2fctx *pd2fctx, d2fob *pd2fob, ub2 pnum, boolean prp );
-    func = api_function("d2fobsb_SetBoolProp", (c_void_p, c_int, c_bool))
-
-    error_code = func(generic_object, property_number, boolean)
-
-    return error_code, None
-
-
-@handle_error_code
-def set_number(generic_object, property_number, numeric):
-    # d2fobsn_SetNumProp( d2fctx *pd2fctx, d2fob *pd2fob, ub2 pnum, number prp );
-    func = api_function("d2fobsn_SetNumProp", (c_void_p, c_int, c_int))
-
-    error_code = func(generic_object, property_number, numeric)
-
-    return error_code, None
-
-
-@handle_error_code
-def set_object(generic_object, property_number, obj):
-    # d2fobso_SetObjProp( d2fctx *pd2fctx, d2fob *pd2fob, ub2 pnum, dvoid *prp );
-    func = api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void_p))
-
-    error_code = func(generic_object, property_number, obj)
-
-    return error_code, None
 
 
 @handle_error_code
@@ -138,58 +162,6 @@ def has_property(generic_object, property_number):
 
     if error_code in (2, 3):
         return 0, error_code == 2
-    return error_code, None
-
-
-@handle_error_code
-def get_boolean(generic_object, property_number):
-    # d2fobgb_GetBoolProp(ctx, p_obj, prop_num, &v_value)
-    func = api_function("d2fobgb_GetBoolProp", (c_void_p, c_int, c_void_p))
-
-    arg = c_bool(False)
-    error_code = func(generic_object, property_number, pointer(arg))
-
-    return error_code, arg.value
-
-
-@handle_error_code
-def get_number(generic_object, property_number):
-    # d2fobgn_GetNumProp(ctx, p_obj, prop_num, &v_value)
-    func = api_function("d2fobgn_GetNumProp", (c_void_p, c_int, c_void_p))
-
-    arg = c_int()
-    error_code = func(generic_object, property_number, pointer(arg))
-
-    return error_code, arg.value
-
-
-@handle_error_code
-def get_text(generic_object, property_number):
-    # d2fobgt_GetTextProp(ctx, p_obj, prop_num, &v_value)
-    func = api_function("d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p))
-
-    arg = c_char_p()
-    error_code = func(generic_object, property_number, pointer(arg))
-
-    try:
-        text = arg.value.decode(ENCODING)
-    except AttributeError:
-        return error_code, None
-    else:
-        free(arg)
-        return error_code, text
-
-
-@handle_error_code
-def get_object(generic_object, property_number):
-    # d2fobgo_GetObjProp(ctx, p_obj, prop_num, &v_subobj)
-    func = api_function("d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p))
-
-    arg = c_void_p()
-    error_code = func(generic_object, property_number, pointer(arg))
-
-    if arg.value:
-        return error_code, arg
     return error_code, None
 
 
