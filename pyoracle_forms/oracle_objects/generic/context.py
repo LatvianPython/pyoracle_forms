@@ -56,7 +56,7 @@ class Context:
         func = api.d2fctxde_Destroy
         func.argtypes = (c_void_p,)
         error_code = func(self)
-        ctx.value = 0
+        self._as_parameter_.value = 0
 
         return error_code, None
 
@@ -80,49 +80,47 @@ class Context:
             generic_object, property_number, obj
         )
 
-    @handle_error_code
     def get_boolean(self, generic_object, property_number):
-        func = self.api_function("d2fobgb_GetBoolProp", (c_void_p, c_int, c_void_p))
-
+        func = self.handled_api_function(
+            "d2fobgb_GetBoolProp", (c_void_p, c_int, c_void_p)
+        )
         arg = c_bool(False)
-        error_code = func(generic_object, property_number, pointer(arg))
+        func(generic_object, property_number, pointer(arg))
 
-        return error_code, arg.value
+        return arg.value
 
-    @handle_error_code
     def get_number(self, generic_object, property_number):
-        func = self.api_function("d2fobgn_GetNumProp", (c_void_p, c_int, c_void_p))
-
+        func = self.handled_api_function(
+            "d2fobgn_GetNumProp", (c_void_p, c_int, c_void_p)
+        )
         arg = c_int()
-        error_code = func(generic_object, property_number, pointer(arg))
+        func(generic_object, property_number, pointer(arg))
 
-        return error_code, arg.value
+        return arg.value
 
-    @handle_error_code
     def get_text(self, generic_object, property_number):
-        func = self.api_function("d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p))
-
+        func = self.handled_api_function(
+            "d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p)
+        )
         arg = c_char_p()
-        error_code = func(generic_object, property_number, pointer(arg))
+        func(generic_object, property_number, pointer(arg))
 
         try:
-            text = arg.value.decode(ENCODING)
+            text = arg.value.decode(self.encoding)
         except AttributeError:
-            return error_code, None
+            text = ""
         else:
             free(arg)
-            return error_code, text
+        return text
 
-    @handle_error_code
     def get_object(self, generic_object, property_number):
-        func = self.api_function("d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p))
-
+        func = self.handled_api_function(
+            "d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p)
+        )
         arg = c_void_p()
-        error_code = func(generic_object, property_number, pointer(arg))
+        func(generic_object, property_number, pointer(arg))
 
-        if arg.value:
-            return error_code, arg
-        return error_code, None
+        return arg.value
 
 
 context = Context(version=VERSION, encoding=ENCODING)

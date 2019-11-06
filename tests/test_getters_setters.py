@@ -9,14 +9,24 @@ def test_text(new_item):
     assert new_item.name == value
 
 
+def test_text_empty(new_item):
+    assert new_item.column_name == ""
+
+
 def test_number(new_item):
     value = 10
     new_item.width = value
     assert new_item.width == value
 
 
-def test_boolean(new_item):
+def test_boolean_false(new_item):
     value = False
+    new_item.database_item = value
+    assert new_item.database_item == value
+
+
+def test_boolean_true(new_item):
+    value = True
     new_item.database_item = value
     assert new_item.database_item == value
 
