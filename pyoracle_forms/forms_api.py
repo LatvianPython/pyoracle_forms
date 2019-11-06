@@ -47,5 +47,4 @@ def read_api_objects(version):
         return json.load(file)
 
 
-api, free = dlls(VERSION)
 api_objects = read_api_objects(VERSION)

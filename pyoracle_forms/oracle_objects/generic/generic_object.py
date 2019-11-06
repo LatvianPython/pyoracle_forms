@@ -1,8 +1,8 @@
 from .utils import get_property
 from .utils import set_property
-from .wrapped_functions import has_property
-from .wrapped_functions import destroy
-from .wrapped_functions import create
+from pyoracle_forms.oracle_objects.generic.context import has_property
+from pyoracle_forms.oracle_objects.generic.context import destroy
+from pyoracle_forms.oracle_objects.generic.context import create
 
 
 class GenericObject:

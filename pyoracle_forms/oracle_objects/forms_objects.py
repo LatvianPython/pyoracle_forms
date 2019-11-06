@@ -2,9 +2,9 @@ import enum
 
 from pyoracle_forms.misc import forms_object
 from . import GenericObject
-from .generic.wrapped_functions import create_module
-from .generic.wrapped_functions import load_module
-from .generic.wrapped_functions import save_module
+from pyoracle_forms.oracle_objects.generic.context import create_module
+from pyoracle_forms.oracle_objects.generic.context import load_module
+from pyoracle_forms.oracle_objects.generic.context import save_module
 
 
 class FormsObjects(enum.Enum):

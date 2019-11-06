@@ -1,14 +1,14 @@
 import enum
 
-from .wrapped_functions import property_type
-from .wrapped_functions import get_boolean
-from .wrapped_functions import get_number
-from .wrapped_functions import get_object
-from .wrapped_functions import get_text
-from .wrapped_functions import set_boolean
-from .wrapped_functions import set_number
-from .wrapped_functions import set_object
-from .wrapped_functions import set_text
+from pyoracle_forms.oracle_objects.generic.context import property_type
+from pyoracle_forms.oracle_objects.generic.context import get_boolean
+from pyoracle_forms.oracle_objects.generic.context import get_number
+from pyoracle_forms.oracle_objects.generic.context import get_object
+from pyoracle_forms.oracle_objects.generic.context import get_text
+from pyoracle_forms.oracle_objects.generic.context import set_boolean
+from pyoracle_forms.oracle_objects.generic.context import set_number
+from pyoracle_forms.oracle_objects.generic.context import set_object
+from pyoracle_forms.oracle_objects.generic.context import set_text
 
 
 class ValueTypes(enum.IntEnum):
@@ -41,7 +41,7 @@ def get_property(generic_object, property_number):
     try:
         func = property_getters[value_type]
     except KeyError:
-        return f"UNKNOWN PROPERTY TYPE({value_type})"  # todo: decide what to do with these?
+        return f"UNKNOWN PROPERTY TYPE({value_type})"  # todo: decide what to do with these!
     else:
         return func(generic_object, property_number=property_number)
 

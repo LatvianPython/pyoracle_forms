@@ -1,14 +1,69 @@
-from ctypes import *
 import builtins
+from ctypes import *
+from functools import partial
 
 from pyoracle_forms.error_handling import handle_error_code
-from pyoracle_forms.context import api_function, String
-
+from pyoracle_forms.forms_api import dlls
 
 if hasattr(builtins, "pyoracle_forms_ENCODING"):
-    encoding = builtins.pyoracle_forms_ENCODING
+    ENCODING = builtins.pyoracle_forms_ENCODING
 else:
-    encoding = "utf-8"
+    ENCODING = "utf-8"
+
+if hasattr(builtins, "pyoracle_forms_VERSION"):
+    VERSION = builtins.pyoracle_forms_VERSION
+else:
+    VERSION = "12c"
+
+
+class Context:
+    @handle_error_code
+    def create_context(self):
+        ctx = c_void_p()
+        attributes = c_int()
+
+        func = self.api.d2fctxcr_Create
+        func.argtypes = (c_void_p, c_void_p)
+
+        error_code = func(pointer(ctx), pointer(attributes))
+
+        return error_code, ctx
+
+    def __init__(self, version, encoding):
+        self.version, self.encoding = version, encoding
+
+        self.api, self.free = dlls(version)
+
+        self._as_parameter_ = self.create_context()
+
+    def api_function(self, func, arguments):
+        api_func = getattr(self.api, func)
+        api_func.argtypes = (c_void_p,) + arguments
+
+        api_func = partial(api_func, self)
+
+        return api_func
+
+    @handle_error_code
+    def destroy(self):
+        func = api.d2fctxde_Destroy
+        func.argtypes = (c_void_p,)
+        error_code = func(self)
+        ctx.value = 0
+
+        return error_code, None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.destroy()
+
+
+context = Context(version=VERSION, encoding=ENCODING)
+
+api, free = context.api, context.free
+api_function = context.api_function
 
 
 @handle_error_code
@@ -16,7 +71,7 @@ def set_text(generic_object, property_number, text):
     # d2fobst_SetTextProp(ctx, obj, pnum, text);
     func = api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))
 
-    text = text.encode(encoding)
+    text = text.encode(ENCODING)
     error_code = func(generic_object, property_number, text)
 
     return error_code, None
@@ -50,9 +105,6 @@ def set_object(generic_object, property_number, obj):
     error_code = func(generic_object, property_number, obj)
 
     return error_code, None
-
-
-# ORA_RETTYPE(d2fstatus) d2fobsp_SetBlobProp( d2fctx *pd2fctx, d2fob *pd2fob, ub2 pnum, dvoid *prp );
 
 
 @handle_error_code
@@ -116,13 +168,16 @@ def get_text(generic_object, property_number):
     # d2fobgt_GetTextProp(ctx, p_obj, prop_num, &v_value)
     func = api_function("d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p))
 
-    arg = String()
+    arg = c_char_p()
     error_code = func(generic_object, property_number, pointer(arg))
 
     try:
-        return error_code, arg.value.decode(encoding)
+        text = arg.value.decode(ENCODING)
     except AttributeError:
         return error_code, None
+    else:
+        free(arg)
+        return error_code, text
 
 
 @handle_error_code
@@ -136,13 +191,6 @@ def get_object(generic_object, property_number):
     if arg.value:
         return error_code, arg
     return error_code, None
-
-
-# d2fobgp_GetBlobProp(ctx, obj, D2FP_PERSIST_CLIENT_INFO, val)
-
-
-# d2fobdu_Duplicate( d2fctx *pd2fctx, d2fob *new_owner, d2fob *pd2fob_src, d2fob **ppd2fob_dst, text *new_name );
-# d2fobfo_FindObj(d2fctx *pd2fctx, d2fob *owner, text *name, d2fotyp objtyp, d2fob **ppd2fob );
 
 
 @handle_error_code
@@ -205,22 +253,6 @@ def save_module(module, path):
     return error_code, None
 
 
-# **    d2fprgvn_GetValueName(d2fctx, D2FP_ALT_STY, D2FC_ALST_CAUTION, &vname)
-# **    returns "Caution" in the vname [OUT] parameter.
-
-
-# **    d2fprgvv_GetValueValue(d2fctx, D2FP_ALT_STY, "Caution", &val)
-# **    returns 1 in the val [OUT] parameter.
-
-
-# **    d2fprgcv_GetConstValue(d2fctx, "ALT_STY", &pnum)
-# **    returns D2FP_ALT_STY in the pnum [OUT] parameter.
-
-
-# **    d2fprgcn_GetConstName(d2fctx, D2FP_ALT_STY, &pcname)
-# **    returns "ALT_STY" in the pcname [OUT] parameter.
-
-
 @handle_error_code
 def property_constant_name(property_number):
     func = api_function("d2fprgcn_GetConstName", (c_int, c_void_p))
@@ -231,17 +263,6 @@ def property_constant_name(property_number):
     return error_code, property_const_name.value.decode("utf-8")
 
 
-# **    d2fprgt_GetType(d2fctx, D2FP_ALT_STY)
-# **    returns D2FP_TYP_NUMBER.
-def property_type(property_number):
-    # d2fprgt_GetType(ctx, prop_num)
-    func = api_function("d2fprgt_GetType", (c_uint,))
-
-    return func(property_number)
-
-
-# **    d2fprgn_GetName(d2fctx, D2FP_ALT_STY, &pname)
-# **    returns "Alert Style" in the pname [OUT] parameter.
 @handle_error_code
 def property_name(property_number):
     # d2fprgn_GetName(d2fctx, D2FP_ALT_STY, &pname)
@@ -254,3 +275,10 @@ def property_name(property_number):
         return error_code, object_type.value.decode("utf-8")
     except AttributeError:
         return 0, ""
+
+
+def property_type(property_number):
+    # d2fprgt_GetType(ctx, prop_num)
+    func = api_function("d2fprgt_GetType", (c_uint,))
+
+    return func(property_number)

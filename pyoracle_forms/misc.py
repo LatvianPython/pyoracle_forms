@@ -1,7 +1,7 @@
 import enum
 
 from pyoracle_forms.forms_api import api_objects
-from pyoracle_forms.oracle_objects.generic.wrapped_functions import (
+from pyoracle_forms.oracle_objects.generic.context import (
     property_name,
     query_type,
     property_constant_name,
