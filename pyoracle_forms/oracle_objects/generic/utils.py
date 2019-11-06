@@ -1,6 +1,6 @@
 import enum
 
-from pyoracle_forms.oracle_objects.generic.context import context
+from pyoracle_forms.context import context
 
 
 class ValueTypes(enum.IntEnum):

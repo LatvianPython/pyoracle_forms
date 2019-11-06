@@ -1,6 +1,6 @@
 from .utils import get_property
 from .utils import set_property
-from pyoracle_forms.oracle_objects.generic.context import context
+from pyoracle_forms.context import context
 
 
 class GenericObject:

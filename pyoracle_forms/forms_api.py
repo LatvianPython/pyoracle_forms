@@ -1,7 +1,6 @@
+import builtins
 import json
 import pathlib
-import builtins
-
 from ctypes import *
 from os import pathsep, environ
 from os.path import exists, abspath, join

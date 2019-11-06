@@ -1,4 +1,4 @@
-from .generic import *
+from .generic import GenericObject
 
 from .forms_objects import Alert
 from .forms_objects import AttachedLibrary

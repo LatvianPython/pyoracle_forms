@@ -1,7 +1,7 @@
 import enum
 
-from pyoracle_forms.forms_api import api_objects
-from pyoracle_forms.oracle_objects.generic.context import context
+from .context import context
+from .forms_api import api_objects
 
 registered_objects = {}
 

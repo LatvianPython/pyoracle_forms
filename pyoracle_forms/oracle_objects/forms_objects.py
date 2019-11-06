@@ -1,8 +1,8 @@
 import enum
 
+from pyoracle_forms.context import context
 from pyoracle_forms.misc import forms_object
 from . import GenericObject
-from pyoracle_forms.oracle_objects.generic.context import context
 
 
 class FormsObjects(enum.Enum):

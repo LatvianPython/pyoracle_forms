@@ -3,8 +3,9 @@ import builtins
 from ctypes import pointer, c_int, c_void_p, c_char_p, c_bool, c_uint
 from functools import partial
 
-from pyoracle_forms.error_handling import handle_error_code, raise_for_code
-from pyoracle_forms.forms_api import dlls
+from .error_handling import handle_error_code
+from .error_handling import raise_for_code
+from .forms_api import dlls
 
 if hasattr(builtins, "pyoracle_forms_ENCODING"):
     ENCODING = builtins.pyoracle_forms_ENCODING
