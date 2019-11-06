@@ -1,11 +1,7 @@
 import enum
 
-from pyoracle_forms.forms_api import api_objects
-from pyoracle_forms.oracle_objects.generic.wrapped_functions import (
-    property_name,
-    query_type,
-    property_constant_name,
-)
+from .context import context
+from .forms_api import api_objects
 
 registered_objects = {}
 
@@ -47,7 +43,7 @@ class Subobjects:
         def gen_subobjects():
             child = instance.property_value(self.property_number)
             if child:
-                klass = registered_objects[query_type(child)]
+                klass = registered_objects[context.query_type(child)]
                 child = klass(child)
                 while child:
                     yield child
@@ -68,12 +64,12 @@ def forms_object(cls):
 
         property_number = prop["property_number"]
 
-        const_name = f"D2FP_{property_constant_name(property_number)}"
+        const_name = f"D2FP_{context.property_constant_name(property_number)}"
         try:
             obj_property = ObjectProperties(const_name)
         except ValueError:
             prop_name = (
-                "_".join(property_name(property_number).lower().split())
+                "_".join(context.property_name(property_number).lower().split())
                 .replace("'", "")
                 .replace("-", "_")
                 .replace("/", "_")

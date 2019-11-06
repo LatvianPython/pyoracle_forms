@@ -1,7 +1,6 @@
+import builtins
 import json
 import pathlib
-import builtins
-
 from ctypes import *
 from os import pathsep, environ
 from os.path import exists, abspath, join
@@ -37,8 +36,7 @@ def dlls(version):
                 return cdll.LoadLibrary(api_dll), msvcrt.free
         except ImportError:
             return cdll.LoadLibrary(api_dll), msvcrt.free
-    else:
-        raise ImportError("No Oracle Forms API found")
+    raise ImportError("No Oracle Forms API found")
 
 
 def read_api_objects(version):
@@ -47,5 +45,4 @@ def read_api_objects(version):
         return json.load(file)
 
 
-api, free = dlls(VERSION)
 api_objects = read_api_objects(VERSION)

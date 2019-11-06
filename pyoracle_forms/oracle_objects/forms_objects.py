@@ -1,10 +1,8 @@
 import enum
 
+from pyoracle_forms.context import context
 from pyoracle_forms.misc import forms_object
 from . import GenericObject
-from .generic.wrapped_functions import create_module
-from .generic.wrapped_functions import load_module
-from .generic.wrapped_functions import save_module
 
 
 class FormsObjects(enum.Enum):
@@ -42,14 +40,14 @@ class Module(GenericObject):
 
     @classmethod
     def create(cls, module, **kwargs):
-        return cls(create_module(module))
+        return cls(context.create_module(module))
 
     @classmethod
     def load(cls, path):
-        return cls(load_module(path), path=path)
+        return cls(context.load_module(path), path=path)
 
     def save(self, path=None):
-        save_module(self, path or self.path)
+        context.save_module(self, path or self.path)
 
 
 @forms_object
