@@ -18,4 +18,18 @@ from .oracle_objects import Trigger
 from .oracle_objects import VisualAttribute
 from .oracle_objects import Window
 
-__version__ = "0.1.6"
+from .context import context
+from .misc import add_properties
+from .misc import registered_objects
+from .forms_api import read_api_objects
+
+__version__ = "0.2.0"
+
+
+def initialize_context(version="12c", encoding="utf-8"):
+    context.init(version=version, encoding=encoding)
+
+    api_objects = read_api_objects(version)
+
+    for forms_object in registered_objects.values():
+        add_properties(forms_object, api_objects)

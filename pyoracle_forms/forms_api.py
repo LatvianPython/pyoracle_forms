@@ -1,14 +1,9 @@
-import builtins
 import json
 import pathlib
 from ctypes import *
 from os import pathsep, environ
 from os.path import exists, abspath, join
 
-if hasattr(builtins, "pyoracle_forms_VERSION"):
-    VERSION = builtins.pyoracle_forms_VERSION
-else:
-    VERSION = "12c"
 
 dll_names = {
     "12c": ("frmd2f.dll", "msvcr100"),
@@ -43,6 +38,3 @@ def read_api_objects(version):
     file_path = pathlib.Path(__file__).parent / "forms_api" / f"parsed_{version}.json"
     with open(file_path, mode="r", encoding="utf-8") as file:
         return json.load(file)
-
-
-api_objects = read_api_objects(VERSION)

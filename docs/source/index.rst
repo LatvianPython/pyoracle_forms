@@ -1,10 +1,11 @@
-##########################################
+==========================================
 pyoracle_forms documentation
-##########################################
+==========================================
 
-==========================================
+
+------------------------------------------
 Installation
-==========================================
+------------------------------------------
 
 pyoracle_forms is available on PyPI and can be installed using pip::
 
@@ -16,15 +17,16 @@ working with Oracle Forms. If you do not, it is available on Oracle website here
 `Oracle Forms <https://www.oracle.com/middleware/technologies/forms/downloads.html>`_
 
 
-==========================================
+------------------------------------------
 Working with a Forms Module
-==========================================
+------------------------------------------
 
-First you must import the Module class
+First you must import the Module class and initialize the API.
 
 .. code-block:: python
 
-    >>> from pyoracle_forms import Module
+    >>> from pyoracle_forms import Module, initialize_context
+    >>> initialize_context(version="12c", encoding="utf-8")
 
 
 It is recommended to use the Module class as a context manager to release memory allocated during opening of the module.
@@ -37,9 +39,9 @@ It is recommended to use the Module class as a context manager to release memory
 
 Rest of the documentation assumes you have a module loaded successfully.
 
-==========================================
+------------------------------------------
 Reading and modifying properties
-==========================================
+------------------------------------------
 
 Once you have a module loaded in Python, you can read/write to object properties defined in the form at will.
 
@@ -56,9 +58,9 @@ You can read and modify text, numeric and boolean properties. The attribute name
 you can see in the Property Palette when form is opened in Forms Builder.
 
 
-==========================================
+------------------------------------------
 Iterating over Forms objects
-==========================================
+------------------------------------------
 
 Object hierarchy matches the one you are familiar with in Forms Builder.
 Canvases, windows, triggers, program units, etc. are also available.
@@ -75,9 +77,9 @@ With this information in mind here is how you would iterate over all of the defi
      'RADIO_GROUP288']
 
 
-==========================================
+------------------------------------------
 Creating new objects
-==========================================
+------------------------------------------
 
 Creation of new objects is also supported.
 
@@ -93,16 +95,13 @@ Given a data block, you can create a new item for it. First you must also import
 
 Newly created item will be attached to the data block.
 
-==========================================
-Using Older Oracle Forms versions
-==========================================
+------------------------------------------
+Using older Oracle Forms versions
+------------------------------------------
 By default forms API version is assumed to be 12c, and the encoding of .fmb file text as utf-8,
-to use a different version or encoding you must currently use the following code before importing pyoracle_forms.
-Versions supported are 12c, 10g and 6i of the Oracle forms API.
+to use a different version or encoding you are able to pass other version values to ``initialize_context`` function
+Supported versions are 12c, 10g and 6i of the Oracle forms API.
 
 .. code-block:: python
 
-    >>> import builtins
-    >>> builtins.pyoracle_forms_VERSION = "6i"
-    >>> builtins.pyoracle_forms_ENCODING = "cp1257"
-    >>> from pyoracle_forms import ...
+    >>> initialize_context(version="6i", encoding="cp1257")
