@@ -1,7 +1,6 @@
 import enum
 
 from .context import context
-from .forms_api import api_objects
 
 registered_objects = {}
 
@@ -43,7 +42,9 @@ class Subobjects:
         def gen_subobjects():
             child = instance.property_value(self.property_number)
             if child:
-                klass = registered_objects[context.query_type(child)]
+                klass = registered_objects[
+                    context.object_name(context.query_type(child))
+                ]
                 child = klass(child)
                 while child:
                     yield child
@@ -53,12 +54,10 @@ class Subobjects:
         return subobjects
 
 
-def forms_object(cls):
+def add_properties(cls, api_objects):
     object_type = cls.object_type
     obj_type = api_objects[object_type.value]
     setattr(cls, "_object_number", obj_type["object_number"])
-
-    registered_objects[cls._object_number] = cls
 
     for prop in obj_type["properties"]:
 
@@ -80,4 +79,9 @@ def forms_object(cls):
             prop_name = obj_property.name
             setattr(cls, prop_name, Subobjects(property_number, prop_name))
 
+    return cls
+
+
+def forms_object(cls):
+    registered_objects[cls.object_type.value[6:]] = cls
     return cls

@@ -1,21 +1,10 @@
 import atexit
-import builtins
 from ctypes import pointer, c_int, c_void_p, c_char_p, c_bool, c_uint
 from functools import partial
 
 from .error_handling import handle_error_code
 from .error_handling import raise_for_code
 from .forms_api import dlls
-
-if hasattr(builtins, "pyoracle_forms_ENCODING"):
-    ENCODING = builtins.pyoracle_forms_ENCODING
-else:
-    ENCODING = "utf-8"
-
-if hasattr(builtins, "pyoracle_forms_VERSION"):
-    VERSION = builtins.pyoracle_forms_VERSION
-else:
-    VERSION = "12c"
 
 
 class Context:
@@ -159,6 +148,16 @@ class Context:
             "d2fobqt_QueryType", (c_void_p,), return_value=1
         )(generic_object, pointer(c_int())).value
 
+    def object_name(self, object_number):
+        return self.handled_api_function(
+            "d2fobgcn_GetConstName", (c_int, c_void_p), return_value=1
+        )(object_number, pointer(c_char_p())).value.decode("utf-8")
+
+    def object_number(self, object_name):
+        return self.handled_api_function(
+            "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value=1
+        )(object_name.encode("utf-8"), pointer(c_int())).value
+
     def property_constant_name(self, property_number):
         return self.handled_api_function(
             "d2fprgcn_GetConstName", (c_int, c_void_p), return_value=1
@@ -174,4 +173,3 @@ class Context:
 
 
 context = Context()
-context.init(version=VERSION, encoding=ENCODING)

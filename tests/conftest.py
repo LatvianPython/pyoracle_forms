@@ -1,17 +1,17 @@
-import builtins
 import shutil
 
 import pytest
 
-builtins.pyoracle_forms_VERSION = "12c"
-builtins.pyoracle_forms_ENCODING = "utf-8"
-
-
-from pyoracle_forms import Module, Item, DataBlock, Canvas, Window
+from pyoracle_forms import Module, Item, DataBlock, Canvas, Window, initialize_context
 
 
 @pytest.fixture(scope="session")
-def module():
+def context():
+    initialize_context()
+
+
+@pytest.fixture(scope="session")
+def module(context):
     with Module.load("./tests/test_modules/simple_module.fmb") as module:
         yield module
 
@@ -39,7 +39,7 @@ def test_dir(tmpdir_factory):
 
 
 @pytest.fixture(scope="function")
-def new_module():
+def new_module(context):
     with Module.create("new_module") as module:
         yield module
 
