@@ -78,37 +78,41 @@ ABBREVIATIONS = {
 }
 
 
-def parse_headers(api_version):
-
-    properties = scrape_constants(f"./{api_version}/d2fdef.h", "D2FP_")
+def forms_objects(api_version):
     objects = scrape_constants(f"./{api_version}/d2fdef.h", "D2FFO_")
-
-    abbreviations = {
+    return {
         abbreviation: (object_type, objects[object_type])
         for abbreviation, object_type in ABBREVIATIONS.items()
         if object_type in objects.keys()
     }
 
+
+def macros(api_version):
+    return chain.from_iterable(
+        zip(all_macros(f"./{api_version}/d2f{abbreviation}.h"), repeat(object_type))
+        for abbreviation, object_type in forms_objects(api_version).items()
+    )
+
+
+def forms_object_properties(api_version):
+    properties = scrape_constants(f"./{api_version}/d2fdef.h", "D2FP_")
     macro_regex = re.compile(
         r"#define d2f\w+?[gs]_(\w+?)\(.+(?:(?:Get)|(?:Set))(.+?)Prop.+,(\w+),val\)"
     )
 
-    macros = chain.from_iterable(
-        zip(all_macros(f"./{api_version}/d2f{abbreviation}.h"), repeat(object_type))
-        for abbreviation, object_type in abbreviations.items()
-    )
-
     object_properties = defaultdict(set)
-
-    for macro, object_type in macros:
+    for macro, object_type in macros(api_version):
         match = macro_regex.match(macro)
         if match:
             prop_name, prop_type, prop = match.groups()
             object_properties[object_type].add(
                 (prop_name, prop_type.lower(), prop, properties[prop])
             )
+    return object_properties
 
-    parsed = {
+
+def parse_headers(api_version):
+    return {
         obj_name: {
             "object_number": obj_type,
             "properties": sorted(
@@ -124,10 +128,10 @@ def parse_headers(api_version):
                 key=lambda x: x["property_number"],
             ),
         }
-        for (obj_name, obj_type), properties in object_properties.items()
+        for (obj_name, obj_type), properties in forms_object_properties(
+            api_version
+        ).items()
     }
-
-    return parsed
 
 
 def parse_all():
