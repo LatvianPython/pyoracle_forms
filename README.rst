@@ -4,21 +4,31 @@ pyoracle_forms
 
 .. image:: https://raw.githubusercontent.com/LatvianPython/pyoracle_forms/master/media/coverage.svg?sanitize=true
     :target: https://github.com/LatvianPython/pyoracle_forms
+    :alt: Coverage
 
 .. image:: https://img.shields.io/pypi/pyversions/pyoracle_forms
     :target: https://www.python.org/downloads/
+    :alt: Python
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
+    :alt: Black
 
 .. image:: https://img.shields.io/pypi/v/pyoracle_forms
     :target: https://pypi.org/project/pyoracle-forms/
+    :alt: PyPI
 
 .. image:: https://travis-ci.org/LatvianPython/pyoracle_forms.svg?branch=master
     :target: https://travis-ci.org/LatvianPython/pyoracle_forms
+    :alt: Travis CI
 
 .. image:: https://readthedocs.org/projects/pyoracle-forms/badge/?version=latest
     :target: https://pyoracle-forms.readthedocs.io/en/latest/?badge=latest
+    :alt: Read the Docs
+
+.. image:: https://img.shields.io/codeclimate/maintainability/LatvianPython/pyoracle_forms
+    :target: https://codeclimate.com/github/LatvianPython/pyoracle_forms
+    :alt: Code Climate maintainability
 
 Wraps the Oracle Forms API under Python, so that you can write scripts to
 make programmatic changes to Oracle Forms .fmb files with ease.
