@@ -54,30 +54,37 @@ class Subobjects:
         return subobjects
 
 
+def property_attribute(property_number):
+    const_name = f"D2FP_{context.property_constant_name(property_number)}"
+    try:
+        obj_property = ObjectProperties(const_name)
+    except ValueError:
+        prop_name = (
+            "_".join(context.property_name(property_number).lower().split())
+            .replace("'", "")
+            .replace("-", "_")
+            .replace("/", "_")
+        )
+        attribute = Property(property_number)
+    else:
+        prop_name = obj_property.name
+        attribute = Subobjects(property_number, prop_name)
+    return prop_name, attribute
+
+
 def add_properties(cls, api_objects):
     object_type = cls.object_type
     obj_type = api_objects[object_type.value]
     setattr(cls, "_object_number", obj_type["object_number"])
 
-    for prop in obj_type["properties"]:
+    for forms_object_property in obj_type["properties"]:
 
-        property_number = prop["property_number"]
+        property_number = forms_object_property["property_number"]
 
-        const_name = f"D2FP_{context.property_constant_name(property_number)}"
-        try:
-            obj_property = ObjectProperties(const_name)
-        except ValueError:
-            prop_name = (
-                "_".join(context.property_name(property_number).lower().split())
-                .replace("'", "")
-                .replace("-", "_")
-                .replace("/", "_")
-            )
-            if prop_name and "(obsolete)" not in prop_name:
-                setattr(cls, prop_name, Property(property_number))
-        else:
-            prop_name = obj_property.name
-            setattr(cls, prop_name, Subobjects(property_number, prop_name))
+        property_name, attribute = property_attribute(property_number)
+
+        if property_name and "(obsolete)" not in property_name:
+            setattr(cls, property_name, attribute)
 
     return cls
 
