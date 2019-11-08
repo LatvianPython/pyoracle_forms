@@ -23,7 +23,7 @@ from .misc import add_properties
 from .misc import registered_objects
 from .forms_api import read_api_objects
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 def initialize_context(version="12c", encoding="utf-8"):
