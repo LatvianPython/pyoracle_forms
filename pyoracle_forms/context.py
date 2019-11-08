@@ -99,28 +99,34 @@ def set_object(generic_object, property_number, obj):
     )
 
 
-def get_boolean(generic_object, property_number):
+def simple_get(function_name):
     return handled_api_function(
-        "d2fobgb_GetBoolProp", (c_void_p, c_int, c_void_p), return_value=2
-    )(generic_object, property_number, pointer(c_bool(False))).value
+        function_name, (c_void_p, c_int, c_void_p), return_value=2
+    )
+
+
+def get_boolean(generic_object, property_number):
+    return simple_get("d2fobgb_GetBoolProp")(
+        generic_object, property_number, pointer(c_bool(False))
+    ).value
 
 
 def get_number(generic_object, property_number):
-    return handled_api_function(
-        "d2fobgn_GetNumProp", (c_void_p, c_int, c_void_p), return_value=2
-    )(generic_object, property_number, pointer(c_int())).value
+    return simple_get("d2fobgn_GetNumProp")(
+        generic_object, property_number, pointer(c_int())
+    ).value
 
 
 def get_object(generic_object, property_number):
-    return handled_api_function(
-        "d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p), return_value=2
-    )(generic_object, property_number, pointer(c_void_p())).value
+    return simple_get("d2fobgo_GetObjProp")(
+        generic_object, property_number, pointer(c_void_p())
+    ).value
 
 
 def get_text(generic_object, property_number):
-    allocated_text = handled_api_function(
-        "d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p), return_value=2
-    )(generic_object, property_number, pointer(c_char_p()))
+    allocated_text = simple_get("d2fobgt_GetTextProp")(
+        generic_object, property_number, pointer(c_char_p())
+    )
 
     try:
         text = allocated_text.value.decode(context.encoding)
@@ -171,28 +177,28 @@ def query_type(generic_object):
     ).value
 
 
-def object_name(obj_number):
-    return handled_api_function(
-        "d2fobgcn_GetConstName", (c_int, c_void_p), return_value=1
-    )(obj_number, pointer(c_char_p())).value.decode("utf-8")
-
-
 def object_number(obj_name):
     return handled_api_function(
         "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value=1
     )(obj_name.encode("utf-8"), pointer(c_int())).value
 
 
-def property_constant_name(property_number):
+def get_constant(function_name):
     return handled_api_function(
-        "d2fprgcn_GetConstName", (c_int, c_void_p), return_value=1
-    )(property_number, pointer(c_char_p())).value.decode("utf-8")
+        function_name, (c_int, c_void_p), return_value=1
+    ).value.decode("utf-8")
+
+
+def object_name(obj_number):
+    return get_constant("d2fobgcn_GetConstName")(obj_number, pointer(c_char_p()))
+
+
+def property_constant_name(property_number):
+    return get_constant("d2fprgcn_GetConstName")(property_number, pointer(c_char_p()))
 
 
 def property_name(property_number):
     try:
-        return handled_api_function(
-            "d2fprgn_GetName", (c_int, c_void_p), return_value=1
-        )(property_number, pointer(c_char_p())).value.decode("utf-8")
+        return get_constant("d2fprgn_GetName")(property_number, pointer(c_char_p()))
     except AttributeError:
         return ""
