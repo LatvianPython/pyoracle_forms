@@ -37,7 +37,8 @@ Usage
 ******************************************************************
 .. code-block:: python
 
-    from pyoracle_forms import Module
+    from pyoracle_forms import Module, initialize_context
+    initialize_context(version="12c", encoding="utf-8")
 
     with Module.load("./your_form.fmb") as module:
         for data_block in module.data_blocks:
