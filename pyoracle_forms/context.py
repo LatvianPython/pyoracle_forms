@@ -184,9 +184,12 @@ def object_number(obj_name):
 
 
 def get_constant(function_name):
-    return handled_api_function(
-        function_name, (c_int, c_void_p), return_value=1
-    ).value.decode("utf-8")
+    def _get_constant(*args):
+        return handled_api_function(function_name, (c_int, c_void_p), return_value=1)(
+            *args
+        ).value.decode("utf-8")
+
+    return _get_constant
 
 
 def object_name(obj_number):
