@@ -1,6 +1,9 @@
 import enum
 
-from .context import context
+from .context import object_name
+from .context import property_constant_name
+from .context import property_name
+from .context import query_type
 
 registered_objects = {}
 
@@ -42,9 +45,7 @@ class Subobjects:
         def gen_subobjects():
             child = instance.property_value(self.property_number)
             if child:
-                klass = registered_objects[
-                    context.object_name(context.query_type(child))
-                ]
+                klass = registered_objects[object_name(query_type(child))]
                 child = klass(child)
                 while child:
                     yield child
@@ -55,12 +56,12 @@ class Subobjects:
 
 
 def property_attribute(property_number):
-    const_name = f"D2FP_{context.property_constant_name(property_number)}"
+    const_name = f"D2FP_{property_constant_name(property_number)}"
     try:
         obj_property = ObjectProperties(const_name)
     except ValueError:
         prop_name = (
-            "_".join(context.property_name(property_number).lower().split())
+            "_".join(property_name(property_number).lower().split())
             .replace("'", "")
             .replace("-", "_")
             .replace("/", "_")

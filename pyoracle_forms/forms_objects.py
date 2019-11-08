@@ -1,6 +1,8 @@
 import enum
 
-from .context import context
+from .context import create_module
+from .context import load_module
+from .context import save_module
 from .generic_object import GenericObject
 from .misc import forms_object
 
@@ -40,14 +42,14 @@ class Module(GenericObject):
 
     @classmethod
     def create(cls, module, **kwargs):
-        return cls(context.create_module(module))
+        return cls(create_module(module))
 
     @classmethod
     def load(cls, path):
-        return cls(context.load_module(path), path=path)
+        return cls(load_module(path), path=path)
 
     def save(self, path=None):
-        context.save_module(self, path or self.path)
+        save_module(self, path or self.path)
 
 
 @forms_object
