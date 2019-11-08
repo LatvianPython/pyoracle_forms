@@ -97,6 +97,11 @@ class Context:
             "d2fobgn_GetNumProp", (c_void_p, c_int, c_void_p), return_value=2
         )(generic_object, property_number, pointer(c_int())).value
 
+    def get_object(self, generic_object, property_number):
+        return self.handled_api_function(
+            "d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p), return_value=2
+        )(generic_object, property_number, pointer(c_void_p())).value
+
     def get_text(self, generic_object, property_number):
         allocated_text = self.handled_api_function(
             "d2fobgt_GetTextProp", (c_void_p, c_int, c_void_p), return_value=2
@@ -109,11 +114,6 @@ class Context:
         else:
             self.free(allocated_text)
         return text
-
-    def get_object(self, generic_object, property_number):
-        return self.handled_api_function(
-            "d2fobgo_GetObjProp", (c_void_p, c_int, c_void_p), return_value=2
-        )(generic_object, property_number, pointer(c_void_p())).value
 
     def load_module(self, form_path):
         return self.handled_api_function(

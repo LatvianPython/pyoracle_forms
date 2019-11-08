@@ -1,6 +1,7 @@
 import json
 import re
 from collections import deque, defaultdict
+from itertools import repeat, chain
 
 
 def file_lines(filepath):
@@ -36,89 +37,101 @@ def all_macros(filepath):
     return collect_macros(file_lines(filepath))
 
 
-def parse_headers(api_version):
-    abbreviations = {
-        "ob": "D2FFO_ANY",
-        "alt": "D2FFO_ALERT",
-        "alb": "D2FFO_ATT_LIB",
-        "blk": "D2FFO_BLOCK",
-        "cnv": "D2FFO_CANVAS",
-        "crd": "D2FFO_COORD",
-        "dsa": "D2FFO_DAT_SRC_ARG",
-        "dsc": "D2FFO_DAT_SRC_COL",
-        "edt": "D2FFO_EDITOR",
-        "fnt": "D2FFO_FONT",
-        "fmd": "D2FFO_FORM_MODULE",
-        "fpm": "D2FFO_FORM_PARAM",
-        "gra": "D2FFO_GRAPHIC",
-        "itm": "D2FFO_ITEM",
-        "lpu": "D2FFO_LIB_PROG_UNIT",
-        "lib": "D2FFO_LIBRARY_MODULE",
-        "lov": "D2FFO_LOV",
-        "lcm": "D2FFO_LV_COLMAP",
-        "mnu": "D2FFO_MENU",
-        "mni": "D2FFO_MENU_ITEM",
-        "mmd": "D2FFO_MENU_MODULE",
-        "mpm": "D2FFO_MENU_PARAM",
-        "obg": "D2FFO_OBJ_GROUP",
-        "ogc": "D2FFO_OBG_CHILD",
-        "olb": "D2FFO_OBJ_LIB",
-        "olt": "D2FFO_OBJ_LIB_TAB",
-        "pgu": "D2FFO_PROG_UNIT",
-        "ppc": "D2FFO_PROP_CLASS",
-        "rdb": "D2FFO_RADIO_BUTTON",
-        "rcg": "D2FFO_REC_GROUP",
-        "rcs": "D2FFO_RG_COLSPEC",
-        "rel": "D2FFO_RELATION",
-        "rpt": "D2FFO_REPORT",
-        "tbp": "D2FFO_TAB_PAGE",
-        "trg": "D2FFO_TRIGGER",
-        "vat": "D2FFO_VIS_ATTR",
-        "win": "D2FFO_WINDOW",
-    }
+ABBREVIATIONS = {
+    "ob": "D2FFO_ANY",
+    "alt": "D2FFO_ALERT",
+    "alb": "D2FFO_ATT_LIB",
+    "blk": "D2FFO_BLOCK",
+    "cnv": "D2FFO_CANVAS",
+    "crd": "D2FFO_COORD",
+    "dsa": "D2FFO_DAT_SRC_ARG",
+    "dsc": "D2FFO_DAT_SRC_COL",
+    "edt": "D2FFO_EDITOR",
+    "fnt": "D2FFO_FONT",
+    "fmd": "D2FFO_FORM_MODULE",
+    "fpm": "D2FFO_FORM_PARAM",
+    "gra": "D2FFO_GRAPHIC",
+    "itm": "D2FFO_ITEM",
+    "lpu": "D2FFO_LIB_PROG_UNIT",
+    "lib": "D2FFO_LIBRARY_MODULE",
+    "lov": "D2FFO_LOV",
+    "lcm": "D2FFO_LV_COLMAP",
+    "mnu": "D2FFO_MENU",
+    "mni": "D2FFO_MENU_ITEM",
+    "mmd": "D2FFO_MENU_MODULE",
+    "mpm": "D2FFO_MENU_PARAM",
+    "obg": "D2FFO_OBJ_GROUP",
+    "ogc": "D2FFO_OBG_CHILD",
+    "olb": "D2FFO_OBJ_LIB",
+    "olt": "D2FFO_OBJ_LIB_TAB",
+    "pgu": "D2FFO_PROG_UNIT",
+    "ppc": "D2FFO_PROP_CLASS",
+    "rdb": "D2FFO_RADIO_BUTTON",
+    "rcg": "D2FFO_REC_GROUP",
+    "rcs": "D2FFO_RG_COLSPEC",
+    "rel": "D2FFO_RELATION",
+    "rpt": "D2FFO_REPORT",
+    "tbp": "D2FFO_TAB_PAGE",
+    "trg": "D2FFO_TRIGGER",
+    "vat": "D2FFO_VIS_ATTR",
+    "win": "D2FFO_WINDOW",
+}
 
-    properties = scrape_constants(f"./{api_version}/d2fdef.h", "D2FP_")
+
+def forms_objects(api_version):
     objects = scrape_constants(f"./{api_version}/d2fdef.h", "D2FFO_")
-
-    abbreviations = {
+    return {
         abbreviation: (object_type, objects[object_type])
-        for abbreviation, object_type in abbreviations.items()
+        for abbreviation, object_type in ABBREVIATIONS.items()
         if object_type in objects.keys()
     }
 
+
+def macros(api_version):
+    return chain.from_iterable(
+        zip(all_macros(f"./{api_version}/d2f{abbreviation}.h"), repeat(object_type))
+        for abbreviation, object_type in forms_objects(api_version).items()
+    )
+
+
+def forms_object_properties(api_version):
+    properties = scrape_constants(f"./{api_version}/d2fdef.h", "D2FP_")
     macro_regex = re.compile(
         r"#define d2f\w+?[gs]_(\w+?)\(.+(?:(?:Get)|(?:Set))(.+?)Prop.+,(\w+),val\)"
     )
 
     object_properties = defaultdict(set)
+    for macro, object_type in macros(api_version):
+        match = macro_regex.match(macro)
+        if match:
+            prop_name, prop_type, prop = match.groups()
+            object_properties[object_type].add(
+                (prop_name, prop_type.lower(), prop, properties[prop])
+            )
+    return object_properties
 
-    for abbreviation, object_type in abbreviations.items():
-        macros = all_macros(f"./{api_version}/d2f{abbreviation}.h")
-        for macro in macros:
-            match = macro_regex.match(macro)
-            if match:
-                prop_name, prop_type, prop = match.groups()
-                object_properties[object_type].add(
-                    (prop_name, prop_type.lower(), prop, properties[prop])
-                )
 
-    parsed = {
+def parse_headers(api_version):
+    return {
         obj_name: {
             "object_number": obj_type,
-            "properties": [
-                {
-                    "short_name": short_name,
-                    "data_type": data_type,
-                    "macro_name": macro_name,
-                    "property_number": property_name,
-                }
-                for (short_name, data_type, macro_name, property_name) in properties
-            ],
+            "properties": sorted(
+                [
+                    {
+                        "short_name": short_name,
+                        "data_type": data_type,
+                        "macro_name": macro_name,
+                        "property_number": property_name,
+                    }
+                    for (short_name, data_type, macro_name, property_name) in properties
+                ],
+                key=lambda x: x["property_number"],
+            ),
         }
-        for (obj_name, obj_type), properties in object_properties.items()
+        for (obj_name, obj_type), properties in forms_object_properties(
+            api_version
+        ).items()
     }
-
-    return parsed
 
 
 def parse_all():
