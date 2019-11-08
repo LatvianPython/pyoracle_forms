@@ -1,9 +1,10 @@
-from pyoracle_forms.context import context
+from pyoracle_forms.context import object_name
+from pyoracle_forms.context import object_number
 
 
 def test_object_name():
-    assert context.object_name(1) == "ALERT"
+    assert object_name(1) == "ALERT"
 
 
 def test_object_number():
-    assert context.object_number("ALERT") == 1
+    assert object_number("ALERT") == 1
