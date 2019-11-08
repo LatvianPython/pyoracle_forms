@@ -7,26 +7,6 @@ from .error_handling import raise_for_code
 from .forms_api import dlls
 
 
-def api_function(func, arguments):
-    api_func = getattr(context.api, func)
-    api_func.argtypes = (c_void_p,) + arguments
-    return partial(api_func, context)
-
-
-def handled_api_function(func, arguments, return_value=None):
-    @handle_error_code
-    def wrapped(*args):
-        error_code = api_function(func, arguments)(*args)
-        if return_value is not None:
-            return (
-                error_code,
-                args[return_value].contents,
-            )
-        return error_code, None
-
-    return wrapped
-
-
 class Context:
     def __init__(self):
         self.version, self.encoding = None, None
@@ -60,6 +40,26 @@ class Context:
 
 
 context = Context()
+
+
+def api_function(func, arguments):
+    api_func = getattr(context.api, func)
+    api_func.argtypes = (c_void_p,) + arguments
+    return partial(api_func, context)
+
+
+def handled_api_function(func, arguments, return_value=None):
+    @handle_error_code
+    def wrapped(*args):
+        error_code = api_function(func, arguments)(*args)
+        if return_value is not None:
+            return (
+                error_code,
+                args[return_value].contents,
+            )
+        return error_code, None
+
+    return wrapped
 
 
 def has_property(generic_object, property_number):

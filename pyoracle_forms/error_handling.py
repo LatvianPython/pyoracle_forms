@@ -50,9 +50,7 @@ def raise_for_code(error_code):
 def handle_error_code(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        packed = func(*args, **kwargs)
-
-        error_code, return_value = packed
+        error_code, return_value = func(*args, **kwargs)
         if error_code:
             raise_for_code(error_code)
         return return_value
