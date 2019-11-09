@@ -2,7 +2,6 @@ import atexit
 from ctypes import pointer, c_int, c_void_p, c_char_p, c_bool, c_uint
 from functools import partial
 
-
 from .error_handling import handle_error_code
 from .error_handling import raise_for_code
 from .forms_api import dlls
@@ -43,24 +42,40 @@ class Context:
 context = Context()
 
 
+class String(c_char_p):
+    def __del__(self):
+        context.free(self)
+
+    @property
+    def value(self):
+        value = super().value
+        try:
+            return value.decode(context.encoding)
+        except AttributeError:
+            return ""
+
+
 def api_function(api_function_name, arguments):
     api_func = getattr(context.api, api_function_name)
     api_func.argtypes = (c_void_p,) + arguments
     return partial(api_func, context)
 
 
-def handled_api_function(api_function_name, arguments, return_value=None):
+def handled_api_function(api_function_name, arguments, return_value_index=None):
     @handle_error_code
     def _handled_api_function(*args):
-        error_code = api_function(
-            api_function_name=api_function_name, arguments=arguments
-        )(*args)
-        if return_value is not None:
-            return (
-                error_code,
-                args[return_value].contents,
-            )
-        return error_code, None
+        if return_value_index is not None:
+            args = list(args)
+            return_value = args[return_value_index]
+            args[return_value_index] = pointer(return_value)
+        else:
+            return_value = None
+
+        error_code = api_function(api_function_name, arguments)(*args)
+        return (
+            error_code,
+            return_value,
+        )
 
     return _handled_api_function
 
@@ -92,54 +107,28 @@ set_object = handled_api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void
 def simple_get(api_function_name, return_type):
     func = handled_api_function(api_function_name, (c_void_p, c_int, c_void_p), 2,)
 
-    def _simple_get(*args):
-        return func(*args, pointer(return_type()))
+    def _simple_get(generic_object, property_number):
+        return func(generic_object, property_number, return_type()).value
 
     return _simple_get
 
 
-def get_boolean(generic_object, property_number):
-    return simple_get("d2fobgb_GetBoolProp", c_bool)(
-        generic_object, property_number
-    ).value
-
-
-def get_number(generic_object, property_number):
-    return simple_get("d2fobgn_GetNumProp", c_int)(
-        generic_object, property_number
-    ).value
-
-
-def get_object(generic_object, property_number):
-    return simple_get("d2fobgo_GetObjProp", c_void_p)(
-        generic_object, property_number
-    ).value
-
-
-def get_text(generic_object, property_number):
-    allocated_text = simple_get("d2fobgt_GetTextProp", c_char_p)(
-        generic_object, property_number
-    )
-
-    try:
-        text = allocated_text.value.decode(context.encoding)
-    except AttributeError:
-        text = ""
-    finally:
-        context.free(allocated_text)
-    return text
+get_boolean = simple_get("d2fobgb_GetBoolProp", c_bool)
+get_number = simple_get("d2fobgn_GetNumProp", c_int)
+get_object = simple_get("d2fobgo_GetObjProp", c_void_p)
+get_text = simple_get("d2fobgt_GetTextProp", String)
 
 
 def load_module(form_path):
     return handled_api_function(
-        "d2ffmdld_Load", (c_void_p, c_char_p, c_bool), return_value=0
-    )(pointer(c_void_p()), form_path.encode("utf-8"), False)
+        "d2ffmdld_Load", (c_void_p, c_char_p, c_bool), return_value_index=0
+    )(c_void_p(), form_path.encode("utf-8"), False)
 
 
 def create_module(name):
     return handled_api_function(
-        "d2ffmdcr_Create", (c_void_p, c_char_p), return_value=0
-    )(pointer(c_void_p()), name.encode("utf-8"))
+        "d2ffmdcr_Create", (c_void_p, c_char_p), return_value_index=0
+    )(c_void_p(), name.encode("utf-8"))
 
 
 def save_module(module, path):
@@ -150,8 +139,8 @@ def save_module(module, path):
 
 def create(owner, name, obj_number):
     return handled_api_function(
-        "d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int), return_value=1
-    )(owner, pointer(c_void_p()), name.encode("utf-8"), obj_number)
+        "d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int), return_value_index=1
+    )(owner, c_void_p(), name.encode("utf-8"), obj_number)
 
 
 def destroy(generic_object):
@@ -165,22 +154,22 @@ def move(generic_object, next_object):
 
 
 def query_type(generic_object):
-    return handled_api_function("d2fobqt_QueryType", (c_void_p,), return_value=1)(
-        generic_object, pointer(c_int())
+    return handled_api_function("d2fobqt_QueryType", (c_void_p,), return_value_index=1)(
+        generic_object, c_int()
     ).value
 
 
 def object_number(obj_name):
     return handled_api_function(
-        "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value=1
-    )(obj_name.encode("utf-8"), pointer(c_int())).value
+        "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
+    )(obj_name.encode("utf-8"), c_int()).value
 
 
 def get_constant(function_name):
     def _get_constant(constant_property):
         constant_value = handled_api_function(
-            function_name, (c_int, c_void_p), return_value=1
-        )(constant_property, pointer(c_char_p()))
+            function_name, (c_int, c_void_p), return_value_index=1
+        )(constant_property, c_char_p())
         try:
             return constant_value.value.decode("utf-8")
         except AttributeError:
