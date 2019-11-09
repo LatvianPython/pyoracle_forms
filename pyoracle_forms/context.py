@@ -2,6 +2,7 @@ import atexit
 from ctypes import pointer, c_int, c_void_p, c_char_p, c_bool, c_uint
 from functools import partial
 
+
 from .error_handling import handle_error_code
 from .error_handling import raise_for_code
 from .forms_api import dlls
@@ -42,16 +43,18 @@ class Context:
 context = Context()
 
 
-def api_function(func, arguments):
-    api_func = getattr(context.api, func)
+def api_function(api_function_name, arguments):
+    api_func = getattr(context.api, api_function_name)
     api_func.argtypes = (c_void_p,) + arguments
     return partial(api_func, context)
 
 
-def handled_api_function(func, arguments, return_value=None):
+def handled_api_function(api_function_name, arguments, return_value=None):
     @handle_error_code
-    def wrapped(*args):
-        error_code = api_function(func, arguments)(*args)
+    def _handled_api_function(*args):
+        error_code = api_function(
+            api_function_name=api_function_name, arguments=arguments
+        )(*args)
         if return_value is not None:
             return (
                 error_code,
@@ -59,7 +62,7 @@ def handled_api_function(func, arguments, return_value=None):
             )
         return error_code, None
 
-    return wrapped
+    return _handled_api_function
 
 
 def has_property(generic_object, property_number):
@@ -81,58 +84,48 @@ def set_text(generic_object, property_number, text):
     )
 
 
-def set_boolean(generic_object, property_number, boolean):
-    handled_api_function("d2fobsb_SetBoolProp", (c_void_p, c_int, c_bool))(
-        generic_object, property_number, boolean
-    )
+set_boolean = handled_api_function("d2fobsb_SetBoolProp", (c_void_p, c_int, c_bool))
+set_number = handled_api_function("d2fobsn_SetNumProp", (c_void_p, c_int, c_int))
+set_object = handled_api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void_p))
 
 
-def set_number(generic_object, property_number, number):
-    handled_api_function("d2fobsn_SetNumProp", (c_void_p, c_int, c_int))(
-        generic_object, property_number, number
-    )
+def simple_get(api_function_name, return_type):
+    func = handled_api_function(api_function_name, (c_void_p, c_int, c_void_p), 2,)
 
+    def _simple_get(*args):
+        return func(*args, pointer(return_type()))
 
-def set_object(generic_object, property_number, obj):
-    handled_api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void_p))(
-        generic_object, property_number, obj
-    )
-
-
-def simple_get(function_name):
-    return handled_api_function(
-        function_name, (c_void_p, c_int, c_void_p), return_value=2
-    )
+    return _simple_get
 
 
 def get_boolean(generic_object, property_number):
-    return simple_get("d2fobgb_GetBoolProp")(
-        generic_object, property_number, pointer(c_bool(False))
+    return simple_get("d2fobgb_GetBoolProp", c_bool)(
+        generic_object, property_number
     ).value
 
 
 def get_number(generic_object, property_number):
-    return simple_get("d2fobgn_GetNumProp")(
-        generic_object, property_number, pointer(c_int())
+    return simple_get("d2fobgn_GetNumProp", c_int)(
+        generic_object, property_number
     ).value
 
 
 def get_object(generic_object, property_number):
-    return simple_get("d2fobgo_GetObjProp")(
-        generic_object, property_number, pointer(c_void_p())
+    return simple_get("d2fobgo_GetObjProp", c_void_p)(
+        generic_object, property_number
     ).value
 
 
 def get_text(generic_object, property_number):
-    allocated_text = simple_get("d2fobgt_GetTextProp")(
-        generic_object, property_number, pointer(c_char_p())
+    allocated_text = simple_get("d2fobgt_GetTextProp", c_char_p)(
+        generic_object, property_number
     )
 
     try:
         text = allocated_text.value.decode(context.encoding)
     except AttributeError:
         text = ""
-    else:
+    finally:
         context.free(allocated_text)
     return text
 
@@ -184,24 +177,18 @@ def object_number(obj_name):
 
 
 def get_constant(function_name):
-    def _get_constant(*args):
-        return handled_api_function(function_name, (c_int, c_void_p), return_value=1)(
-            *args
-        ).value.decode("utf-8")
+    def _get_constant(constant_property):
+        constant_value = handled_api_function(
+            function_name, (c_int, c_void_p), return_value=1
+        )(constant_property, pointer(c_char_p()))
+        try:
+            return constant_value.value.decode("utf-8")
+        except AttributeError:
+            return ""
 
     return _get_constant
 
 
-def object_name(obj_number):
-    return get_constant("d2fobgcn_GetConstName")(obj_number, pointer(c_char_p()))
-
-
-def property_constant_name(property_number):
-    return get_constant("d2fprgcn_GetConstName")(property_number, pointer(c_char_p()))
-
-
-def property_name(property_number):
-    try:
-        return get_constant("d2fprgn_GetName")(property_number, pointer(c_char_p()))
-    except AttributeError:
-        return ""
+object_name = get_constant("d2fobgcn_GetConstName")
+property_constant_name = get_constant("d2fprgcn_GetConstName")
+property_name = get_constant("d2fprgn_GetName")
