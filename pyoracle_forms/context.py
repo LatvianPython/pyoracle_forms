@@ -93,12 +93,7 @@ def property_type(property_number):
     return api_function("d2fprgt_GetType", (c_uint,))(property_number)
 
 
-def set_text(generic_object, property_number, text):
-    handled_api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))(
-        generic_object, property_number, text.encode(context.encoding)
-    )
-
-
+set_text = handled_api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))
 set_boolean = handled_api_function("d2fobsb_SetBoolProp", (c_void_p, c_int, c_bool))
 set_number = handled_api_function("d2fobsn_SetNumProp", (c_void_p, c_int, c_int))
 set_object = handled_api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void_p))

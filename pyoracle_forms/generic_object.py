@@ -12,6 +12,7 @@ from .context import set_boolean
 from .context import set_number
 from .context import set_object
 from .context import set_text
+from .context import context
 
 
 class ValueTypes(enum.IntEnum):
@@ -32,10 +33,10 @@ property_getters = {
 
 property_setters = {
     # ValueTypes.UNKNOWN: None,
-    ValueTypes.BOOLEAN: set_boolean,
-    ValueTypes.NUMBER: set_number,
-    ValueTypes.TEXT: set_text,
-    ValueTypes.OBJECT: set_object,
+    ValueTypes.BOOLEAN: (set_boolean, lambda x: x),
+    ValueTypes.NUMBER: (set_number, lambda x: x),
+    ValueTypes.TEXT: (set_text, lambda x: x.encode(context.encoding)),
+    ValueTypes.OBJECT: (set_object, lambda x: x),
 }
 
 
@@ -59,8 +60,8 @@ class GenericObject:
 
     def set_property(self, property_number, property_value):
         value_type = property_type(property_number=property_number)
-        func = property_setters[value_type]
-        func(self, property_number, property_value)
+        func, preprocess = property_setters[value_type]
+        func(self, property_number, preprocess(property_value))
 
     def destroy(self):
         destroy(self)
