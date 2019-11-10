@@ -93,14 +93,18 @@ def property_type(property_number):
     return api_function("d2fprgt_GetType", (c_uint,))(property_number)
 
 
-set_text = handled_api_function("d2fobst_SetTextProp", (c_void_p, c_int, c_void_p))
-set_boolean = handled_api_function("d2fobsb_SetBoolProp", (c_void_p, c_int, c_bool))
-set_number = handled_api_function("d2fobsn_SetNumProp", (c_void_p, c_int, c_int))
-set_object = handled_api_function("d2fobso_SetObjProp", (c_void_p, c_int, c_void_p))
+def setter(function_name, setter_type):
+    return handled_api_function(function_name, (c_void_p, c_int, setter_type))
 
 
-def simple_get(api_function_name, return_type):
-    func = handled_api_function(api_function_name, (c_void_p, c_int, c_void_p), 2,)
+set_text = setter("d2fobst_SetTextProp", c_void_p)
+set_boolean = setter("d2fobsb_SetBoolProp", c_bool)
+set_number = setter("d2fobsn_SetNumProp", c_int)
+set_object = setter("d2fobso_SetObjProp", c_void_p)
+
+
+def getter(function_name, return_type):
+    func = handled_api_function(function_name, (c_void_p, c_int, c_void_p), 2)
 
     def _simple_get(generic_object, property_number):
         return func(generic_object, property_number, return_type()).value
@@ -108,10 +112,10 @@ def simple_get(api_function_name, return_type):
     return _simple_get
 
 
-get_boolean = simple_get("d2fobgb_GetBoolProp", c_bool)
-get_number = simple_get("d2fobgn_GetNumProp", c_int)
-get_object = simple_get("d2fobgo_GetObjProp", c_void_p)
-get_text = simple_get("d2fobgt_GetTextProp", String)
+get_boolean = getter("d2fobgb_GetBoolProp", c_bool)
+get_number = getter("d2fobgn_GetNumProp", c_int)
+get_object = getter("d2fobgo_GetObjProp", c_void_p)
+get_text = getter("d2fobgt_GetTextProp", String)
 
 
 def load_module(form_path):
