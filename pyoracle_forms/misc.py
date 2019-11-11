@@ -16,6 +16,7 @@ class ObjectProperties(enum.Enum):
     form_parameters = "D2FP_FORM_PARAM"
     graphics = "D2FP_GRAPHIC"
     items = "D2FP_ITEM"
+    points = "D2FP_POINT"
     program_units = "D2FP_PROG_UNIT"
     property_classes = "D2FP_PROP_CLASS"
     radio_buttons = "D2FP_RADIO_BUTTON"

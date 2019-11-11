@@ -65,6 +65,7 @@ ABBREVIATIONS = {
     "olb": "D2FFO_OBJ_LIB",
     "olt": "D2FFO_OBJ_LIB_TAB",
     "pgu": "D2FFO_PROG_UNIT",
+    "pnt": "D2FFO_POINT",
     "ppc": "D2FFO_PROP_CLASS",
     "rdb": "D2FFO_RADIO_BUTTON",
     "rcg": "D2FFO_REC_GROUP",

@@ -1,4 +1,26 @@
 # todo:
+#  'D2FFO_COORD'
+#  'D2FFO_DAT_SRC_ARG'
+#  'D2FFO_DAT_SRC_COL'
+#  'D2FFO_EDITOR'
+#  'D2FFO_FONT'
+#  'D2FFO_LIB_PROG_UNIT'
+#  'D2FFO_LIBRARY_MODULE'
+#  'D2FFO_LOV'
+#  'D2FFO_LV_COLMAP'
+#  'D2FFO_MENU'
+#  'D2FFO_MENU_ITEM'
+#  'D2FFO_MENU_MODULE'
+#  'D2FFO_OBJ_GROUP'
+#  'D2FFO_OBG_CHILD'
+#  'D2FFO_OBJ_LIB'
+#  'D2FFO_OBJ_LIB_TAB
+#  'D2FFO_REC_GROUP'
+#  'D2FFO_RG_COLSPEC'
+#  'D2FFO_REPORT'
+
+
+# todo:
 #  **    d2fprgvn_GetValueName(d2fctx, D2FP_ALT_STY, D2FC_ALST_CAUTION, &vname)
 #  **    returns "Caution" in the vname [OUT] parameter.
 

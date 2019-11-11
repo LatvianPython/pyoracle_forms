@@ -106,10 +106,10 @@ set_object = setter("d2fobso_SetObjProp", c_void_p)
 def getter(function_name, return_type):
     func = handled_api_function(function_name, (c_void_p, c_int, c_void_p), 2)
 
-    def _simple_get(generic_object, property_number):
+    def _getter(generic_object, property_number):
         return func(generic_object, property_number, return_type()).value
 
-    return _simple_get
+    return _getter
 
 
 get_boolean = getter("d2fobgb_GetBoolProp", c_bool)

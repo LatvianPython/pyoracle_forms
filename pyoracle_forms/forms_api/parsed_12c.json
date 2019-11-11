@@ -8397,6 +8397,53 @@
       }
     ]
   },
+  "D2FFO_POINT": {
+    "object_number": 27,
+    "properties": [
+      {
+        "short_name": "name",
+        "data_type": "text",
+        "macro_name": "D2FP_NAME",
+        "property_number": 154
+      },
+      {
+        "short_name": "next",
+        "data_type": "obj",
+        "macro_name": "D2FP_NEXT",
+        "property_number": 159
+      },
+      {
+        "short_name": "x_pos",
+        "data_type": "num",
+        "macro_name": "D2FP_X_POS",
+        "property_number": 273
+      },
+      {
+        "short_name": "y_pos",
+        "data_type": "num",
+        "macro_name": "D2FP_Y_POS",
+        "property_number": 274
+      },
+      {
+        "short_name": "previous",
+        "data_type": "obj",
+        "macro_name": "D2FP_PREVIOUS",
+        "property_number": 291
+      },
+      {
+        "short_name": "dirty_info",
+        "data_type": "bool",
+        "macro_name": "D2FP_DIRTY_INFO",
+        "property_number": 564
+      },
+      {
+        "short_name": "subcl_subobj",
+        "data_type": "bool",
+        "macro_name": "D2FP_SUBCL_SUBOBJ",
+        "property_number": 565
+      }
+    ]
+  },
   "D2FFO_PROP_CLASS": {
     "object_number": 29,
     "properties": [

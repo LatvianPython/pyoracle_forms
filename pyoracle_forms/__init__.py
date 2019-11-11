@@ -10,6 +10,7 @@ from .forms_objects import GenericObject
 from .forms_objects import Graphic
 from .forms_objects import Item
 from .forms_objects import Module
+from .forms_objects import Point
 from .forms_objects import ProgramUnit
 from .forms_objects import PropertyClass
 from .forms_objects import RadioButton
@@ -21,7 +22,7 @@ from .forms_objects import Window
 from .misc import add_properties
 from .misc import registered_objects
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 
 def initialize_context(version="12c", encoding="utf-8"):

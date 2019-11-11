@@ -15,6 +15,7 @@ class FormsObjects(enum.Enum):
     form_parameter = "D2FFO_FORM_PARAM"
     graphic = "D2FFO_GRAPHIC"
     item = "D2FFO_ITEM"
+    point = "D2FFO_POINT"
     program_unit = "D2FFO_PROG_UNIT"
     property_class = "D2FFO_PROP_CLASS"
     radio_button = "D2FFO_RADIO_BUTTON"
@@ -85,6 +86,11 @@ class Graphic(GenericObject):
 @forms_object
 class Item(GenericObject):
     object_type = FormsObjects.item
+
+
+@forms_object
+class Point(GenericObject):
+    object_type = FormsObjects.point
 
 
 @forms_object
