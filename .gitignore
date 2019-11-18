@@ -112,3 +112,4 @@ venv.bak/
 
 # scratch files
 *scratch*.*py*
+/out/
