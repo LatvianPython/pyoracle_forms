@@ -52,6 +52,81 @@ class Context:
         handled_api_function("d2fctxde_Destroy", tuple())(self)
         self._as_parameter_ = c_void_p(0)
 
+    def a(self):
+        return "a"
+
+    def b(self):
+        return "a"
+
+    def c(self):
+        return "a"
+
+    def d(self):
+        return "a"
+
+    def e(self):
+        return "a"
+
+    def f(self):
+        return "a"
+
+    def g(self):
+        return "a"
+
+    def h(self):
+        return "a"
+
+    def j(self):
+        return "a"
+
+    def k(self):
+        return "a"
+
+    def l(self):
+        return "a"
+
+    def m(self):
+        return "a"
+
+    def n(self):
+        return "a"
+
+    def o(self):
+        return "a"
+
+    def p(self):
+        return "a"
+
+    def q(self):
+        return "a"
+
+    def r(self):
+        return "a"
+
+    def s(self):
+        return "a"
+
+    def t(self):
+        return "a"
+
+    def u(self):
+        return "a"
+
+    def v(self):
+        return "a"
+
+    def w(self):
+        return "a"
+
+    def x(self):
+        return "a"
+
+    def y(self):
+        return "a"
+
+    def z(self):
+        return "a"
+
 
 context: Context = Context()
 
