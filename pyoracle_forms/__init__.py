@@ -1,4 +1,5 @@
 from .context import context
+from .context import move
 from .error_handling import FormsException
 from .forms_api import read_api_objects
 from .forms_objects import Alert
@@ -22,7 +23,7 @@ from .forms_objects import Window
 from .misc import add_properties
 from .misc import registered_objects
 
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:

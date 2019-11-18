@@ -82,5 +82,10 @@ def new_canvas(make_canvas):
 
 
 @pytest.fixture(scope="function")
-def new_item(make_data_block, make_item):
-    return make_item(make_data_block("BLK"), "ITM")
+def new_data_block(make_data_block):
+    return make_data_block("BLK")
+
+
+@pytest.fixture(scope="function")
+def new_item(new_data_block, make_item):
+    return make_item(new_data_block, "ITM")

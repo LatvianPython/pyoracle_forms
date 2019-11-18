@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import NoReturn
+from typing import NoReturn, Callable, Any, Tuple
 
 error_mapping = {
     0: "Operation Succeeded",
@@ -48,9 +48,9 @@ def raise_for_code(error_code: int) -> NoReturn:
     raise FormsException(error_code, f"{error_mapping[error_code]}")
 
 
-def handle_error_code(func):
+def handle_error_code(func: Callable[..., Tuple[int, Any]]) -> Callable:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         error_code, return_value = func(*args, **kwargs)
         if error_code:
             raise_for_code(error_code)

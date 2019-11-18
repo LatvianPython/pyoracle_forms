@@ -1,6 +1,6 @@
 import json
 import pathlib
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Optional
 from ctypes import *
 from os import pathsep, environ
 from os.path import exists, abspath, join
@@ -13,11 +13,12 @@ dll_names = {
 }
 
 
-def find_dll(dll_name):
+def find_dll(dll_name: str) -> Optional[str]:
     search_path = environ["PATH"]
     for path in search_path.split(pathsep):
         if exists(join(path, dll_name)):
             return abspath(path)
+    return None
 
 
 def dlls(version: str) -> Tuple[CDLL, CDLL]:
@@ -38,4 +39,5 @@ def dlls(version: str) -> Tuple[CDLL, CDLL]:
 def read_api_objects(version: str) -> Dict:
     file_path = pathlib.Path(__file__).parent / "forms_api" / f"parsed_{version}.json"
     with open(file_path, mode="r", encoding="utf-8") as file:
-        return json.load(file)
+        json_data: Dict = json.load(file)
+    return json_data

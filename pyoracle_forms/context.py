@@ -3,14 +3,15 @@ from __future__ import annotations
 import atexit
 from ctypes import pointer, c_int, c_void_p, c_char_p, c_bool, c_uint, CDLL
 from functools import partial
-from typing import Callable, Any, Optional, Generic
+from typing import Callable, Any, Optional, Tuple, TYPE_CHECKING
 
 from .error_handling import handle_error_code
 from .error_handling import raise_for_code
 from .forms_api import dlls
 
-if False:
-    from .forms_objects import BaseObject
+if TYPE_CHECKING:
+    from .generic_object import BaseObject
+    from .forms_objects import Module
 
 
 class Context:
@@ -19,12 +20,12 @@ class Context:
     api: Optional[CDLL]
     free: Optional[Any]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.version, self.encoding = "12c", "utf-8"
         self.api, self.free = None, None
         self._as_parameter_ = c_void_p(0)
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self._as_parameter_)
 
     def init(self, version: str, encoding: str) -> None:
@@ -35,7 +36,8 @@ class Context:
             self.create_context()
             atexit.register(self.destroy_context)
 
-    def create_context(self):
+    def create_context(self) -> None:
+        # todo: maybe better way than just an assert?
         assert self.api is not None
 
         ctx = c_void_p()
@@ -48,7 +50,7 @@ class Context:
 
         self._as_parameter_ = ctx
 
-    def destroy_context(self):
+    def destroy_context(self) -> None:
         handled_api_function("d2fctxde_Destroy", tuple())(self)
         self._as_parameter_ = c_void_p(0)
 
@@ -57,27 +59,25 @@ context: Context = Context()
 
 
 class String(c_char_p):
-    def __init__(self, *args, **kwargs):
+    def __init__(self) -> None:
+        # todo: maybe better way than just an assert?
         assert context.free is not None
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.free = context.free
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.free(self)
 
-    @property
-    def value(self):
-        value = super().value or b""
-        return value.decode(context.encoding)
 
-
-def api_function(api_function_name, arguments):
+def api_function(api_function_name: str, arguments: Tuple[Any, ...]) -> partial[Any]:
     api_func = getattr(context.api, api_function_name)
     api_func.argtypes = (c_void_p,) + arguments
     return partial(api_func, context)
 
 
-def inject_return_value(args, return_value_index):
+def inject_return_value(
+    args: Tuple[Any, ...], return_value_index: Optional[int]
+) -> Tuple[Any, ...]:
     if return_value_index is not None:
         func_args = list(args)
         return_value = func_args[return_value_index]
@@ -88,9 +88,13 @@ def inject_return_value(args, return_value_index):
     return injected_args, return_value
 
 
-def handled_api_function(api_function_name, arguments, return_value_index=None):
+def handled_api_function(
+    api_function_name: str,
+    arguments: Tuple[Any, ...],
+    return_value_index: Optional[int] = None,
+) -> Callable:
     @handle_error_code
-    def _handled_api_function(*args):
+    def _handled_api_function(*args: Any) -> Tuple[int, Any]:
         injected_args, return_value = inject_return_value(args, return_value_index)
 
         error_code = api_function(api_function_name, arguments)(*injected_args)
@@ -107,15 +111,15 @@ def has_property(generic_object: BaseObject, property_number: int) -> bool:
     result = func(generic_object, property_number)
 
     if result in (2, 3):  # YES, NO
-        return result == 2
+        return bool(result == 2)
     raise_for_code(result)
 
 
 def property_type(property_number: int) -> int:
-    return api_function("d2fprgt_GetType", (c_uint,))(property_number)
+    return int(api_function("d2fprgt_GetType", (c_uint,))(property_number))
 
 
-def setter(function_name, setter_type):
+def setter(function_name: str, setter_type: Any) -> Callable:
     return handled_api_function(function_name, (c_void_p, c_int, setter_type))
 
 
@@ -140,61 +144,62 @@ get_object: Callable = getter("d2fobgo_GetObjProp", c_void_p)
 get_text: Callable = getter("d2fobgt_GetTextProp", String)
 
 
-def load_module(form_path):
+def load_module(form_path: str) -> c_void_p:
     return handled_api_function(
         "d2ffmdld_Load", (c_void_p, c_char_p, c_bool), return_value_index=0
     )(c_void_p(), form_path.encode("utf-8"), False)
 
 
-def create_module(name):
+def create_module(name: str) -> c_void_p:
     return handled_api_function(
         "d2ffmdcr_Create", (c_void_p, c_char_p), return_value_index=0
     )(c_void_p(), name.encode("utf-8"))
 
 
-def save_module(module, path):
+def save_module(module: Module, path: str) -> None:
     handled_api_function("d2ffmdsv_Save", (c_void_p, c_char_p, c_bool))(
         module, path.encode("utf-8"), False
     )
 
 
-def create(owner, name, obj_number):
+def create(owner: BaseObject, name: str, obj_number: int) -> c_void_p:
     return handled_api_function(
         "d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int), return_value_index=1
     )(owner, c_void_p(), name.encode("utf-8"), obj_number)
 
 
-def destroy(generic_object):
+def destroy(generic_object: BaseObject) -> None:
     handled_api_function("d2fobde_Destroy", (c_void_p,))(generic_object)
 
 
-def move(generic_object, next_object):
+def move(generic_object: BaseObject, next_object: Optional[BaseObject]) -> None:
     handled_api_function("d2fobmv_Move", (c_void_p, c_void_p))(
         generic_object, next_object
     )
 
 
-def query_type(generic_object):
-    return handled_api_function("d2fobqt_QueryType", (c_void_p,), return_value_index=1)(
-        generic_object, c_int()
-    ).value
+def query_type(generic_object: BaseObject) -> int:
+    return int(
+        handled_api_function("d2fobqt_QueryType", (c_void_p,), return_value_index=1)(
+            generic_object, c_int()
+        ).value
+    )
 
 
-def object_number(obj_name):
-    return handled_api_function(
-        "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
-    )(obj_name.encode("utf-8"), c_int()).value
+def object_number(obj_name: str) -> int:
+    return int(
+        handled_api_function(
+            "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
+        )(obj_name.encode("utf-8"), c_int()).value
+    )
 
 
-def get_constant(function_name):
-    def _get_constant(constant_property):
+def get_constant(function_name: str) -> Callable:
+    def _get_constant(constant_property: int) -> str:
         constant_value = handled_api_function(
             function_name, (c_int, c_void_p), return_value_index=1
         )(constant_property, c_char_p())
-        try:
-            return constant_value.value.decode("utf-8")
-        except AttributeError:
-            return ""
+        return (constant_value.value or b"").decode("utf-8")
 
     return _get_constant
 

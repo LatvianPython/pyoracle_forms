@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import enum
 from ctypes import c_void_p
-from typing import Optional
+from typing import Optional, Any
 
 from .context import create_module
 from .context import load_module
@@ -22,7 +21,7 @@ class Module(BaseObject):
     def __enter__(self) -> Module:
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         self.destroy()
 
     @classmethod
