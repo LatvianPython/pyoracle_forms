@@ -1,56 +1,40 @@
+from __future__ import annotations
+
 import enum
+from ctypes import c_void_p
+from typing import Optional
 
 from .context import create_module
 from .context import load_module
 from .context import save_module
-from .generic_object import GenericObject
+from .generic_object import GenericObject, BaseObject, FormsObjects
 from .misc import forms_object
 
 
-class FormsObjects(enum.Enum):
-    canvas = "D2FFO_CANVAS"
-    alert = "D2FFO_ALERT"
-    attached_library = "D2FFO_ATT_LIB"
-    data_block = "D2FFO_BLOCK"
-    form_parameter = "D2FFO_FORM_PARAM"
-    graphic = "D2FFO_GRAPHIC"
-    item = "D2FFO_ITEM"
-    point = "D2FFO_POINT"
-    program_unit = "D2FFO_PROG_UNIT"
-    property_class = "D2FFO_PROP_CLASS"
-    radio_button = "D2FFO_RADIO_BUTTON"
-    relation = "D2FFO_RELATION"
-    tab_page = "D2FFO_TAB_PAGE"
-    trigger = "D2FFO_TRIGGER"
-    visual_attribute = "D2FFO_VIS_ATTR"
-    window = "D2FFO_WINDOW"
-    module = "D2FFO_FORM_MODULE"
-
-
 @forms_object
-class Module(GenericObject):
+class Module(BaseObject):
     object_type = FormsObjects.module
 
-    def __init__(self, module, path=None):
+    def __init__(self, module: c_void_p, path: str):
         super().__init__(module)
         self.path = path
 
-    def __enter__(self):
+    def __enter__(self) -> Module:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.destroy()
 
     @classmethod
-    def create(cls, module, **kwargs):
-        return cls(create_module(module))
+    def create(cls, module_name: str) -> Module:
+        return cls(create_module(module_name), module_name)
 
     @classmethod
-    def load(cls, path):
+    def load(cls, path: str) -> Module:
         return cls(load_module(path), path=path)
 
-    def save(self, path=None):
-        save_module(self, path or self.path)
+    def save(self, path: Optional[str] = None) -> None:
+        save_module(module=self, path=path or self.path)
 
 
 @forms_object

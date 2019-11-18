@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from typing import Callable, Dict
 import enum
 
 from .context import create
@@ -13,6 +16,26 @@ from .context import set_number
 from .context import set_object
 from .context import set_text
 from .context import context
+
+
+class FormsObjects(enum.Enum):
+    canvas = "D2FFO_CANVAS"
+    alert = "D2FFO_ALERT"
+    attached_library = "D2FFO_ATT_LIB"
+    data_block = "D2FFO_BLOCK"
+    form_parameter = "D2FFO_FORM_PARAM"
+    graphic = "D2FFO_GRAPHIC"
+    item = "D2FFO_ITEM"
+    point = "D2FFO_POINT"
+    program_unit = "D2FFO_PROG_UNIT"
+    property_class = "D2FFO_PROP_CLASS"
+    radio_button = "D2FFO_RADIO_BUTTON"
+    relation = "D2FFO_RELATION"
+    tab_page = "D2FFO_TAB_PAGE"
+    trigger = "D2FFO_TRIGGER"
+    visual_attribute = "D2FFO_VIS_ATTR"
+    window = "D2FFO_WINDOW"
+    module = "D2FFO_FORM_MODULE"
 
 
 class ValueTypes(enum.IntEnum):
@@ -40,17 +63,18 @@ property_setters = {
 }
 
 
-class GenericObject:
+class BaseObject:
+    object_type: FormsObjects
     _object_number = None
 
     def __init__(self, generic_object):
         self._as_parameter_ = generic_object
 
-    def has_property(self, property_number):
+    def has_property(self, property_number: int) -> bool:
         return has_property(self, property_number)
 
-    def property_value(self, property_number):
-        value_type = property_type(property_number=property_number)
+    def get_property(self, property_number):
+        value_type = ValueTypes(property_type(property_number=property_number))
         try:
             func = property_getters[value_type]
         except KeyError:
@@ -59,7 +83,7 @@ class GenericObject:
             return func(self, property_number=property_number)
 
     def set_property(self, property_number, property_value):
-        value_type = property_type(property_number=property_number)
+        value_type = ValueTypes(property_type(property_number=property_number))
         func, preprocess = property_setters[value_type]
         func(self, property_number, preprocess(property_value))
 
@@ -67,13 +91,14 @@ class GenericObject:
         destroy(self)
         self._as_parameter_ = 0
 
-    @classmethod
-    def create(cls, owner, name):
-        new_object = cls(create(owner, name, cls._object_number))
-        return new_object
-
     def __repr__(self):
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"
 
     def __bool__(self):
         return bool(self._as_parameter_)
+
+
+class GenericObject(BaseObject):
+    @classmethod
+    def create(cls, owner: BaseObject, name: str) -> GenericObject:
+        return cls(create(owner, name, cls._object_number))

@@ -22,13 +22,13 @@ from .forms_objects import Window
 from .misc import add_properties
 from .misc import registered_objects
 
-__version__ = "0.2.5"
+__version__ = "0.2.6"
 
 
-def initialize_context(version="12c", encoding="utf-8"):
+def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
     context.init(version=version, encoding=encoding)
 
-    api_objects = read_api_objects(version)
+    api_objects = read_api_objects(version=version)
 
     for forms_object in registered_objects.values():
         add_properties(forms_object, api_objects)

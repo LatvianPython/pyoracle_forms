@@ -13,6 +13,12 @@ def test_text_empty(new_item):
     assert new_item.column_name == ""
 
 
+def test_text_encoding(new_item):
+    latvian_letters = "āīēūļņšķž".upper()
+    new_item.column_name = latvian_letters
+    assert new_item.column_name == latvian_letters
+
+
 def test_number(new_item):
     value = 10
     new_item.width = value

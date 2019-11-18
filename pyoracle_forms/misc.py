@@ -1,11 +1,13 @@
 import enum
+from typing import Dict, Callable, Type, Tuple, Union
 
 from .context import object_name
 from .context import property_constant_name
 from .context import property_name
 from .context import query_type
+from .generic_object import BaseObject, GenericObject
 
-registered_objects = {}
+registered_objects: Dict[str, Type[BaseObject]] = {}
 
 
 class ObjectProperties(enum.Enum):
@@ -32,7 +34,7 @@ class Property:
         self.property_number = property_number
 
     def __get__(self, instance, owner):
-        return instance.property_value(self.property_number)
+        return instance.get_property(self.property_number)
 
     def __set__(self, instance, value):
         instance.set_property(self.property_number, value)
@@ -44,7 +46,7 @@ class Subobjects:
 
     def __get__(self, instance, owner):
         def gen_subobjects():
-            child = instance.property_value(self.property_number)
+            child = instance.get_property(self.property_number)
             if child:
                 klass = registered_objects[object_name(query_type(child))]
                 child = klass(child)
@@ -55,8 +57,11 @@ class Subobjects:
         subobjects = list(gen_subobjects())
         return subobjects
 
+    def __set__(self, instance, value):
+        raise AttributeError
 
-def property_attribute(property_number):
+
+def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subobjects]]:
     const_name = f"D2FP_{property_constant_name(property_number)}"
     try:
         obj_property = ObjectProperties(const_name)
@@ -67,30 +72,29 @@ def property_attribute(property_number):
             .replace("-", "_")
             .replace("/", "_")
         )
-        attribute = Property(property_number)
+        return prop_name, Property(property_number)
     else:
         prop_name = obj_property.name
-        attribute = Subobjects(property_number, prop_name)
-    return prop_name, attribute
+        return prop_name, Subobjects(property_number, prop_name)
 
 
-def add_properties(cls, api_objects):
+def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
     object_type = cls.object_type
     obj_type = api_objects[object_type.value]
-    setattr(cls, "_object_number", obj_type["object_number"])
+    cls._object_number = obj_type["object_number"]
 
     for forms_object_property in obj_type["properties"]:
 
         property_number = forms_object_property["property_number"]
 
-        property_name, attribute = property_attribute(property_number)
+        prop_name, attribute = property_attribute(property_number)
 
-        if property_name and "(obsolete)" not in property_name:
-            setattr(cls, property_name, attribute)
+        if prop_name and "(obsolete)" not in prop_name:
+            setattr(cls, prop_name, attribute)
 
     return cls
 
 
-def forms_object(cls):
+def forms_object(cls: Type[BaseObject]) -> Type[BaseObject]:
     registered_objects[cls.object_type.value[6:]] = cls
     return cls

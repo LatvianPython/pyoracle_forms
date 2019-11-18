@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import NoReturn
 
 error_mapping = {
     0: "Operation Succeeded",
@@ -43,7 +44,7 @@ class FormsException(Exception):
     pass
 
 
-def raise_for_code(error_code):
+def raise_for_code(error_code: int) -> NoReturn:
     raise FormsException(error_code, f"{error_mapping[error_code]}")
 
 
