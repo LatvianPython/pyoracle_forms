@@ -30,6 +30,12 @@ pyoracle_forms
     :target: https://codeclimate.com/github/LatvianPython/pyoracle_forms
     :alt: Code Climate maintainability
 
+
+.. image:: http://www.mypy-lang.org/static/mypy_badge.svg
+    :target: http://mypy-lang.org/
+    :alt: Checked with mypy
+
+
 Wraps the Oracle Forms API under Python, so that you can write scripts to
 make programmatic changes to Oracle Forms .fmb files with ease.
 

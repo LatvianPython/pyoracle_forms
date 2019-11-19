@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from ctypes import c_void_p
-from typing import Optional, Any
+from typing import Optional, Any, Type
+from types import TracebackType
 
 from .context import create_module
 from .context import load_module
@@ -21,7 +22,12 @@ class Module(BaseObject):
     def __enter__(self) -> Module:
         return self
 
-    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         self.destroy()
 
     @classmethod

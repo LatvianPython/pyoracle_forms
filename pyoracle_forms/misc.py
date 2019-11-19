@@ -1,11 +1,12 @@
 import enum
+from ctypes import c_void_p
 from typing import Dict, Callable, Type, Tuple, Union, NoReturn, Any, Iterable, List
 
 from .context import object_name
 from .context import property_constant_name
 from .context import property_name
 from .context import query_type
-from .generic_object import BaseObject, GenericObject
+from .generic_object import BaseObject, GenericObject, PropertyTypes
 
 registered_objects: Dict[str, Type[BaseObject]] = {}
 
@@ -33,10 +34,10 @@ class Property:
     def __init__(self, property_number: int):
         self.property_number = property_number
 
-    def __get__(self, instance: Any, owner: Any) -> Any:
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> PropertyTypes:
         return instance.get_property(self.property_number)
 
-    def __set__(self, instance: Any, value: Any) -> None:
+    def __set__(self, instance: BaseObject, value: PropertyTypes) -> None:
         instance.set_property(self.property_number, value)
 
 
@@ -44,12 +45,15 @@ class Subobjects:
     def __init__(self, property_number: int, prop_name: str) -> None:
         self.property_number, self.property_name = property_number, prop_name
 
-    def __get__(self, instance: Any, owner: Any) -> List[BaseObject]:
+    def __get__(
+        self, instance: BaseObject, owner: Type[BaseObject]
+    ) -> List[BaseObject]:
         def gen_subobjects() -> Iterable[BaseObject]:
-            child = instance.get_property(self.property_number)
-            if child:
-                klass = registered_objects[object_name(query_type(child))]
-                child = klass(child)
+            first_child: c_void_p = instance.get_property(self.property_number)
+            if first_child:
+                obj_name = object_name(query_type(first_child))
+                klass = registered_objects[obj_name]
+                child = klass(first_child)
                 while child:
                     yield child
                     child = klass(child.next_object)
@@ -57,8 +61,8 @@ class Subobjects:
         subobjects = list(gen_subobjects())
         return subobjects
 
-    def __set__(self, instance: Any, value: Any) -> NoReturn:
-        raise AttributeError
+    def __set__(self, instance: BaseObject, value: None) -> NoReturn:
+        raise AttributeError("can't set attribute")
 
 
 def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subobjects]]:

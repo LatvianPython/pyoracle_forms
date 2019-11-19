@@ -3,22 +3,35 @@ from __future__ import annotations
 import atexit
 from ctypes import pointer, c_int, c_void_p, c_char_p, c_bool, c_uint, CDLL
 from functools import partial
-from typing import Callable, Any, Optional, Tuple, TYPE_CHECKING
+from typing import (
+    Callable,
+    Any,
+    Optional,
+    Tuple,
+    TYPE_CHECKING,
+    cast,
+    Union,
+    Type,
+)
 
-from .error_handling import handle_error_code
 from .error_handling import raise_for_code
 from .forms_api import dlls
 
 if TYPE_CHECKING:
-    from .generic_object import BaseObject
+    from ctypes import _FuncPointer
+    from .generic_object import BaseObject, PropertyTypes
     from .forms_objects import Module
+
+Setter = Callable[["BaseObject", int, "PropertyTypes"], None]
+Getter = Callable[["BaseObject", int], "PropertyTypes"]
+CTypes = Union[Type[c_void_p], Type[c_bool], Type[c_int], Type["String"]]
 
 
 class Context:
     version: str
     encoding: str
     api: Optional[CDLL]
-    free: Optional[Any]
+    free: Optional[_FuncPointer]
 
     def __init__(self) -> None:
         self.version, self.encoding = "12c", "utf-8"
@@ -69,7 +82,9 @@ class String(c_char_p):
         self.free(self)
 
 
-def api_function(api_function_name: str, arguments: Tuple[Any, ...]) -> partial[Any]:
+def api_function(
+    api_function_name: str, arguments: Tuple[Any, ...]
+) -> Callable[..., int]:
     api_func = getattr(context.api, api_function_name)
     api_func.argtypes = (c_void_p,) + arguments
     return partial(api_func, context)
@@ -93,15 +108,14 @@ def handled_api_function(
     arguments: Tuple[Any, ...],
     return_value_index: Optional[int] = None,
 ) -> Callable:
-    @handle_error_code
-    def _handled_api_function(*args: Any) -> Tuple[int, Any]:
+    def _handled_api_function(*args: Any) -> Any:
         injected_args, return_value = inject_return_value(args, return_value_index)
 
         error_code = api_function(api_function_name, arguments)(*injected_args)
-        return (
-            error_code,
-            return_value,
-        )
+
+        if error_code:
+            raise_for_code(error_code)
+        return return_value
 
     return _handled_api_function
 
@@ -119,29 +133,29 @@ def property_type(property_number: int) -> int:
     return int(api_function("d2fprgt_GetType", (c_uint,))(property_number))
 
 
-def setter(function_name: str, setter_type: Any) -> Callable:
+def setter(function_name: str, setter_type: CTypes) -> Setter:
     return handled_api_function(function_name, (c_void_p, c_int, setter_type))
 
 
-set_text: Callable = setter("d2fobst_SetTextProp", c_void_p)
-set_boolean: Callable = setter("d2fobsb_SetBoolProp", c_bool)
-set_number: Callable = setter("d2fobsn_SetNumProp", c_int)
-set_object: Callable = setter("d2fobso_SetObjProp", c_void_p)
+set_text: Setter = setter("d2fobst_SetTextProp", c_void_p)
+set_boolean: Setter = setter("d2fobsb_SetBoolProp", c_bool)
+set_number: Setter = setter("d2fobsn_SetNumProp", c_int)
+set_object: Setter = setter("d2fobso_SetObjProp", c_void_p)
 
 
-def getter(function_name: str, return_type: Any) -> Callable:
+def getter(function_name: str, return_type: CTypes) -> Getter:
     func = handled_api_function(function_name, (c_void_p, c_int, c_void_p), 2)
 
-    def _getter(generic_object: BaseObject, property_number: int) -> Any:
+    def _getter(generic_object: BaseObject, property_number: int) -> PropertyTypes:
         return func(generic_object, property_number, return_type()).value
 
-    return _getter
+    return cast(Getter, _getter)
 
 
-get_boolean: Callable = getter("d2fobgb_GetBoolProp", c_bool)
-get_number: Callable = getter("d2fobgn_GetNumProp", c_int)
-get_object: Callable = getter("d2fobgo_GetObjProp", c_void_p)
-get_text: Callable = getter("d2fobgt_GetTextProp", String)
+get_boolean: Getter = getter("d2fobgb_GetBoolProp", c_bool)
+get_number: Getter = getter("d2fobgn_GetNumProp", c_int)
+get_object: Getter = getter("d2fobgo_GetObjProp", c_void_p)
+get_text: Getter = getter("d2fobgt_GetTextProp", String)
 
 
 def load_module(form_path: str) -> c_void_p:
@@ -178,7 +192,7 @@ def move(generic_object: BaseObject, next_object: Optional[BaseObject]) -> None:
     )
 
 
-def query_type(generic_object: BaseObject) -> int:
+def query_type(generic_object: Union[BaseObject, c_void_p]) -> int:
     return int(
         handled_api_function("d2fobqt_QueryType", (c_void_p,), return_value_index=1)(
             generic_object, c_int()
@@ -194,7 +208,10 @@ def object_number(obj_name: str) -> int:
     )
 
 
-def get_constant(function_name: str) -> Callable:
+GetConstant = Callable[[int], str]
+
+
+def get_constant(function_name: str) -> GetConstant:
     def _get_constant(constant_property: int) -> str:
         constant_value = handled_api_function(
             function_name, (c_int, c_void_p), return_value_index=1
@@ -204,6 +221,6 @@ def get_constant(function_name: str) -> Callable:
     return _get_constant
 
 
-object_name = get_constant("d2fobgcn_GetConstName")
-property_constant_name = get_constant("d2fprgcn_GetConstName")
-property_name = get_constant("d2fprgn_GetName")
+object_name: GetConstant = get_constant("d2fobgcn_GetConstName")
+property_constant_name: GetConstant = get_constant("d2fprgcn_GetConstName")
+property_name: GetConstant = get_constant("d2fprgn_GetName")

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Dict, Optional, Any, Tuple
+from typing import Callable, Dict, Optional, Any, Tuple, Union, TYPE_CHECKING
 from ctypes import c_void_p
 import enum
 
@@ -17,6 +17,10 @@ from .context import set_number
 from .context import set_object
 from .context import set_text
 from .context import context
+
+if TYPE_CHECKING:
+    from .context import Setter
+    from .context import Getter
 
 
 class FormsObjects(enum.Enum):
@@ -47,10 +51,10 @@ class ValueTypes(enum.IntEnum):
     OBJECT = 4
 
 
-PropertyDict = Dict[ValueTypes, Tuple[Callable, Callable]]
+PropertyTypes = Union[bool, int, str, "BaseObject", c_void_p]
 
 
-property_getters: PropertyDict = {
+property_getters: Dict[ValueTypes, Tuple[Getter, Callable]] = {
     # ValueTypes.UNKNOWN: None,
     ValueTypes.BOOLEAN: (get_boolean, lambda x: x),
     ValueTypes.NUMBER: (get_number, lambda x: x),
@@ -58,7 +62,7 @@ property_getters: PropertyDict = {
     ValueTypes.OBJECT: (get_object, lambda x: x),
 }
 
-property_setters: PropertyDict = {
+property_setters: Dict[ValueTypes, Tuple[Setter, Callable]] = {
     # ValueTypes.UNKNOWN: None,
     ValueTypes.BOOLEAN: (set_boolean, lambda x: x),
     ValueTypes.NUMBER: (set_number, lambda x: x),
@@ -78,16 +82,16 @@ class BaseObject:
     def has_property(self, property_number: int) -> bool:
         return has_property(self, property_number)
 
-    def get_property(self, property_number: int) -> Any:
+    def get_property(self, property_number: int) -> PropertyTypes:
         value_type = ValueTypes(property_type(property_number=property_number))
         try:
             func, postprocess = property_getters[value_type]
         except KeyError:
             return f"UNKNOWN PROPERTY TYPE({value_type})"  # todo: decide what to do with these!
         else:
-            return postprocess(func(self, property_number=property_number))
+            return postprocess(func(self, property_number))
 
-    def set_property(self, property_number: int, property_value: Any) -> None:
+    def set_property(self, property_number: int, property_value: PropertyTypes) -> None:
         value_type = ValueTypes(property_type(property_number=property_number))
         func, preprocess = property_setters[value_type]
         func(self, property_number, preprocess(property_value))
