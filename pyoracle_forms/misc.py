@@ -28,6 +28,20 @@ class ObjectProperties(enum.Enum):
     triggers = "D2FP_TRIGGER"
     visual_attributes = "D2FP_VIS_ATTR"
     windows = "D2FP_WINDOW"
+    data_source_arguments = "D2FP_DAT_SRC_ARG"
+    data_source_columns = "D2FP_DAT_SRC_COL"
+    editors = "D2FP_EDITOR"
+    event = "D2FP_EVENT"
+    lovs = "D2FP_LOV"
+    lov_column_maps = "D2FP_LV_COLMAP"
+    menus = "D2FP_MENU"
+    menu_items = "D2FP_MENU_ITEM"
+    object_groups = "D2FP_OBJ_GRP"
+    object_children = "D2FP_OBG_CHILD"
+    record_groups = "D2FP_REC_GRP"
+    record_group_colspecs = "D2FP_COL_SPEC"
+    reports = "D2FP_REPORT"
+    column_value = "D2FP_COLUMN_VALUE"
 
 
 class Property:
@@ -84,8 +98,15 @@ def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subob
 
 def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
     object_type = cls.object_type
-    obj_type = api_objects[object_type.value]
-    cls._object_number = obj_type["object_number"]
+    try:
+        obj_type = api_objects[object_type.value]
+    except:
+        # todo: clean up dirty hack
+        #  mostly for column_value, which seems to be not documented by orcl anyway
+        obj_type = api_objects["D2FFO_ANY"]
+        cls._object_number = 6
+    else:
+        cls._object_number = obj_type["object_number"]
 
     for forms_object_property in obj_type["properties"]:
 

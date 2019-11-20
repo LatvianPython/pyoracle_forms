@@ -4640,6 +4640,161 @@
       }
     ]
   },
+  "D2FFO_EVENT": {
+    "object_number": 42,
+    "properties": [
+      {
+        "short_name": "client_info",
+        "data_type": "blob",
+        "macro_name": "D2FP_CLIENT_INFO",
+        "property_number": 27
+      },
+      {
+        "short_name": "comment",
+        "data_type": "text",
+        "macro_name": "D2FP_COMMENT",
+        "property_number": 43
+      },
+      {
+        "short_name": "name",
+        "data_type": "text",
+        "macro_name": "D2FP_NAME",
+        "property_number": 154
+      },
+      {
+        "short_name": "next",
+        "data_type": "obj",
+        "macro_name": "D2FP_NEXT",
+        "property_number": 159
+      },
+      {
+        "short_name": "trigger",
+        "data_type": "obj",
+        "macro_name": "D2FP_TRIGGER",
+        "property_number": 232
+      },
+      {
+        "short_name": "previous",
+        "data_type": "obj",
+        "macro_name": "D2FP_PREVIOUS",
+        "property_number": 291
+      },
+      {
+        "short_name": "owner",
+        "data_type": "obj",
+        "macro_name": "D2FP_OWNER",
+        "property_number": 296
+      },
+      {
+        "short_name": "module",
+        "data_type": "obj",
+        "macro_name": "D2FP_MODULE",
+        "property_number": 440
+      },
+      {
+        "short_name": "source",
+        "data_type": "obj",
+        "macro_name": "D2FP_SOURCE",
+        "property_number": 441
+      },
+      {
+        "short_name": "par_module",
+        "data_type": "text",
+        "macro_name": "D2FP_PAR_MODULE",
+        "property_number": 497
+      },
+      {
+        "short_name": "par_modtyp",
+        "data_type": "num",
+        "macro_name": "D2FP_PAR_MODTYP",
+        "property_number": 498
+      },
+      {
+        "short_name": "par_nam",
+        "data_type": "text",
+        "macro_name": "D2FP_PAR_NAM",
+        "property_number": 499
+      },
+      {
+        "short_name": "par_flnam",
+        "data_type": "text",
+        "macro_name": "D2FP_PAR_FLNAM",
+        "property_number": 500
+      },
+      {
+        "short_name": "par_flpath",
+        "data_type": "text",
+        "macro_name": "D2FP_PAR_FLPATH",
+        "property_number": 501
+      },
+      {
+        "short_name": "par_typ",
+        "data_type": "num",
+        "macro_name": "D2FP_PAR_TYP",
+        "property_number": 541
+      },
+      {
+        "short_name": "persist_client_info",
+        "data_type": "blob",
+        "macro_name": "D2FP_PERSIST_CLIENT_INFO",
+        "property_number": 560
+      },
+      {
+        "short_name": "persist_clt_inf_len",
+        "data_type": "num",
+        "macro_name": "D2FP_PERSIST_CLT_INF_LEN",
+        "property_number": 561
+      },
+      {
+        "short_name": "event_type",
+        "data_type": "num",
+        "macro_name": "D2FP_EVENT_TYPE",
+        "property_number": 575
+      },
+      {
+        "short_name": "event_subs_name",
+        "data_type": "text",
+        "macro_name": "D2FP_EVENT_SUBS_NAME",
+        "property_number": 576
+      },
+      {
+        "short_name": "event_scope",
+        "data_type": "num",
+        "macro_name": "D2FP_EVENT_SCOPE",
+        "property_number": 577
+      },
+      {
+        "short_name": "event_enabled",
+        "data_type": "bool",
+        "macro_name": "D2FP_EVENT_ENABLED",
+        "property_number": 578
+      },
+      {
+        "short_name": "event_implclass",
+        "data_type": "text",
+        "macro_name": "D2FP_EVENT_IMPLCLASS",
+        "property_number": 579
+      },
+      {
+        "short_name": "event_corrid",
+        "data_type": "text",
+        "macro_name": "D2FP_EVENT_CORRID",
+        "property_number": 580
+      },
+      {
+        "short_name": "event_priority_mode",
+        "data_type": "num",
+        "macro_name": "D2FP_EVENT_PRIORITY_MODE",
+        "property_number": 581
+      },
+      {
+        "short_name": "event_view_mode",
+        "data_type": "num",
+        "macro_name": "D2FP_EVENT_VIEW_MODE",
+        "property_number": 582
+      }
+    ]
+  },
   "D2FFO_FONT": {
     "object_number": 11,
     "properties": [

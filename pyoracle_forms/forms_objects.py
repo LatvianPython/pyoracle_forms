@@ -120,3 +120,73 @@ class VisualAttribute(GenericObject):
 @forms_object
 class Window(GenericObject):
     object_type = FormsObjects.window
+
+
+@forms_object
+class DataSourceArgument(GenericObject):
+    object_type = FormsObjects.data_source_argument
+
+
+@forms_object
+class DataSourceColumn(GenericObject):
+    object_type = FormsObjects.data_source_column
+
+
+@forms_object
+class Editor(GenericObject):
+    object_type = FormsObjects.editor
+
+
+@forms_object
+class LOV(GenericObject):
+    object_type = FormsObjects.lov
+
+
+@forms_object
+class LOVColumnMap(GenericObject):
+    object_type = FormsObjects.lov_column_map
+
+
+@forms_object
+class Menu(GenericObject):
+    object_type = FormsObjects.menu
+
+
+@forms_object
+class MenuItem(GenericObject):
+    object_type = FormsObjects.menu_item
+
+
+@forms_object
+class ObjectGroup(GenericObject):
+    object_type = FormsObjects.object_group
+
+
+@forms_object
+class ObjectChild(GenericObject):
+    object_type = FormsObjects.object_child
+
+
+@forms_object
+class RecordGroup(GenericObject):
+    object_type = FormsObjects.record_group
+
+
+@forms_object
+class RecordGroupColspec(GenericObject):
+    object_type = FormsObjects.record_group_colspec
+
+
+@forms_object
+class Report(GenericObject):
+    object_type = FormsObjects.report
+
+
+@forms_object
+class Event(GenericObject):
+    object_type = FormsObjects.event
+
+
+@forms_object
+class ColumnValue(GenericObject):
+    object_type = FormsObjects.column_value

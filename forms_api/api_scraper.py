@@ -47,6 +47,7 @@ ABBREVIATIONS = {
     "dsa": "D2FFO_DAT_SRC_ARG",
     "dsc": "D2FFO_DAT_SRC_COL",
     "edt": "D2FFO_EDITOR",
+    "evt": "D2FFO_EVENT",
     "fnt": "D2FFO_FONT",
     "fmd": "D2FFO_FORM_MODULE",
     "fpm": "D2FFO_FORM_PARAM",

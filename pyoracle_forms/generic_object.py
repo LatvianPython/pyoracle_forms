@@ -41,6 +41,20 @@ class FormsObjects(enum.Enum):
     visual_attribute = "D2FFO_VIS_ATTR"
     window = "D2FFO_WINDOW"
     module = "D2FFO_FORM_MODULE"
+    data_source_argument = "D2FFO_DAT_SRC_ARG"
+    data_source_column = "D2FFO_DAT_SRC_COL"
+    editor = "D2FFO_EDITOR"
+    event = "D2FFO_EVENT"
+    lov = "D2FFO_LOV"
+    lov_column_map = "D2FFO_LV_COLMAP"
+    menu = "D2FFO_MENU"
+    menu_item = "D2FFO_MENU_ITEM"
+    object_group = "D2FFO_OBJ_GROUP"
+    object_child = "D2FFO_OBG_CHILD"
+    record_group = "D2FFO_REC_GROUP"
+    record_group_colspec = "D2FFO_RG_COLSPEC"
+    report = "D2FFO_REPORT"
+    column_value = "D2FFO_COLUMN_VALUE"
 
 
 class ValueTypes(enum.IntEnum):
