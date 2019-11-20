@@ -96,7 +96,7 @@ def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subob
         return prop_name, Subobjects(property_number, prop_name)
 
 
-def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
+def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:
     object_type = cls.object_type
     try:
         obj_type = api_objects[object_type.value]
@@ -104,9 +104,15 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
         # todo: clean up dirty hack
         #  mostly for column_value, which seems to be not documented by orcl anyway
         obj_type = api_objects["D2FFO_ANY"]
-        cls._object_number = 6
+        object_number = 6
     else:
-        cls._object_number = obj_type["object_number"]
+        object_number = obj_type["object_number"]
+
+    return obj_type, object_number
+
+
+def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
+    obj_type, cls._object_number = object_type(cls, api_objects)
 
     for forms_object_property in obj_type["properties"]:
 
