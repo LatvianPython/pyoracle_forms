@@ -98,7 +98,7 @@ def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subob
 
 def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:
     try:
-        obj_type = api_objects[cls.object_type]
+        obj_type = api_objects[cls.object_type.value]
     except KeyError:
         # todo: clean up dirty hack
         #  mostly for column_value, which seems to be not documented by orcl anyway
