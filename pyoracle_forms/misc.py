@@ -8,6 +8,16 @@ from .context import property_name
 from .context import query_type
 from .generic_object import BaseObject, GenericObject, PropertyTypes
 
+# todo: for the future...
+#  from .context import get_boolean
+#  from .context import get_number
+#  from .context import get_object
+#  from .context import get_text
+#  from .context import set_boolean
+#  from .context import set_number
+#  from .context import set_object
+#  from .context import set_text
+
 registered_objects: Dict[str, Type[BaseObject]] = {}
 
 
@@ -121,6 +131,8 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
 
         if prop_name and "(obsolete)" not in prop_name:
             setattr(cls, prop_name, attribute)
+        else:
+            print(prop_name, property_number)
 
     return cls
 

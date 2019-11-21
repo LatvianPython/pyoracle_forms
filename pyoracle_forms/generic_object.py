@@ -69,7 +69,6 @@ PropertyTypes = Union[bool, int, str, "BaseObject", c_void_p]
 
 
 property_getters: Dict[ValueTypes, Tuple[Getter, Callable]] = {
-    # ValueTypes.UNKNOWN: None,
     ValueTypes.BOOLEAN: (get_boolean, lambda x: x),
     ValueTypes.NUMBER: (get_number, lambda x: x),
     ValueTypes.TEXT: (get_text, lambda x: (x or b"").decode(context.encoding)),
@@ -77,7 +76,6 @@ property_getters: Dict[ValueTypes, Tuple[Getter, Callable]] = {
 }
 
 property_setters: Dict[ValueTypes, Tuple[Setter, Callable]] = {
-    # ValueTypes.UNKNOWN: None,
     ValueTypes.BOOLEAN: (set_boolean, lambda x: x),
     ValueTypes.NUMBER: (set_number, lambda x: x),
     ValueTypes.TEXT: (set_text, lambda x: x.encode(context.encoding)),

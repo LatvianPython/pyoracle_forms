@@ -129,10 +129,6 @@ def has_property(generic_object: BaseObject, property_number: int) -> bool:
     raise_for_code(result)
 
 
-def property_type(property_number: int) -> int:
-    return int(api_function("d2fprgt_GetType", (c_uint,))(property_number))
-
-
 def setter(function_name: str, setter_type: CTypes) -> Setter:
     return handled_api_function(function_name, (c_void_p, c_int, setter_type))
 
@@ -200,14 +196,6 @@ def query_type(generic_object: Union[BaseObject, c_void_p]) -> int:
     )
 
 
-def object_number(obj_name: str) -> int:
-    return int(
-        handled_api_function(
-            "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
-        )(obj_name.encode("utf-8"), c_int()).value
-    )
-
-
 GetConstant = Callable[[int], str]
 
 
@@ -224,3 +212,15 @@ def get_constant(function_name: str) -> GetConstant:
 object_name: GetConstant = get_constant("d2fobgcn_GetConstName")
 property_constant_name: GetConstant = get_constant("d2fprgcn_GetConstName")
 property_name: GetConstant = get_constant("d2fprgn_GetName")
+
+
+def property_type(property_number: int) -> int:
+    return int(api_function("d2fprgt_GetType", (c_uint,))(property_number))
+
+
+def object_number(obj_name: str) -> int:
+    return int(
+        handled_api_function(
+            "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
+        )(obj_name.encode("utf-8"), c_int()).value
+    )

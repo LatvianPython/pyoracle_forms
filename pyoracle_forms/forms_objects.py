@@ -122,11 +122,13 @@ class Window(GenericObject):
     object_type = FormsObjects.window
 
 
+# todo: this is special, has own create functions in C
 @forms_object
 class DataSourceArgument(GenericObject):
     object_type = FormsObjects.data_source_argument
 
 
+# todo: this is special, has own create functions in C
 @forms_object
 class DataSourceColumn(GenericObject):
     object_type = FormsObjects.data_source_column
