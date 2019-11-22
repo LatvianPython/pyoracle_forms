@@ -131,8 +131,6 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
 
         if prop_name and "(obsolete)" not in prop_name:
             setattr(cls, prop_name, attribute)
-        else:
-            print(prop_name, property_number)
 
     return cls
 
