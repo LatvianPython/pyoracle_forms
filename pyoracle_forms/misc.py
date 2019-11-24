@@ -5,18 +5,18 @@ from typing import Dict, Callable, Type, Tuple, Union, NoReturn, Any, Iterable, 
 from .context import object_name
 from .context import property_constant_name
 from .context import property_name
+from .context import property_constant_number
 from .context import query_type
 from .generic_object import BaseObject, GenericObject, PropertyTypes
-
-# todo: for the future...
-#  from .context import get_boolean
-#  from .context import get_number
-#  from .context import get_object
-#  from .context import get_text
-#  from .context import set_boolean
-#  from .context import set_number
-#  from .context import set_object
-#  from .context import set_text
+from .context import context
+from .context import get_boolean
+from .context import get_number
+from .context import get_object
+from .context import get_text
+from .context import set_boolean
+from .context import set_number
+from .context import set_object
+from .context import set_text
 
 registered_objects: Dict[str, Type[BaseObject]] = {}
 
@@ -65,15 +65,67 @@ class Property:
         instance.set_property(self.property_number, value)
 
 
+class Text:
+    def __init__(self, constant: str):
+        self.constant = constant
+
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> str:
+        return (
+            get_text(instance, property_constant_number(self.constant)) or b""
+        ).decode(context.encoding)
+
+    def __set__(self, instance: BaseObject, value: str) -> None:
+        set_text(
+            instance,
+            property_constant_number(self.constant),
+            value.encode(context.encoding),
+        )
+
+
+class Bool:
+    def __init__(self, constant: str):
+        self.constant = constant
+
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> bool:
+        return get_boolean(instance, property_constant_number(self.constant))
+
+    def __set__(self, instance: BaseObject, value: bool) -> None:
+        set_boolean(instance, property_constant_number(self.constant), value)
+
+
+class Number:
+    def __init__(self, constant: str):
+        self.constant = constant
+
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> int:
+        return get_number(instance, property_constant_number(self.constant))
+
+    def __set__(self, instance: BaseObject, value: int) -> None:
+        set_number(instance, property_constant_number(self.constant), value)
+
+
+class Object:
+    def __init__(self, constant: str):
+        self.constant = constant
+
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> BaseObject:
+        return BaseObject(get_object(instance, property_constant_number(self.constant)))
+
+    def __set__(self, instance: BaseObject, value: BaseObject) -> None:
+        set_object(instance, property_constant_number(self.constant), value)
+
+
 class Subobjects:
-    def __init__(self, property_number: int, prop_name: str) -> None:
-        self.property_number, self.property_name = property_number, prop_name
+    def __init__(self, constant: str) -> None:
+        self.constant = constant
 
     def __get__(
         self, instance: BaseObject, owner: Type[BaseObject]
     ) -> List[BaseObject]:
         def gen_subobjects() -> Iterable[BaseObject]:
-            first_child: c_void_p = instance.get_property(self.property_number)
+            first_child: c_void_p = instance.get_property(
+                property_constant_number(self.constant)
+            )
             if first_child:
                 obj_name = object_name(query_type(first_child))
                 klass = registered_objects[obj_name]
@@ -103,7 +155,7 @@ def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subob
         return prop_name, Property(property_number)
     else:
         prop_name = obj_property.name
-        return prop_name, Subobjects(property_number, prop_name)
+        return prop_name, Subobjects(property_constant_name(property_number))
 
 
 def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:

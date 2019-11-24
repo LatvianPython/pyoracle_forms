@@ -218,6 +218,12 @@ def property_type(property_number: int) -> int:
     return int(api_function("d2fprgt_GetType", (c_uint,))(property_number))
 
 
+def property_constant_number(property_const_name: str) -> int:
+    return handled_api_function("d2fprgcv_GetConstValue", (c_char_p, c_void_p), 1)(
+        property_const_name.encode("utf-8"), c_int()
+    ).value
+
+
 def object_number(obj_name: str) -> int:
     return int(
         handled_api_function(

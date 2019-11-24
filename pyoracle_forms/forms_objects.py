@@ -1,19 +1,71 @@
 from __future__ import annotations
 
 from ctypes import c_void_p
-from typing import Optional, Any, Type
+from typing import Optional, Any, Type, List
 from types import TracebackType
 
 from .context import create_module
 from .context import load_module
 from .context import save_module
 from .generic_object import GenericObject, BaseObject, FormsObjects
-from .misc import forms_object
+from .misc import forms_object, Text, Number, Object, Bool, Subobjects
 
 
 @forms_object
 class Module(BaseObject):
     object_type = FormsObjects.module
+
+    name: str = Text("NAME")
+    comments: str = Text("COMMENT")
+    console_window: str = Text("CONSOLE_WIN")
+    cursor_mode: int = Number("CRSR_MODE")
+    direction: int = Number("LANG_DIR")
+    first_navigation_data_block: str = Text("FRST_NAVIGATION_BLK_NAM")
+    menu_module: str = Text("MNU_MOD")
+    menu_role: str = Text("MNU_ROLE")
+    initial_menu: str = Text("INIT_MNU")
+    form_horizontal_toolbar_canvas: str = Text("HORZ_TLBR_CNV")
+    form_vertical_toolbar_canvas: str = Text("VERT_TLBR_CNV")
+    mouse_navigation_limit: int = Number("MOUSE_NAVIGATION_LMT")
+    current_record_visual_attribute_group: str = Text("REC_VAT_GRP_NAM")
+    savepoint_mode: bool = Bool("SVPNT_MODE")
+    title: str = Text("TITLE")
+    use_3d_controls: bool = Bool("USE_3D_CNTRLS")
+    validation_unit: int = Number("VALIDATION_UNIT")
+    title_string_id: int = Number("TITLE_STRID")
+    interaction_mode: int = Number("INTERACTION_MODE")
+    maximum_query_time: int = Number("MAX_QRY_TIME")
+    maximum_records_fetched: int = Number("MAX_RECS_FETCHED")
+    isolation_mode: int = Number("ISOLATION_MODE")
+    parent_objects_module: str = Text("PAR_MODULE")
+    parent_objects_module_type: int = Number("PAR_MODTYP")
+    parent_object_name: str = Text("PAR_NAM")
+    parent_objects_file_name: str = Text("PAR_FLNAM")
+    parent_objects_file_path: str = Text("PAR_FLPATH")
+    runtime_compatibility_mode: int = Number("RUNTIME_COMP")
+    parent_objects_type: int = Number("PAR_TYP")
+    help_book_title: str = Text("HELP_BOOK_TITLE")
+    defer_required_enforcement: int = Number("NEWDEFER_REQ_ENF")
+
+    alerts: List[Alert] = Subobjects("ALERT")
+    attached_libraries: List[AttachedLibrary] = Subobjects("ATT_LIB")
+    data_blocks: List[DataBlock] = Subobjects("BLOCK")
+    canvases: List[Canvas] = Subobjects("CANVAS")
+    editors: List[Editor] = Subobjects("EDITOR")
+    form_parameters: List[FormParameter] = Subobjects("FORM_PARAM")
+    lovs: List[LOV] = Subobjects("LOV")
+    menus: List[Menu] = Subobjects("MENU")
+    triggers: List[Trigger] = Subobjects("TRIGGER")
+    visual_attributes: List[VisualAttribute] = Subobjects("VIS_ATTR")
+    windows: List[Window] = Subobjects("WINDOW")
+    reports: List[Report] = Subobjects("REPORT")
+    object_groups: List[ObjectGroup] = Subobjects("OBJ_GRP")
+    program_units: List[ProgramUnit] = Subobjects("PROG_UNIT")
+    property_classes: List[PropertyClass] = Subobjects("PROP_CLASS")
+    record_groups: List[RecordGroup] = Subobjects("REC_GRP")
+    events: List[Event] = Subobjects("EVENT")
+
+    first_data_block_object: BaseObject = Object("FRST_NAVIGATION_BLK_OBJ")
 
     def __init__(self, module: c_void_p, path: str):
         super().__init__(module)
