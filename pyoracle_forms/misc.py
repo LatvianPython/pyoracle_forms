@@ -1,6 +1,20 @@
 import enum
 from ctypes import c_void_p
-from typing import Dict, Callable, Type, Tuple, Union, NoReturn, Any, Iterable, List
+from typing import (
+    Dict,
+    Callable,
+    Type,
+    Tuple,
+    Union,
+    NoReturn,
+    Any,
+    Iterable,
+    List,
+    TypeVar,
+    Generic,
+)
+
+from typing_extensions import Protocol
 
 from .context import object_name
 from .context import property_constant_name
@@ -115,14 +129,15 @@ class Object:
         set_object(instance, property_constant_number(self.constant), value)
 
 
-class Subobjects:
+T = TypeVar("T")
+
+
+class Subobjects(Generic[T]):
     def __init__(self, constant: str) -> None:
         self.constant = constant
 
-    def __get__(
-        self, instance: BaseObject, owner: Type[BaseObject]
-    ) -> List[BaseObject]:
-        def gen_subobjects() -> Iterable[BaseObject]:
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> List[T]:
+        def gen_subobjects() -> Iterable[T]:
             first_child: c_void_p = instance.get_property(
                 property_constant_number(self.constant)
             )
@@ -137,7 +152,7 @@ class Subobjects:
         subobjects = list(gen_subobjects())
         return subobjects
 
-    def __set__(self, instance: BaseObject, value: None) -> NoReturn:
+    def __set__(self, instance: BaseObject, value: List[T]) -> NoReturn:
         raise AttributeError("can't set attribute")
 
 

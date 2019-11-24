@@ -88,8 +88,11 @@ class BaseObject:
     _object_number: Optional[int]
     _as_parameter_: c_void_p
 
-    def __init__(self, generic_object: c_void_p) -> None:
-        self._as_parameter_ = generic_object
+    def __init__(self, generic_object: Union[c_void_p, BaseObject]) -> None:
+        try:
+            self._as_parameter_ = generic_object._as_parameter_
+        except AttributeError:
+            self._as_parameter_ = generic_object
 
     def has_property(self, property_number: int) -> bool:
         return has_property(self, property_number)

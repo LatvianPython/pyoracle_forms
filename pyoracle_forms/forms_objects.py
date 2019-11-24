@@ -15,39 +15,39 @@ from .misc import forms_object, Text, Number, Object, Bool, Subobjects
 class Module(BaseObject):
     object_type = FormsObjects.module
 
-    name: str = Text("NAME")
-    comments: str = Text("COMMENT")
-    console_window: str = Text("CONSOLE_WIN")
-    cursor_mode: int = Number("CRSR_MODE")
-    direction: int = Number("LANG_DIR")
-    first_navigation_data_block: str = Text("FRST_NAVIGATION_BLK_NAM")
-    menu_module: str = Text("MNU_MOD")
-    menu_role: str = Text("MNU_ROLE")
-    initial_menu: str = Text("INIT_MNU")
-    form_horizontal_toolbar_canvas: str = Text("HORZ_TLBR_CNV")
-    form_vertical_toolbar_canvas: str = Text("VERT_TLBR_CNV")
-    mouse_navigation_limit: int = Number("MOUSE_NAVIGATION_LMT")
-    current_record_visual_attribute_group: str = Text("REC_VAT_GRP_NAM")
-    savepoint_mode: bool = Bool("SVPNT_MODE")
-    title: str = Text("TITLE")
-    use_3d_controls: bool = Bool("USE_3D_CNTRLS")
-    validation_unit: int = Number("VALIDATION_UNIT")
-    title_string_id: int = Number("TITLE_STRID")
-    interaction_mode: int = Number("INTERACTION_MODE")
-    maximum_query_time: int = Number("MAX_QRY_TIME")
-    maximum_records_fetched: int = Number("MAX_RECS_FETCHED")
-    isolation_mode: int = Number("ISOLATION_MODE")
-    parent_objects_module: str = Text("PAR_MODULE")
-    parent_objects_module_type: int = Number("PAR_MODTYP")
-    parent_object_name: str = Text("PAR_NAM")
-    parent_objects_file_name: str = Text("PAR_FLNAM")
-    parent_objects_file_path: str = Text("PAR_FLPATH")
-    runtime_compatibility_mode: int = Number("RUNTIME_COMP")
-    parent_objects_type: int = Number("PAR_TYP")
-    help_book_title: str = Text("HELP_BOOK_TITLE")
-    defer_required_enforcement: int = Number("NEWDEFER_REQ_ENF")
+    name = Text("NAME")
+    comments = Text("COMMENT")
+    console_window = Text("CONSOLE_WIN")
+    cursor_mode = Number("CRSR_MODE")
+    direction = Number("LANG_DIR")
+    first_navigation_data_block = Text("FRST_NAVIGATION_BLK_NAM")
+    menu_module = Text("MNU_MOD")
+    menu_role = Text("MNU_ROLE")
+    initial_menu = Text("INIT_MNU")
+    form_horizontal_toolbar_canvas = Text("HORZ_TLBR_CNV")
+    form_vertical_toolbar_canvas = Text("VERT_TLBR_CNV")
+    mouse_navigation_limit = Number("MOUSE_NAVIGATION_LMT")
+    current_record_visual_attribute_group = Text("REC_VAT_GRP_NAM")
+    savepoint_mode = Bool("SVPNT_MODE")
+    title = Text("TITLE")
+    use_3d_controls = Bool("USE_3D_CNTRLS")
+    validation_unit = Number("VALIDATION_UNIT")
+    title_string_id = Number("TITLE_STRID")
+    interaction_mode = Number("INTERACTION_MODE")
+    maximum_query_time = Number("MAX_QRY_TIME")
+    maximum_records_fetched = Number("MAX_RECS_FETCHED")
+    isolation_mode = Number("ISOLATION_MODE")
+    parent_objects_module = Text("PAR_MODULE")
+    parent_objects_module_type = Number("PAR_MODTYP")
+    parent_object_name = Text("PAR_NAM")
+    parent_objects_file_name = Text("PAR_FLNAM")
+    parent_objects_file_path = Text("PAR_FLPATH")
+    runtime_compatibility_mode = Number("RUNTIME_COMP")
+    parent_objects_type = Number("PAR_TYP")
+    help_book_title = Text("HELP_BOOK_TITLE")
+    defer_required_enforcement = Number("NEWDEFER_REQ_ENF")
 
-    alerts: List[Alert] = Subobjects("ALERT")
+    alerts = Subobjects["Alert"]("ALERT")  # type: List[Alert]
     attached_libraries: List[AttachedLibrary] = Subobjects("ATT_LIB")
     data_blocks: List[DataBlock] = Subobjects("BLOCK")
     canvases: List[Canvas] = Subobjects("CANVAS")
@@ -65,7 +65,13 @@ class Module(BaseObject):
     record_groups: List[RecordGroup] = Subobjects("REC_GRP")
     events: List[Event] = Subobjects("EVENT")
 
-    first_data_block_object: BaseObject = Object("FRST_NAVIGATION_BLK_OBJ")
+    first_data_block_object = Object("FRST_NAVIGATION_BLK_OBJ")
+
+    next_object = Object("NEXT")
+    previous_object = Object("PREVIOUS")
+    source_object = Object("SOURCE")
+
+    current_record_va_pointer = Object("REC_VAT_GRP_OBJ")
 
     def __init__(self, module: c_void_p, path: str):
         super().__init__(module)
@@ -92,6 +98,10 @@ class Module(BaseObject):
 
     def save(self, path: Optional[str] = None) -> None:
         save_module(module=self, path=path or self.path)
+
+
+# modu = Module(1, "")
+# reveal_type(modu.alerts[0])
 
 
 @forms_object
