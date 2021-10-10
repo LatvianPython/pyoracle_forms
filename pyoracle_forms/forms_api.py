@@ -1,10 +1,9 @@
 import json
 import pathlib
-from typing import Dict, Tuple, Optional
 from ctypes import *
 from os import pathsep, environ
 from os.path import exists, abspath, join
-
+from typing import Dict, Tuple, Optional
 
 dll_names = {
     "12c": ("frmd2f.dll", "msvcr100"),

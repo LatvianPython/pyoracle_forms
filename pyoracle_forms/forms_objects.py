@@ -1,19 +1,77 @@
 from __future__ import annotations
 
 from ctypes import c_void_p
-from typing import Optional, Any, Type
 from types import TracebackType
+from typing import Optional, Type, List
 
 from .context import create_module
 from .context import load_module
 from .context import save_module
 from .generic_object import GenericObject, BaseObject, FormsObjects
-from .misc import forms_object
+from .misc import forms_object, Text, Number, Object, Bool, Subobjects
 
 
 @forms_object
 class Module(BaseObject):
     object_type = FormsObjects.module
+
+    name = Text("NAME")
+    comments = Text("COMMENT")
+    console_window = Text("CONSOLE_WIN")
+    cursor_mode = Number("CRSR_MODE")
+    direction = Number("LANG_DIR")
+    first_navigation_data_block = Text("FRST_NAVIGATION_BLK_NAM")
+    menu_module = Text("MNU_MOD")
+    menu_role = Text("MNU_ROLE")
+    initial_menu = Text("INIT_MNU")
+    form_horizontal_toolbar_canvas = Text("HORZ_TLBR_CNV")
+    form_vertical_toolbar_canvas = Text("VERT_TLBR_CNV")
+    mouse_navigation_limit = Number("MOUSE_NAVIGATION_LMT")
+    current_record_visual_attribute_group = Text("REC_VAT_GRP_NAM")
+    savepoint_mode = Bool("SVPNT_MODE")
+    title = Text("TITLE")
+    use_3d_controls = Bool("USE_3D_CNTRLS")
+    validation_unit = Number("VALIDATION_UNIT")
+    title_string_id = Number("TITLE_STRID")
+    interaction_mode = Number("INTERACTION_MODE")
+    maximum_query_time = Number("MAX_QRY_TIME")
+    maximum_records_fetched = Number("MAX_RECS_FETCHED")
+    isolation_mode = Number("ISOLATION_MODE")
+    parent_objects_module = Text("PAR_MODULE")
+    parent_objects_module_type = Number("PAR_MODTYP")
+    parent_object_name = Text("PAR_NAM")
+    parent_objects_file_name = Text("PAR_FLNAM")
+    parent_objects_file_path = Text("PAR_FLPATH")
+    runtime_compatibility_mode = Number("RUNTIME_COMP")
+    parent_objects_type = Number("PAR_TYP")
+    help_book_title = Text("HELP_BOOK_TITLE")
+    defer_required_enforcement = Number("NEWDEFER_REQ_ENF")
+
+    alerts = Subobjects["Alert"]("ALERT")  # type: List[Alert]
+    attached_libraries: List[AttachedLibrary] = Subobjects("ATT_LIB")
+    data_blocks: List[DataBlock] = Subobjects("BLOCK")
+    canvases: List[Canvas] = Subobjects("CANVAS")
+    editors: List[Editor] = Subobjects("EDITOR")
+    form_parameters: List[FormParameter] = Subobjects("FORM_PARAM")
+    lovs: List[LOV] = Subobjects("LOV")
+    menus: List[Menu] = Subobjects("MENU")
+    triggers: List[Trigger] = Subobjects("TRIGGER")
+    visual_attributes: List[VisualAttribute] = Subobjects("VIS_ATTR")
+    windows: List[Window] = Subobjects("WINDOW")
+    reports: List[Report] = Subobjects("REPORT")
+    object_groups: List[ObjectGroup] = Subobjects("OBJ_GRP")
+    program_units: List[ProgramUnit] = Subobjects("PROG_UNIT")
+    property_classes: List[PropertyClass] = Subobjects("PROP_CLASS")
+    record_groups: List[RecordGroup] = Subobjects("REC_GRP")
+    events: List[Event] = Subobjects("EVENT")
+
+    first_data_block_object = Object("FRST_NAVIGATION_BLK_OBJ")
+
+    next_object = Object("NEXT")
+    previous_object = Object("PREVIOUS")
+    source_object = Object("SOURCE")
+
+    current_record_va_pointer = Object("REC_VAT_GRP_OBJ")
 
     def __init__(self, module: c_void_p, path: str):
         super().__init__(module)
@@ -40,6 +98,10 @@ class Module(BaseObject):
 
     def save(self, path: Optional[str] = None) -> None:
         save_module(module=self, path=path or self.path)
+
+
+# modu = Module(1, "")
+# reveal_type(modu.alerts[0])
 
 
 @forms_object

@@ -23,5 +23,5 @@ setuptools.setup(
         "Development Status :: 2 - Pre-Alpha",
     ],
     include_package_data=True,
-    python_requires=">=3.7",
+    python_requires=">=3.9",
 )

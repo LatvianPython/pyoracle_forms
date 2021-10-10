@@ -46,4 +46,5 @@ def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
     api_objects = read_api_objects(version=version)
 
     for forms_object in registered_objects.values():
-        add_properties(forms_object, api_objects)
+        if forms_object != Module:
+            add_properties(forms_object, api_objects)
