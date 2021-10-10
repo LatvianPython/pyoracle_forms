@@ -12,7 +12,6 @@ from typing import (
     cast,
     Union,
     Type,
-    Generic,
     TypeVar,
 )
 
@@ -21,7 +20,7 @@ from .forms_api import dlls
 
 if TYPE_CHECKING:
     from ctypes import _FuncPointer
-    from .generic_object import BaseObject, PropertyTypes
+    from .generic_object import BaseObject
     from .forms_objects import Module
 
 T = TypeVar("T")

@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import enum
-from ctypes import c_void_p
 from typing import (
     Dict,
     Type,
@@ -10,9 +11,11 @@ from typing import (
     List,
     TypeVar,
     Generic,
+    Any,
+    TYPE_CHECKING,
 )
 
-from .context import context
+from .context import context, property_type
 from .context import get_boolean
 from .context import get_number
 from .context import get_object
@@ -26,9 +29,12 @@ from .context import set_boolean
 from .context import set_number
 from .context import set_object
 from .context import set_text
-from .generic_object import BaseObject, PropertyTypes
+from .generic_object import BaseObject, ValueTypes, GenericObject
 
-registered_objects: Dict[str, Type[BaseObject]] = {}
+if TYPE_CHECKING:
+    from . import Module
+
+registered_objects: Dict[str, Union[Type[GenericObject], Type["Module"]]] = {}
 
 
 class ObjectProperties(enum.Enum):
@@ -64,21 +70,20 @@ class ObjectProperties(enum.Enum):
     column_value = "D2FP_COLUMN_VALUE"
 
 
-class Property:
-    def __init__(self, property_number: int):
-        self.property_number = property_number
-
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> PropertyTypes:
-        return instance.get_property(self.property_number)
-
-    def __set__(self, instance: BaseObject, value: PropertyTypes) -> None:
-        instance.set_property(self.property_number, value)
-
-
-class Text:
+class Common:
     def __init__(self, constant: str):
         self.constant = constant
 
+
+class Unknown(Common):
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> NoReturn:
+        raise NotImplementedError()
+
+    def __set__(self, instance: BaseObject, value: Any) -> NoReturn:
+        raise NotImplementedError()
+
+
+class Text(Common):
     def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> str:
         return (
             get_text(instance, property_constant_number(self.constant)) or b""
@@ -92,10 +97,7 @@ class Text:
         )
 
 
-class Bool:
-    def __init__(self, constant: str):
-        self.constant = constant
-
+class Bool(Common):
     def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> bool:
         return get_boolean(instance, property_constant_number(self.constant))
 
@@ -103,10 +105,7 @@ class Bool:
         set_boolean(instance, property_constant_number(self.constant), value)
 
 
-class Number:
-    def __init__(self, constant: str):
-        self.constant = constant
-
+class Number(Common):
     def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> int:
         return get_number(instance, property_constant_number(self.constant))
 
@@ -114,10 +113,7 @@ class Number:
         set_number(instance, property_constant_number(self.constant), value)
 
 
-class Object:
-    def __init__(self, constant: str):
-        self.constant = constant
-
+class Object(Common):
     def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> BaseObject:
         return BaseObject(get_object(instance, property_constant_number(self.constant)))
 
@@ -127,25 +123,32 @@ class Object:
 
 T = TypeVar("T")
 
+properties = {
+    ValueTypes.UNKNOWN: Unknown,
+    ValueTypes.BOOLEAN: Bool,
+    ValueTypes.NUMBER: Number,
+    ValueTypes.TEXT: Text,
+    ValueTypes.OBJECT: Object,
+}
+
 
 class Subobjects(Generic[T]):
     def __init__(self, constant: str) -> None:
         self.constant = constant
 
     def __get__(
-        self, instance: BaseObject, owner: Type[BaseObject]
-    ) -> List[BaseObject]:
-        def gen_subobjects() -> Iterable[BaseObject]:
-            first_child: c_void_p = instance.get_property(
-                property_constant_number(self.constant)
-            )
+        self, instance: GenericObject, owner: Type[GenericObject]
+    ) -> List[GenericObject]:
+        def gen_subobjects() -> Iterable[GenericObject]:
+            first_child = get_object(instance, property_constant_number(self.constant))
             if first_child:
                 obj_name = object_name(query_type(first_child))
-                klass = registered_objects[obj_name]
+                klass: Type[GenericObject] = registered_objects[obj_name]  # type: ignore
+
                 child = klass(first_child)
                 while child:
                     yield child
-                    child = klass(child.next_object)
+                    child = klass(child.next_object)  # type: ignore
 
         subobjects = list(gen_subobjects())
         return subobjects
@@ -156,8 +159,9 @@ class Subobjects(Generic[T]):
 
 def property_attribute(
     property_number: int,
-) -> Tuple[str, Union[Property, Subobjects[BaseObject]]]:
-    const_name = f"D2FP_{property_constant_name(property_number)}"
+) -> Tuple[str, Union[Common, Subobjects[BaseObject]]]:
+    constant_name = property_constant_name(property_number)
+    const_name = f"D2FP_{constant_name}"
     try:
         obj_property = ObjectProperties(const_name)
     except ValueError:
@@ -167,7 +171,9 @@ def property_attribute(
             .replace("-", "_")
             .replace("/", "_")
         )
-        return prop_name, Property(property_number)
+        value_type = ValueTypes(property_type(property_number=property_number))
+        klass = properties[value_type]
+        return prop_name, klass(constant_name)
     else:
         prop_name = obj_property.name
         return prop_name, Subobjects(property_constant_name(property_number))
@@ -194,7 +200,7 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
 
         property_number = forms_object_property["property_number"]
 
-        attribute: Union[str, Union[Property, Subobjects[BaseObject]]]
+        attribute: Union[str, Union[Common, Subobjects[BaseObject]]]
         prop_name, attribute = property_attribute(property_number)
 
         if prop_name and "(obsolete)" not in prop_name:
@@ -203,6 +209,8 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
     return cls
 
 
-def forms_object(cls: Type[BaseObject]) -> Type[BaseObject]:
+def forms_object(
+    cls: Union[Type[GenericObject], Type[Module]]
+) -> Union[Type[GenericObject], Type[Module]]:
     registered_objects[cls.object_type.value[6:]] = cls
     return cls

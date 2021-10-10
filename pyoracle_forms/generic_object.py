@@ -3,35 +3,13 @@ from __future__ import annotations
 import enum
 from ctypes import c_void_p
 from typing import (
-    Callable,
-    Dict,
     Optional,
-    Tuple,
     Union,
-    TYPE_CHECKING,
-    TypeVar,
-    Generic,
-    Type,
-    Any,
 )
 
-from .context import context
 from .context import create
 from .context import destroy
-from .context import get_boolean
-from .context import get_number
-from .context import get_object
-from .context import get_text
 from .context import has_property
-from .context import property_type
-from .context import set_boolean
-from .context import set_number
-from .context import set_object
-from .context import set_text
-
-if TYPE_CHECKING:
-    from .context import Setter
-    from .context import Getter
 
 
 class FormsObjects(enum.Enum):
@@ -79,34 +57,6 @@ class ValueTypes(enum.IntEnum):
 PropertyTypes = Union[bool, int, str, bytes, "BaseObject", c_void_p]
 
 
-def identity(x: PropertyTypes) -> PropertyTypes:
-    return x
-
-
-def encode(x: str) -> bytes:
-    return x.encode(context.encoding)
-
-
-def decode(x: bytes) -> str:
-    return (x or b"").decode(context.encoding)
-
-
-# todo: still do not really like this
-property_getters: Dict[ValueTypes, Getter[Any]] = {
-    ValueTypes.BOOLEAN: get_boolean,
-    ValueTypes.NUMBER: get_number,
-    ValueTypes.TEXT: get_text,
-    ValueTypes.OBJECT: get_object,
-}
-
-property_setters: Dict[ValueTypes, Setter[Any]] = {
-    ValueTypes.BOOLEAN: set_boolean,
-    ValueTypes.NUMBER: set_number,
-    ValueTypes.TEXT: set_text,
-    ValueTypes.OBJECT: set_object,
-}
-
-
 class BaseObject:
     object_type: FormsObjects
     _object_number: Optional[int]
@@ -120,29 +70,6 @@ class BaseObject:
 
     def has_property(self, property_number: int) -> bool:
         return has_property(self, property_number)
-
-    # todo: must be a better way
-    def get_property(self, property_number: int) -> PropertyTypes:
-        value_type = ValueTypes(property_type(property_number=property_number))
-        try:
-            func = property_getters[value_type]
-            postprocess = decode if value_type == ValueTypes.TEXT else identity
-        except KeyError:
-            return f"UNKNOWN PROPERTY TYPE({value_type})"  # todo: decide what to do with these!
-        else:
-            return postprocess(func(self, property_number))
-
-    # todo: must be a better way
-    def set_property(self, property_number: int, property_value: PropertyTypes) -> None:
-        value_type = ValueTypes(property_type(property_number=property_number))
-        func = property_setters[value_type]
-
-        if value_type == ValueTypes.TEXT:
-            if not isinstance(property_value, str):
-                raise TypeError("incorrect type passed, expected str")
-            func(self, property_number, encode(property_value))
-        else:
-            func(self, property_number, identity(property_value))
 
     def destroy(self) -> None:
         destroy(self)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import c_void_p
 from types import TracebackType
-from typing import Optional, Type, List
+from typing import Optional, Type
 
 from .context import create_module
 from .context import load_module
