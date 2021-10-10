@@ -13,7 +13,6 @@ from typing import (
     Generic,
     Any,
     TYPE_CHECKING,
-    Callable,
 )
 
 from .context import context, property_type
