@@ -18,10 +18,6 @@ pyoracle_forms
     :target: https://pypi.org/project/pyoracle-forms/
     :alt: PyPI
 
-.. image:: https://travis-ci.org/LatvianPython/pyoracle_forms.svg?branch=master
-    :target: https://travis-ci.org/LatvianPython/pyoracle_forms
-    :alt: Travis CI
-
 .. image:: https://readthedocs.org/projects/pyoracle-forms/badge/?version=latest
     :target: https://pyoracle-forms.readthedocs.io/en/latest/?badge=latest
     :alt: Read the Docs
@@ -29,7 +25,6 @@ pyoracle_forms
 .. image:: https://img.shields.io/codeclimate/maintainability/LatvianPython/pyoracle_forms
     :target: https://codeclimate.com/github/LatvianPython/pyoracle_forms
     :alt: Code Climate maintainability
-
 
 .. image:: http://www.mypy-lang.org/static/mypy_badge.svg
     :target: http://mypy-lang.org/
