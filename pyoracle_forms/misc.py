@@ -13,6 +13,7 @@ from typing import (
     Generic,
     Any,
     TYPE_CHECKING,
+    Callable,
 )
 
 from .context import context, property_type
@@ -97,20 +98,33 @@ class Text(Common):
         )
 
 
-class Bool(Common):
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> bool:
-        return get_boolean(instance, property_constant_number(self.constant))
-
-    def __set__(self, instance: BaseObject, value: bool) -> None:
-        set_boolean(instance, property_constant_number(self.constant), value)
+U = TypeVar("U")
 
 
-class Number(Common):
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> int:
-        return get_number(instance, property_constant_number(self.constant))
+class BasicAttribute(Common, Generic[U]):
+    @staticmethod
+    def _getter(instance: BaseObject, property_constant: int) -> U:
+        raise NotImplementedError()
 
-    def __set__(self, instance: BaseObject, value: int) -> None:
-        set_number(instance, property_constant_number(self.constant), value)
+    @staticmethod
+    def _setter(instance: BaseObject, property_constant: int, value: U) -> U:
+        raise NotImplementedError()
+
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> U:
+        return self._getter(instance, property_constant_number(self.constant))
+
+    def __set__(self, instance: BaseObject, value: U) -> None:
+        self._setter(instance, property_constant_number(self.constant), value)
+
+
+class Bool(BasicAttribute[bool]):
+    _getter = staticmethod(get_boolean)  # type: ignore
+    _setter = staticmethod(set_boolean)  # type: ignore
+
+
+class Number(BasicAttribute[int]):
+    _getter = staticmethod(get_number)  # type: ignore
+    _setter = staticmethod(set_number)  # type: ignore
 
 
 class Object(Common):
