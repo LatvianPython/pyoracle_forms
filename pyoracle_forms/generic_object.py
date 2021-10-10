@@ -2,7 +2,18 @@ from __future__ import annotations
 
 import enum
 from ctypes import c_void_p
-from typing import Callable, Dict, Optional, Tuple, Union, TYPE_CHECKING
+from typing import (
+    Callable,
+    Dict,
+    Optional,
+    Tuple,
+    Union,
+    TYPE_CHECKING,
+    TypeVar,
+    Generic,
+    Type,
+    Any,
+)
 
 from .context import context
 from .context import create
@@ -65,21 +76,34 @@ class ValueTypes(enum.IntEnum):
     OBJECT = 4
 
 
-PropertyTypes = Union[bool, int, str, "BaseObject", c_void_p]
+PropertyTypes = Union[bool, int, str, bytes, "BaseObject", c_void_p]
 
 
-property_getters: Dict[ValueTypes, Tuple[Getter, Callable]] = {
-    ValueTypes.BOOLEAN: (get_boolean, lambda x: x),
-    ValueTypes.NUMBER: (get_number, lambda x: x),
-    ValueTypes.TEXT: (get_text, lambda x: (x or b"").decode(context.encoding)),
-    ValueTypes.OBJECT: (get_object, lambda x: x),
+def identity(x: PropertyTypes) -> PropertyTypes:
+    return x
+
+
+def encode(x: str) -> bytes:
+    return x.encode(context.encoding)
+
+
+def decode(x: bytes) -> str:
+    return (x or b"").decode(context.encoding)
+
+
+# todo: still do not really like this
+property_getters: Dict[ValueTypes, Getter[Any]] = {
+    ValueTypes.BOOLEAN: get_boolean,
+    ValueTypes.NUMBER: get_number,
+    ValueTypes.TEXT: get_text,
+    ValueTypes.OBJECT: get_object,
 }
 
-property_setters: Dict[ValueTypes, Tuple[Setter, Callable]] = {
-    ValueTypes.BOOLEAN: (set_boolean, lambda x: x),
-    ValueTypes.NUMBER: (set_number, lambda x: x),
-    ValueTypes.TEXT: (set_text, lambda x: x.encode(context.encoding)),
-    ValueTypes.OBJECT: (set_object, lambda x: x),
+property_setters: Dict[ValueTypes, Setter[Any]] = {
+    ValueTypes.BOOLEAN: set_boolean,
+    ValueTypes.NUMBER: set_number,
+    ValueTypes.TEXT: set_text,
+    ValueTypes.OBJECT: set_object,
 }
 
 
@@ -89,27 +113,36 @@ class BaseObject:
     _as_parameter_: c_void_p
 
     def __init__(self, generic_object: Union[c_void_p, BaseObject]) -> None:
-        try:
+        if isinstance(generic_object, BaseObject):
             self._as_parameter_ = generic_object._as_parameter_
-        except AttributeError:
+        else:
             self._as_parameter_ = generic_object
 
     def has_property(self, property_number: int) -> bool:
         return has_property(self, property_number)
 
+    # todo: must be a better way
     def get_property(self, property_number: int) -> PropertyTypes:
         value_type = ValueTypes(property_type(property_number=property_number))
         try:
-            func, postprocess = property_getters[value_type]
+            func = property_getters[value_type]
+            postprocess = decode if value_type == ValueTypes.TEXT else identity
         except KeyError:
             return f"UNKNOWN PROPERTY TYPE({value_type})"  # todo: decide what to do with these!
         else:
             return postprocess(func(self, property_number))
 
+    # todo: must be a better way
     def set_property(self, property_number: int, property_value: PropertyTypes) -> None:
         value_type = ValueTypes(property_type(property_number=property_number))
-        func, preprocess = property_setters[value_type]
-        func(self, property_number, preprocess(property_value))
+        func = property_setters[value_type]
+
+        if value_type == ValueTypes.TEXT:
+            if not isinstance(property_value, str):
+                raise TypeError("incorrect type passed, expected str")
+            func(self, property_number, encode(property_value))
+        else:
+            func(self, property_number, identity(property_value))
 
     def destroy(self) -> None:
         destroy(self)

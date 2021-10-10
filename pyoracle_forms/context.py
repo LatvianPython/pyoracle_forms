@@ -12,6 +12,8 @@ from typing import (
     cast,
     Union,
     Type,
+    Generic,
+    TypeVar,
 )
 
 from .error_handling import raise_for_code
@@ -22,8 +24,10 @@ if TYPE_CHECKING:
     from .generic_object import BaseObject, PropertyTypes
     from .forms_objects import Module
 
-Setter = Callable[["BaseObject", int, "PropertyTypes"], None]
-Getter = Callable[["BaseObject", int], "PropertyTypes"]
+T = TypeVar("T")
+
+Setter = Callable[["BaseObject", int, T], None]
+Getter = Callable[["BaseObject", int], T]
 CTypes = Union[Type[c_void_p], Type[c_bool], Type[c_int], Type["String"]]
 
 
@@ -107,7 +111,7 @@ def handled_api_function(
     api_function_name: str,
     arguments: Tuple[Any, ...],
     return_value_index: Optional[int] = None,
-) -> Callable:
+) -> Callable[..., Any]:
     def _handled_api_function(*args: Any) -> Any:
         injected_args, return_value = inject_return_value(args, return_value_index)
 
@@ -129,29 +133,29 @@ def has_property(generic_object: BaseObject, property_number: int) -> bool:
     raise_for_code(result)
 
 
-def setter(function_name: str, setter_type: CTypes) -> Setter:
+def setter(function_name: str, setter_type: CTypes) -> Setter[T]:
     return handled_api_function(function_name, (c_void_p, c_int, setter_type))
 
 
-set_text: Setter = setter("d2fobst_SetTextProp", c_void_p)
-set_boolean: Setter = setter("d2fobsb_SetBoolProp", c_bool)
-set_number: Setter = setter("d2fobsn_SetNumProp", c_int)
-set_object: Setter = setter("d2fobso_SetObjProp", c_void_p)
+set_text: Setter[bytes] = setter("d2fobst_SetTextProp", c_void_p)
+set_boolean: Setter[bool] = setter("d2fobsb_SetBoolProp", c_bool)
+set_number: Setter[int] = setter("d2fobsn_SetNumProp", c_int)
+set_object: Setter[BaseObject] = setter("d2fobso_SetObjProp", c_void_p)
 
 
-def getter(function_name: str, return_type: CTypes) -> Getter:
+def getter(function_name: str, return_type: CTypes) -> Getter[T]:
     func = handled_api_function(function_name, (c_void_p, c_int, c_void_p), 2)
 
-    def _getter(generic_object: BaseObject, property_number: int) -> PropertyTypes:
+    def _getter(generic_object: BaseObject, property_number: int) -> Getter[T]:
         return func(generic_object, property_number, return_type()).value
 
-    return cast(Getter, _getter)
+    return cast(Getter[T], _getter)
 
 
-get_boolean: Getter = getter("d2fobgb_GetBoolProp", c_bool)
-get_number: Getter = getter("d2fobgn_GetNumProp", c_int)
-get_object: Getter = getter("d2fobgo_GetObjProp", c_void_p)
-get_text: Getter = getter("d2fobgt_GetTextProp", String)
+get_boolean: Getter[bool] = getter("d2fobgb_GetBoolProp", c_bool)
+get_number: Getter[int] = getter("d2fobgn_GetNumProp", c_int)
+get_object: Getter[BaseObject] = getter("d2fobgo_GetObjProp", c_void_p)
+get_text: Getter[bytes] = getter("d2fobgt_GetTextProp", String)
 
 
 def load_module(form_path: str) -> c_void_p:

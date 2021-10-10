@@ -26,7 +26,7 @@ def dlls(version: str) -> Tuple[CDLL, CDLL]:
     if dll_path:
         msvcrt = cdll.LoadLibrary(cdll_name)
         try:
-            from os import add_dll_directory  # type: ignore
+            from os import add_dll_directory
 
             with add_dll_directory(dll_path):
                 return cdll.LoadLibrary(api_dll), msvcrt

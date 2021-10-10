@@ -132,8 +132,10 @@ class Subobjects(Generic[T]):
     def __init__(self, constant: str) -> None:
         self.constant = constant
 
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> List[T]:
-        def gen_subobjects() -> Iterable[T]:
+    def __get__(
+        self, instance: BaseObject, owner: Type[BaseObject]
+    ) -> List[BaseObject]:
+        def gen_subobjects() -> Iterable[BaseObject]:
             first_child: c_void_p = instance.get_property(
                 property_constant_number(self.constant)
             )
@@ -148,11 +150,13 @@ class Subobjects(Generic[T]):
         subobjects = list(gen_subobjects())
         return subobjects
 
-    def __set__(self, instance: BaseObject, value: List[T]) -> NoReturn:
+    def __set__(self, instance: BaseObject, value: List[BaseObject]) -> NoReturn:
         raise AttributeError("can't set attribute")
 
 
-def property_attribute(property_number: int) -> Tuple[str, Union[Property, Subobjects]]:
+def property_attribute(
+    property_number: int,
+) -> Tuple[str, Union[Property, Subobjects[BaseObject]]]:
     const_name = f"D2FP_{property_constant_name(property_number)}"
     try:
         obj_property = ObjectProperties(const_name)
@@ -190,6 +194,7 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
 
         property_number = forms_object_property["property_number"]
 
+        attribute: Union[str, Union[Property, Subobjects[BaseObject]]]
         prop_name, attribute = property_attribute(property_number)
 
         if prop_name and "(obsolete)" not in prop_name:

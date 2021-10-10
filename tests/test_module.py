@@ -27,6 +27,11 @@ def test_can_create_new_modules(new_module):
     assert new_module.name == "new_module".upper()
 
 
+def test_manipulate_objects(new_module):
+    new_module.previous_object = (previous_object := new_module.previous_object)
+    assert previous_object._as_parameter_ == new_module.previous_object._as_parameter_
+
+
 def test_can_save_module(new_module, test_dir):
     save_to = f"{test_dir}/test_module1.fmb"
     new_module.save(save_to)
