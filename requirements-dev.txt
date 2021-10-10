@@ -8,4 +8,5 @@ wheel
 twine
 tox
 sphinx
+mypy
 -e .

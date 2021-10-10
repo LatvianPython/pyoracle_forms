@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from ctypes import c_void_p
-from typing import Optional, Any, Type, List
 from types import TracebackType
+from typing import Optional, Type, List
 
 from .context import create_module
 from .context import load_module

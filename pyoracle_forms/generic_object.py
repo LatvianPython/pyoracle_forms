@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Callable, Dict, Optional, Any, Tuple, Union, TYPE_CHECKING
-from ctypes import c_void_p
 import enum
+from ctypes import c_void_p
+from typing import Callable, Dict, Optional, Tuple, Union, TYPE_CHECKING
 
+from .context import context
 from .context import create
 from .context import destroy
 from .context import get_boolean
@@ -16,7 +17,6 @@ from .context import set_boolean
 from .context import set_number
 from .context import set_object
 from .context import set_text
-from .context import context
 
 if TYPE_CHECKING:
     from .context import Setter

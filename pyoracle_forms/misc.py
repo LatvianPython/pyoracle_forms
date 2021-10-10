@@ -2,35 +2,31 @@ import enum
 from ctypes import c_void_p
 from typing import (
     Dict,
-    Callable,
     Type,
     Tuple,
     Union,
     NoReturn,
-    Any,
     Iterable,
     List,
     TypeVar,
     Generic,
 )
 
-from typing_extensions import Protocol
-
-from .context import object_name
-from .context import property_constant_name
-from .context import property_name
-from .context import property_constant_number
-from .context import query_type
-from .generic_object import BaseObject, GenericObject, PropertyTypes
 from .context import context
 from .context import get_boolean
 from .context import get_number
 from .context import get_object
 from .context import get_text
+from .context import object_name
+from .context import property_constant_name
+from .context import property_constant_number
+from .context import property_name
+from .context import query_type
 from .context import set_boolean
 from .context import set_number
 from .context import set_object
 from .context import set_text
+from .generic_object import BaseObject, PropertyTypes
 
 registered_objects: Dict[str, Type[BaseObject]] = {}
 
