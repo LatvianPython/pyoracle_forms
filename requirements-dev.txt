@@ -9,4 +9,5 @@ twine
 tox
 sphinx
 mypy
+mutmut
 -e .

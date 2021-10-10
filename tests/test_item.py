@@ -1,4 +1,6 @@
-from pyoracle_forms import Item
+import pytest
+
+from pyoracle_forms import Item, FormsException
 
 
 def test_item_has_name(item):
@@ -17,6 +19,15 @@ def test_created_items_have_passed_name(data_block):
 
 def test_has_property(item):
     assert item.has_property(154)
+
+
+def test_has_no_such_property(item):
+    assert not item.has_property(100)
+
+
+def test_invalid_property(item):
+    with pytest.raises(FormsException):
+        assert not item.has_property(1000)
 
 
 def test_can_delete_items(data_block, make_item):
