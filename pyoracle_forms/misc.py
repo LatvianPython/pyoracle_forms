@@ -13,6 +13,7 @@ from typing import (
     Generic,
     Any,
     TYPE_CHECKING,
+    Optional,
 )
 
 from .context import context, property_type
@@ -127,8 +128,14 @@ class Number(BasicAttribute[int]):
 
 
 class Object(Common):
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> BaseObject:
-        return BaseObject(get_object(instance, property_constant_number(self.constant)))
+    def __get__(
+        self, instance: BaseObject, owner: Type[BaseObject]
+    ) -> Optional[BaseObject]:
+        obj = get_object(instance, property_constant_number(self.constant))
+        if obj:
+            klass = get_object_constructor(obj)
+            return klass(obj)
+        return None
 
     def __set__(self, instance: BaseObject, value: BaseObject) -> None:
         set_object(instance, property_constant_number(self.constant), value)
@@ -145,18 +152,25 @@ properties = {
 }
 
 
+def get_object_constructor(obj: BaseObject) -> Union[Type[Module], Type[GenericObject]]:
+    obj_name = object_name(query_type(obj))
+    klass = registered_objects.get(obj_name, GenericObject)
+    return klass
+
+
 class Subobjects(Generic[T]):
     def __init__(self, constant: str) -> None:
         self.constant = constant
 
+    # todo: this generates a new list every time would be better if its the same list, then
+    #  could operate on that list object creation/deletion and you won't have multiple inconsistent lists
     def __get__(
         self, instance: GenericObject, owner: Type[GenericObject]
-    ) -> List[GenericObject]:
-        def gen_subobjects() -> Iterable[GenericObject]:
+    ) -> List[BaseObject]:
+        def gen_subobjects() -> Iterable[BaseObject]:
             first_child = get_object(instance, property_constant_number(self.constant))
             if first_child:
-                obj_name = object_name(query_type(first_child))
-                klass: Type[GenericObject] = registered_objects[obj_name]  # type: ignore
+                klass = get_object_constructor(first_child)
 
                 child = klass(first_child)
                 while child:
@@ -198,6 +212,7 @@ def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:
     except KeyError:
         # todo: clean up dirty hack
         #  mostly for column_value, which seems to be not documented by orcl anyway
+        #  other objects also do not have their own specific entries
         obj_type = api_objects["D2FFO_ANY"]
         object_number = 6
     else:
@@ -206,8 +221,11 @@ def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:
     return obj_type, object_number
 
 
-def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
-    obj_type, cls._object_number = object_type(cls, api_objects)
+def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
+    obj_type, klass._object_number = object_type(klass, api_objects)
+
+    # todo: at this point, forms should be initialized, should be able to dynamically
+    #  add properties..?
 
     for forms_object_property in obj_type["properties"]:
 
@@ -217,13 +235,13 @@ def add_properties(cls: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]
         prop_name, attribute = property_attribute(property_number)
 
         if prop_name and "(obsolete)" not in prop_name:
-            setattr(cls, prop_name, attribute)
+            setattr(klass, prop_name, attribute)
 
-    return cls
+    return klass
 
 
 def forms_object(
-    cls: Union[Type[GenericObject], Type[Module]]
-) -> Union[Type[GenericObject], Type[Module]]:
-    registered_objects[cls.object_type.value[6:]] = cls
-    return cls
+    klass: Union[Type[Module], Type[GenericObject]]
+) -> Union[Type[Module], Type[GenericObject]]:
+    registered_objects[klass.object_type.value[6:]] = klass
+    return klass

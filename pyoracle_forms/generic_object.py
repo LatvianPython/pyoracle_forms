@@ -28,6 +28,8 @@ class FormsObjects(enum.Enum):
     tab_page = "D2FFO_TAB_PAGE"
     trigger = "D2FFO_TRIGGER"
     visual_attribute = "D2FFO_VIS_ATTR"
+    visual_state = "D2FFO_VIS_STATE"  # todo: undocumented, no .h file
+    compound_text = "D2FFO_CMPTXT"  # todo: undocumented, no .h file
     window = "D2FFO_WINDOW"
     module = "D2FFO_FORM_MODULE"
     data_source_argument = "D2FFO_DAT_SRC_ARG"
@@ -62,7 +64,9 @@ class BaseObject:
     _object_number: Optional[int]
     _as_parameter_: c_void_p
 
-    def __init__(self, generic_object: Union[c_void_p, BaseObject]) -> None:
+    def __init__(
+        self, generic_object: Union[c_void_p, BaseObject, GenericObject]
+    ) -> None:
         if isinstance(generic_object, BaseObject):
             self._as_parameter_ = generic_object._as_parameter_
         else:

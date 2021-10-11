@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import c_void_p
 from types import TracebackType
-from typing import Optional, Type
+from typing import Optional, Type, Union
 
 from .context import create_module
 from .context import load_module
@@ -73,7 +73,7 @@ class Module(BaseObject):
 
     current_record_va_pointer = Object("REC_VAT_GRP_OBJ")
 
-    def __init__(self, module: c_void_p, path: str):
+    def __init__(self, module: Union[c_void_p, BaseObject], path: Optional[str] = None):
         super().__init__(module)
         self.path = path
 
@@ -97,11 +97,10 @@ class Module(BaseObject):
         return cls(load_module(path), path=path)
 
     def save(self, path: Optional[str] = None) -> None:
-        save_module(module=self, path=path or self.path)
-
-
-# modu = Module(1, "")
-# reveal_type(modu.alerts[0])
+        path = path or self.path
+        if path is None:
+            raise ValueError("No path provided or available")
+        save_module(module=self, path=path)
 
 
 @forms_object
@@ -117,6 +116,12 @@ class Alert(GenericObject):
 @forms_object
 class Canvas(GenericObject):
     object_type = FormsObjects.canvas
+
+
+# todo: todo: undocumented, no .h file
+@forms_object
+class CompoundText(GenericObject):
+    object_type = FormsObjects.compound_text
 
 
 @forms_object
@@ -177,6 +182,12 @@ class Trigger(GenericObject):
 @forms_object
 class VisualAttribute(GenericObject):
     object_type = FormsObjects.visual_attribute
+
+
+# todo: todo: undocumented, no .h file
+@forms_object
+class VisualState(GenericObject):
+    object_type = FormsObjects.visual_state
 
 
 @forms_object

@@ -6,6 +6,7 @@ from .forms_objects import Alert
 from .forms_objects import AttachedLibrary
 from .forms_objects import Canvas
 from .forms_objects import ColumnValue
+from .forms_objects import CompoundText
 from .forms_objects import DataBlock
 from .forms_objects import DataSourceArgument
 from .forms_objects import DataSourceColumn
@@ -33,11 +34,12 @@ from .forms_objects import Report
 from .forms_objects import TabPage
 from .forms_objects import Trigger
 from .forms_objects import VisualAttribute
+from .forms_objects import VisualState
 from .forms_objects import Window
 from .misc import add_properties
 from .misc import registered_objects
 
-__version__ = "0.2.13"
+__version__ = "0.2.14"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
@@ -46,5 +48,8 @@ def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
     api_objects = read_api_objects(version=version)
 
     for forms_object in registered_objects.values():
+        # todo: i could just add static ones for all objects
+        #  and still have this code run adding missing values
+        #  or by removing ones not present in the version
         if forms_object != Module:
             add_properties(forms_object, api_objects)
