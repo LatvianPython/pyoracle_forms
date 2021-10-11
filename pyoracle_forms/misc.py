@@ -32,7 +32,7 @@ from .context import set_object
 from .context import set_text
 from .generic_object import BaseObject, ValueTypes, GenericObject
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from . import Module
 
 registered_objects: Dict[str, Union[Type[GenericObject], Type["Module"]]] = {}
@@ -104,11 +104,11 @@ U = TypeVar("U")
 class BasicAttribute(Common, Generic[U]):
     @staticmethod
     def _getter(instance: BaseObject, property_constant: int) -> U:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @staticmethod
     def _setter(instance: BaseObject, property_constant: int, value: U) -> U:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> U:
         return self._getter(instance, property_constant_number(self.constant))

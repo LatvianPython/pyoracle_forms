@@ -3,11 +3,14 @@ import shutil
 import pytest
 
 from pyoracle_forms import Module, Item, DataBlock, Canvas, Window, initialize_context
+from pyoracle_forms import context as ctx
 
 
 @pytest.fixture(scope="session")
 def context():
     initialize_context()
+    yield
+    ctx.destroy_context()
 
 
 @pytest.fixture(scope="session")

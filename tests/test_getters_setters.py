@@ -47,3 +47,8 @@ def test_object(new_module, new_canvas, make_window):
 def test_null_assignment(new_canvas):
     with pytest.raises(FormsException):
         new_canvas.window_object_pointer = None
+
+
+def test_cant_set_subobject_list(new_canvas):
+    with pytest.raises(AttributeError):
+        new_canvas.graphics = []

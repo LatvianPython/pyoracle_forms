@@ -1,5 +1,7 @@
 import glob
 
+import pytest
+
 
 def test_module_has_name(module):
     assert module.name == "MODULE1"
@@ -36,3 +38,8 @@ def test_can_save_module(new_module, test_dir):
     save_to = f"{test_dir}/test_module1.fmb"
     new_module.save(save_to)
     assert glob.glob(save_to)
+
+
+def test_cant_save_dynamic_module(data_block):
+    with pytest.raises(ValueError):
+        data_block.owning_module.save()

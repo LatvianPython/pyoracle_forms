@@ -1,7 +1,7 @@
 import json
 import pathlib
 from ctypes import *
-from os import pathsep, environ
+from os import pathsep, environ, add_dll_directory
 from os.path import exists, abspath, join
 from typing import Dict, Tuple, Optional
 
@@ -25,12 +25,7 @@ def dlls(version: str) -> Tuple[CDLL, CDLL]:
     dll_path = find_dll(api_dll)
     if dll_path:
         msvcrt = cdll.LoadLibrary(cdll_name)
-        try:
-            from os import add_dll_directory
-
-            with add_dll_directory(dll_path):
-                return cdll.LoadLibrary(api_dll), msvcrt
-        except ImportError:
+        with add_dll_directory(dll_path):
             return cdll.LoadLibrary(api_dll), msvcrt
     raise ImportError("No Oracle Forms API found")
 

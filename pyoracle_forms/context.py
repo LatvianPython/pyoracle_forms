@@ -18,7 +18,7 @@ from typing import (
 from .error_handling import raise_for_code
 from .forms_api import dlls
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ctypes import _FuncPointer
     from .generic_object import BaseObject
     from .forms_objects import Module
@@ -61,14 +61,15 @@ class Context:
         func = self.api.d2fctxcr_Create
         func.argtypes = (c_void_p, c_void_p)
         error_code = func(pointer(ctx), pointer(c_int()))
-        if error_code:
+        if error_code:  # pragma: no cover
             raise_for_code(error_code)
 
         self._as_parameter_ = ctx
 
     def destroy_context(self) -> None:
-        handled_api_function("d2fctxde_Destroy", tuple())(self)
-        self._as_parameter_ = c_void_p(0)
+        if self._as_parameter_:
+            handled_api_function("d2fctxde_Destroy", tuple())(self)
+            self._as_parameter_ = c_void_p(0)
 
 
 context: Context = Context()
