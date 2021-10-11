@@ -1,7 +1,7 @@
 import json
 import pathlib
 from ctypes import *
-from os import pathsep, environ, add_dll_directory
+from os import pathsep, environ
 from os.path import exists, abspath, join
 from typing import Dict, Tuple, Optional
 
@@ -24,6 +24,8 @@ def dlls(version: str) -> Tuple[CDLL, CDLL]:
     api_dll, cdll_name = dll_names[version]
     dll_path = find_dll(api_dll)
     if dll_path:
+        from os import add_dll_directory
+
         msvcrt = cdll.LoadLibrary(cdll_name)
         with add_dll_directory(dll_path):
             return cdll.LoadLibrary(api_dll), msvcrt
