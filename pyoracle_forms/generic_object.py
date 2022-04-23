@@ -10,6 +10,8 @@ from typing import (
 from .context import create
 from .context import destroy
 from .context import has_property
+from .context import un_subclass
+from .context import subclass
 
 
 class FormsObjects(enum.Enum):
@@ -79,11 +81,22 @@ class BaseObject:
         destroy(self)
         self._as_parameter_ = c_void_p(0)
 
+    def un_subclass(self) -> None:
+        un_subclass(self)
+
+    def subclass(self, property_class: BaseObject, keep_path: bool = False) -> None:
+        subclass(self, property_class, keep_path)
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"
 
     def __bool__(self) -> bool:
         return bool(self._as_parameter_)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BaseObject):
+            return NotImplemented
+        return self._as_parameter_ == other._as_parameter_
 
 
 class GenericObject(BaseObject):

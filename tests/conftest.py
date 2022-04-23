@@ -2,7 +2,15 @@ import shutil
 
 import pytest
 
-from pyoracle_forms import Module, Item, DataBlock, Canvas, Window, initialize_context
+from pyoracle_forms import (
+    Module,
+    Item,
+    DataBlock,
+    Canvas,
+    Window,
+    initialize_context,
+    PropertyClass,
+)
 from pyoracle_forms import context as ctx
 
 
@@ -25,8 +33,19 @@ def data_block(module):
 
 
 @pytest.fixture(scope="session")
-def item(data_block):
+def item(data_block) -> Item:
     return data_block.items[0]
+
+
+@pytest.fixture(scope="session")
+def property_classes(module) -> [PropertyClass]:
+    return module.property_classes
+
+
+@pytest.fixture(scope="session")
+def property_class(property_classes) -> PropertyClass:
+    assert property_classes
+    return property_classes[0]
 
 
 @pytest.fixture(scope="session")
@@ -92,3 +111,10 @@ def new_data_block(make_data_block):
 @pytest.fixture(scope="function")
 def new_item(new_data_block, make_item):
     return make_item(new_data_block, "ITM")
+
+
+@pytest.fixture(scope="function")
+def subclassed_item(new_data_block, make_item, property_class):
+    item = make_item(new_data_block, "ITM")
+    item.subclass(property_class)
+    return item
