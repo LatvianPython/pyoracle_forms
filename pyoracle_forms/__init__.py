@@ -39,7 +39,7 @@ from .forms_objects import Window
 from .misc import add_properties
 from .misc import registered_objects
 
-__version__ = "0.2.14"
+__version__ = "0.3.1"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:

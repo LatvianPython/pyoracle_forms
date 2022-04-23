@@ -234,3 +234,15 @@ def object_number(obj_name: str) -> int:
             "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
         )(obj_name.encode("utf-8"), c_int()).value
     )
+
+
+def subclass(
+    to_subclass: BaseObject, parent: BaseObject, keep_path: bool = False
+) -> None:
+    handled_api_function("d2fobsc_SubClass", (c_void_p, c_void_p, c_bool))(
+        to_subclass, parent, keep_path
+    )
+
+
+def un_subclass(to_un_subclass: BaseObject) -> None:
+    handled_api_function("d2fobus_UnSubClass", (c_void_p,))(to_un_subclass)

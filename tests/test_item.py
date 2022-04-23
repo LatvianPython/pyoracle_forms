@@ -38,3 +38,11 @@ def test_can_delete_items(data_block, make_item):
 
     data_block.items[0].destroy()
     assert len(data_block.items) < items
+
+
+def test_equality(data_block):
+    assert data_block.items[0] == data_block.items[0]
+
+
+def test_inequality(data_block, make_item):
+    assert make_item(data_block, "ITM_1") != make_item(data_block, "ITM_2")
