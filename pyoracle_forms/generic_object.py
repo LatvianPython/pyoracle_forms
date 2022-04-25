@@ -95,13 +95,13 @@ class BaseObject:
         return query_type(self)
 
     def duplicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
     def replicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
     def find_object(self, name: str, object_type: FormsObjects) -> NoReturn:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
     def inherit_property(self, property_type: Properties) -> NoReturn:
         raise NotImplementedError()
@@ -113,7 +113,7 @@ class BaseObject:
         raise NotImplementedError()
 
     def is_subclassed(self) -> NoReturn:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"

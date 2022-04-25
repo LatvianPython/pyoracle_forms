@@ -1,6 +1,6 @@
 import pytest
 
-from pyoracle_forms import Properties
+from pyoracle_forms import Properties, FormsObjects
 from pyoracle_forms import Item, FormsException
 
 
@@ -66,7 +66,7 @@ def test_duplicate(new_item):
 
 @pytest.mark.xfail
 def test_replicate(new_item):
-    replicated = new_item.duplicate(new_item.owning_object, "REPLICATED_ITM")
+    replicated = new_item.replicate(new_item.owning_object, "REPLICATED_ITM")
 
     assert replicated.name == "REPLICATED_ITEM"
 
@@ -75,7 +75,9 @@ def test_replicate(new_item):
 def test_find_object(new_item):
     to_find = new_item.name
 
-    assert new_item.owning_object.find_object(to_find).name == to_find
+    assert (
+        new_item.owning_object.find_object(to_find, FormsObjects.item).name == to_find
+    )
 
 
 @pytest.mark.xfail
