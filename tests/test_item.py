@@ -50,3 +50,48 @@ def test_inequality(data_block, make_item):
 
 def test_equality_not_implemented(data_block):
     assert not data_block == 1
+
+
+def test_query_type(new_item):
+    assert new_item.query_type() == 15
+
+
+@pytest.mark.xfail
+def test_duplicate(new_item):
+    duplicated = new_item.duplicate(new_item.owning_object, "DUPLICATED_ITM")
+
+    assert duplicated.name == "DUPLICATED_ITEM"
+
+
+@pytest.mark.xfail
+def test_replicate(new_item):
+    replicated = new_item.duplicate(new_item.owning_object, "REPLICATED_ITM")
+
+    assert replicated.name == "REPLICATED_ITEM"
+
+
+@pytest.mark.xfail
+def test_find_object(new_item):
+    to_find = new_item.name
+
+    assert new_item.owning_object.find_object(to_find).name == to_find
+
+
+@pytest.mark.xfail
+def test_inherit_property(new_item):
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_is_property_inherited(new_item):
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_is_property_default(new_item):
+    raise NotImplementedError()
+
+
+@pytest.mark.xfail
+def test_is_subclassed(new_item):
+    raise NotImplementedError()

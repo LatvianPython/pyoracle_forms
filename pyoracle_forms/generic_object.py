@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import enum
 from ctypes import c_void_p
-from typing import (
-    Optional,
-    Union,
-)
+from typing import Optional, Union, NoReturn
 
 from .context import create
 from .context import destroy
 from .context import has_property
 from .context import remove_subclass
 from .context import set_subclass
+from .context import move
+from .context import query_type
 
 
 class FormsObjects(enum.Enum):
@@ -86,6 +85,33 @@ class BaseObject:
 
     def set_subclass(self, property_class: BaseObject, keep_path: bool = False) -> None:
         set_subclass(self, property_class, keep_path)
+
+    def move(self, next_object: GenericObject) -> None:
+        move(self, next_object)
+
+    def query_type(self) -> int:
+        return query_type(self)
+
+    def duplicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
+        raise NotImplementedError()
+
+    def replicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
+        raise NotImplementedError()
+
+    def find_object(self, name: str, object_type: FormsObjects) -> NoReturn:
+        raise NotImplementedError()
+
+    def inherit_property(self, property_type: int) -> NoReturn:
+        raise NotImplementedError()
+
+    def is_property_inherited(self, property_type: int) -> NoReturn:
+        raise NotImplementedError()
+
+    def is_property_default(self, property_type: int) -> NoReturn:
+        raise NotImplementedError()
+
+    def is_subclassed(self) -> NoReturn:
+        raise NotImplementedError()
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"
