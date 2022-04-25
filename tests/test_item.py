@@ -46,3 +46,7 @@ def test_equality(data_block):
 
 def test_inequality(data_block, make_item):
     assert make_item(data_block, "ITM_1") != make_item(data_block, "ITM_2")
+
+
+def test_equality_not_implemented(data_block):
+    assert not data_block == 1
