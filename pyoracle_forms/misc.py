@@ -77,8 +77,8 @@ class Common:
 
 
 class Unknown(Common):
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> NoReturn:
-        raise NotImplementedError()
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> None:
+        return None
 
     def __set__(self, instance: BaseObject, value: None) -> NoReturn:
         raise NotImplementedError()
