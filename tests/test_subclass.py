@@ -11,3 +11,11 @@ def test_un_subclass(subclassed_item):
 
     assert subclass.source_object != subclass
     assert not subclassed_item.source_object
+
+
+def test_is_not_subclassed(new_item):
+    assert not new_item.is_subclassed()
+
+
+def test_is_subclassed(subclassed_item):
+    assert subclassed_item.is_subclassed()

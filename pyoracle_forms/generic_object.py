@@ -11,6 +11,7 @@ from .context import remove_subclass
 from .context import set_subclass
 from .context import move
 from .context import query_type
+from .context import is_subclassed
 
 from .property_types import Properties
 
@@ -112,8 +113,8 @@ class BaseObject:
     def is_property_default(self, property_type: Properties) -> NoReturn:
         raise NotImplementedError()
 
-    def is_subclassed(self) -> NoReturn:
-        raise NotImplementedError()
+    def is_subclassed(self) -> bool:
+        return is_subclassed(self)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"

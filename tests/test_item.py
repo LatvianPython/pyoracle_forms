@@ -93,8 +93,3 @@ def test_is_property_inherited(new_item):
 @pytest.mark.xfail
 def test_is_property_default(new_item):
     assert new_item.is_property_default(Properties.x_position)
-
-
-@pytest.mark.xfail
-def test_is_subclassed(new_item):
-    assert new_item.is_subclassed()

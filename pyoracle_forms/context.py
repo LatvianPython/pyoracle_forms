@@ -124,13 +124,22 @@ def handled_api_function(  # type: ignore
     return _handled_api_function
 
 
-def has_property(generic_object: BaseObject, property_number: int) -> bool:
-    func = api_function("d2fobhp_HasProp", (c_void_p, c_int))
-    result = func(generic_object, property_number)
-
+def handle_return_value(result: int) -> bool:
     if result in (2, 3):  # YES, NO
         return bool(result == 2)
     raise_for_code(result)
+
+
+def is_subclassed(generic_object: BaseObject) -> bool:
+    func = api_function("d2fobis_IsSubclassed", (c_void_p,))
+    result = func(generic_object)
+    return handle_return_value(result)
+
+
+def has_property(generic_object: BaseObject, property_number: int) -> bool:
+    func = api_function("d2fobhp_HasProp", (c_void_p, c_int))
+    result = func(generic_object, property_number)
+    return handle_return_value(result)
 
 
 def setter(function_name: str, setter_type: CTypes) -> Setter[T]:
@@ -223,9 +232,9 @@ def property_type(property_number: int) -> int:
 
 
 def property_constant_number(property_const_name: str) -> int:
-    return handled_api_function("d2fprgcv_GetConstValue", (c_char_p, c_void_p), 1)(
-        property_const_name.encode("utf-8"), c_int()
-    ).value
+    return handled_api_function(
+        "d2fprgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
+    )(property_const_name.encode("utf-8"), c_int()).value
 
 
 def object_number(obj_name: str) -> int:
