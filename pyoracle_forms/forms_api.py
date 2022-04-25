@@ -32,8 +32,8 @@ def dlls(version: str) -> Tuple[CDLL, CDLL]:
     raise ImportError("No Oracle Forms API found")
 
 
-def read_api_objects(version: str) -> Dict:
+def read_api_objects(version: str) -> Dict:  # type: ignore
     file_path = pathlib.Path(__file__).parent / "forms_api" / f"parsed_{version}.json"
     with open(file_path, mode="r", encoding="utf-8") as file:
-        json_data: Dict = json.load(file)
+        json_data: Dict = json.load(file)  # type: ignore
     return json_data

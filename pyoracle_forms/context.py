@@ -86,7 +86,7 @@ class String(c_char_p):
         self.free(self)
 
 
-def api_function(
+def api_function(  # type: ignore
     api_function_name: str, arguments: Tuple[Any, ...]
 ) -> Callable[..., int]:
     api_func = getattr(context.api, api_function_name)
@@ -94,7 +94,7 @@ def api_function(
     return partial(api_func, context)
 
 
-def inject_return_value(
+def inject_return_value(  # type: ignore
     args: Tuple[Any, ...], return_value_index: Optional[int]
 ) -> Tuple[Any, ...]:
     if return_value_index is not None:
@@ -107,12 +107,12 @@ def inject_return_value(
     return injected_args, return_value
 
 
-def handled_api_function(
+def handled_api_function(  # type: ignore
     api_function_name: str,
     arguments: Tuple[Any, ...],
     return_value_index: Optional[int] = None,
 ) -> Callable[..., Any]:
-    def _handled_api_function(*args: Any) -> Any:
+    def _handled_api_function(*args: Any) -> Any:  # type: ignore
         injected_args, return_value = inject_return_value(args, return_value_index)
 
         error_code = api_function(api_function_name, arguments)(*injected_args)

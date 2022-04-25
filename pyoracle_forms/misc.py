@@ -77,10 +77,10 @@ class Common:
 
 
 class Unknown(Common):
-    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> None:
-        return None
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> NoReturn:
+        raise NotImplementedError()
 
-    def __set__(self, instance: BaseObject, value: Any) -> NoReturn:
+    def __set__(self, instance: BaseObject, value: None) -> NoReturn:
         raise NotImplementedError()
 
 
@@ -206,7 +206,7 @@ def property_attribute(
         return prop_name, Subobjects(property_constant_name(property_number))
 
 
-def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:
+def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:  # type: ignore
     try:
         obj_type = api_objects[cls.object_type.value]
     except KeyError:
@@ -221,7 +221,7 @@ def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:
     return obj_type, object_number
 
 
-def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:
+def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:  # type: ignore
     obj_type, klass._object_number = object_type(klass, api_objects)
 
     # todo: at this point, forms should be initialized, should be able to dynamically
