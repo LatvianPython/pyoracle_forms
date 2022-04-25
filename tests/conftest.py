@@ -116,5 +116,5 @@ def new_item(new_data_block, make_item):
 @pytest.fixture(scope="function")
 def subclassed_item(new_data_block, make_item, property_class):
     item = make_item(new_data_block, "ITM")
-    item.subclass(property_class)
+    item.set_subclass(property_class)
     return item

@@ -10,8 +10,8 @@ from typing import (
 from .context import create
 from .context import destroy
 from .context import has_property
-from .context import un_subclass
-from .context import subclass
+from .context import remove_subclass
+from .context import set_subclass
 
 
 class FormsObjects(enum.Enum):
@@ -81,11 +81,11 @@ class BaseObject:
         destroy(self)
         self._as_parameter_ = c_void_p(0)
 
-    def un_subclass(self) -> None:
-        un_subclass(self)
+    def remove_subclass(self) -> None:
+        remove_subclass(self)
 
-    def subclass(self, property_class: BaseObject, keep_path: bool = False) -> None:
-        subclass(self, property_class, keep_path)
+    def set_subclass(self, property_class: BaseObject, keep_path: bool = False) -> None:
+        set_subclass(self, property_class, keep_path)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"

@@ -236,7 +236,7 @@ def object_number(obj_name: str) -> int:
     )
 
 
-def subclass(
+def set_subclass(
     to_subclass: BaseObject, parent: BaseObject, keep_path: bool = False
 ) -> None:
     handled_api_function("d2fobsc_SubClass", (c_void_p, c_void_p, c_bool))(
@@ -244,5 +244,5 @@ def subclass(
     )
 
 
-def un_subclass(to_un_subclass: BaseObject) -> None:
+def remove_subclass(to_un_subclass: BaseObject) -> None:
     handled_api_function("d2fobus_UnSubClass", (c_void_p,))(to_un_subclass)
