@@ -31,6 +31,7 @@ from .context import set_number
 from .context import set_object
 from .context import set_text
 from .generic_object import BaseObject, ValueTypes, GenericObject
+from .property_types import Properties
 
 if TYPE_CHECKING:  # pragma: no cover
     from . import Module
@@ -184,6 +185,7 @@ class Subobjects(Generic[T]):
         raise AttributeError("can't set attribute")
 
 
+# todo: kinda redundant since i have property_types.Properties
 def property_attribute(
     property_number: int,
 ) -> Tuple[str, Union[Common, Subobjects[BaseObject]]]:
@@ -232,9 +234,16 @@ def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObjec
         property_number = forms_object_property["property_number"]
 
         attribute: Union[str, Union[Common, Subobjects[BaseObject]]]
+        # todo: probably do not even need this function call anymore...
         prop_name, attribute = property_attribute(property_number)
 
         if prop_name and "(obsolete)" not in prop_name:
+            try:
+                prop_name = Properties(property_number).name.rstrip("_")
+            except ValueError:  # pragma: no cover
+                raise RuntimeError(f"Unrecognized property ({prop_name})")
+            if prop_name in dir(klass):  # pragma: no cover
+                raise RuntimeError(f"Duplicate property ({prop_name}) for object")
             setattr(klass, prop_name, attribute)
 
     return klass

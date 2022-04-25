@@ -35,3 +35,5 @@ def test_bruteforce(module):
                 traverse_object(data)
 
     traverse_object(module)
+
+    assert len(traversed_objects) == 304

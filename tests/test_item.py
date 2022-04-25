@@ -1,5 +1,6 @@
 import pytest
 
+from pyoracle_forms import Properties
 from pyoracle_forms import Item, FormsException
 
 
@@ -79,19 +80,19 @@ def test_find_object(new_item):
 
 @pytest.mark.xfail
 def test_inherit_property(new_item):
-    raise NotImplementedError()
+    assert new_item.inherit_property(Properties.x_position)
 
 
 @pytest.mark.xfail
 def test_is_property_inherited(new_item):
-    raise NotImplementedError()
+    assert new_item.is_property_inherited(Properties.x_position)
 
 
 @pytest.mark.xfail
 def test_is_property_default(new_item):
-    raise NotImplementedError()
+    assert new_item.is_property_default(Properties.x_position)
 
 
 @pytest.mark.xfail
 def test_is_subclassed(new_item):
-    raise NotImplementedError()
+    assert new_item.is_subclassed()

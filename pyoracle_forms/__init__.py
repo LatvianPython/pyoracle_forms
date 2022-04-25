@@ -42,8 +42,9 @@ from .forms_objects import VisualState
 from .forms_objects import Window
 from .misc import add_properties
 from .misc import registered_objects
+from .property_types import Properties
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:

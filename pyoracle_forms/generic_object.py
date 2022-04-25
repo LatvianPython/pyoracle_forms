@@ -12,6 +12,8 @@ from .context import set_subclass
 from .context import move
 from .context import query_type
 
+from .property_types import Properties
+
 
 class FormsObjects(enum.Enum):
     canvas = "D2FFO_CANVAS"
@@ -93,25 +95,25 @@ class BaseObject:
         return query_type(self)
 
     def duplicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def replicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def find_object(self, name: str, object_type: FormsObjects) -> NoReturn:
+        raise NotImplementedError()  # pragma: no cover
+
+    def inherit_property(self, property_type: Properties) -> NoReturn:
         raise NotImplementedError()
 
-    def inherit_property(self, property_type: int) -> NoReturn:
+    def is_property_inherited(self, property_type: Properties) -> NoReturn:
         raise NotImplementedError()
 
-    def is_property_inherited(self, property_type: int) -> NoReturn:
-        raise NotImplementedError()
-
-    def is_property_default(self, property_type: int) -> NoReturn:
+    def is_property_default(self, property_type: Properties) -> NoReturn:
         raise NotImplementedError()
 
     def is_subclassed(self) -> NoReturn:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._as_parameter_)})"
