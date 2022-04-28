@@ -44,7 +44,7 @@ from .misc import add_properties
 from .misc import registered_objects
 from .property_types import Properties
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
@@ -56,5 +56,8 @@ def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
         # todo: i could just add static ones for all objects
         #  and still have this code run adding missing values
         #  or by removing ones not present in the version
-        if forms_object != Module:
+        #  ###
+        #  actually, currently we only add properties to the objects
+        #  that are not documented by oracle
+        if forms_object in (CompoundText, VisualState, ColumnValue):
             add_properties(forms_object, api_objects)

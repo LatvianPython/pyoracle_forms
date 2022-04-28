@@ -128,7 +128,10 @@ class Number(BasicAttribute[int]):
     _setter = staticmethod(set_number)  # type: ignore
 
 
-class Object(Common):
+T = TypeVar("T")
+
+
+class Object(Common, Generic[T]):
     def __get__(
         self, instance: BaseObject, owner: Type[BaseObject]
     ) -> Optional[BaseObject]:
@@ -141,8 +144,6 @@ class Object(Common):
     def __set__(self, instance: BaseObject, value: BaseObject) -> None:
         set_object(instance, property_constant_number(self.constant), value)
 
-
-T = TypeVar("T")
 
 properties = {
     ValueTypes.UNKNOWN: Unknown,
@@ -228,7 +229,6 @@ def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObjec
 
     # todo: at this point, forms should be initialized, should be able to dynamically
     #  add properties..?
-
     for forms_object_property in obj_type["properties"]:
 
         property_number = forms_object_property["property_number"]
@@ -242,8 +242,6 @@ def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObjec
                 prop_name = Properties(property_number).name.rstrip("_")
             except ValueError:  # pragma: no cover
                 raise RuntimeError(f"Unrecognized property ({prop_name})")
-            if prop_name in dir(klass):  # pragma: no cover
-                raise RuntimeError(f"Duplicate property ({prop_name}) for object")
             setattr(klass, prop_name, attribute)
 
     return klass
