@@ -242,6 +242,9 @@ def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObjec
                 prop_name = Properties(property_number).name.rstrip("_")
             except ValueError:  # pragma: no cover
                 raise RuntimeError(f"Unrecognized property ({prop_name})")
+
+            if prop_name in dir(klass):
+                continue
             setattr(klass, prop_name, attribute)
 
     return klass
