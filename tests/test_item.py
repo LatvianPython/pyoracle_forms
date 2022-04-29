@@ -1,5 +1,6 @@
 import pytest
 
+from pyoracle_forms import Justification
 from pyoracle_forms import Properties, FormsObjects
 from pyoracle_forms import Item, FormsException
 
@@ -55,6 +56,21 @@ def test_equality_not_implemented(data_block):
 
 def test_query_type(new_item):
     assert new_item.query_type() == 15
+
+
+def test_incorrect_constant(new_item):
+    with pytest.raises(ValueError):
+        new_item.justification = 10
+
+
+def test_constant_int(new_item):
+    new_item.justification = 4
+    assert Justification.end == new_item.justification
+
+
+def test_constant_constant(new_item):
+    new_item.justification = Justification.start
+    assert Justification.start == new_item.justification
 
 
 @pytest.mark.xfail

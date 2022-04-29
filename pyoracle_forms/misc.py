@@ -32,6 +32,7 @@ from .context import set_object
 from .context import set_text
 from .generic_object import BaseObject, ValueTypes, GenericObject
 from .property_types import Properties
+from .constants import Justification
 
 if TYPE_CHECKING:  # pragma: no cover
     from . import Module
@@ -126,6 +127,23 @@ class Bool(BasicAttribute[bool]):
 class Number(BasicAttribute[int]):
     _getter = staticmethod(get_number)  # type: ignore
     _setter = staticmethod(set_number)  # type: ignore
+
+
+class Constant(Common, Generic[U]):
+    _getter = staticmethod(get_number)
+    _setter = staticmethod(set_number)
+
+    def __init__(self, constant: str, klass: Type[U]):
+        self.constant, self.klass = constant, klass
+
+    def __get__(self, instance: BaseObject, owner: Type[BaseObject]) -> U:
+        return self.klass(int(self._getter(instance, property_constant_number(self.constant))))  # type: ignore
+
+    def __set__(self, instance: BaseObject, value: U) -> None:
+        to_set = (
+            value.value if isinstance(value, self.klass) else self.klass(value).value  # type: ignore
+        )
+        self._setter(instance, property_constant_number(self.constant), int(to_set))
 
 
 T = TypeVar("T")

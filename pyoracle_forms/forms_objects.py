@@ -8,7 +8,17 @@ from .context import create_module
 from .context import load_module
 from .context import save_module
 from .generic_object import GenericObject, BaseObject, FormsObjects
-from .misc import forms_object, Text, Number, Object, Bool, Subobjects, Unknown
+from .misc import (
+    forms_object,
+    Text,
+    Number,
+    Object,
+    Bool,
+    Subobjects,
+    Unknown,
+    Constant,
+)
+from .constants import *
 
 
 # satisfy both MyPy and PyCharm IDE autocomplete
@@ -24,31 +34,39 @@ class Module(BaseObject):
     name = Text("NAME")
     comments = Text("COMMENT")
     console_window = Text("CONSOLE_WIN")
-    cursor_mode = Number("CRSR_MODE")
-    direction = Number("LANG_DIR")
+    cursor_mode: Constant[CursorMode] = Constant("CRSR_MODE", CursorMode)
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     first_navigation_data_block = Text("FRST_NAVIGATION_BLK_NAM")
     menu_module = Text("MNU_MOD")
     menu_role = Text("MNU_ROLE")
     initial_menu = Text("INIT_MNU")
     form_horizontal_toolbar_canvas = Text("HORZ_TLBR_CNV")
     form_vertical_toolbar_canvas = Text("VERT_TLBR_CNV")
-    mouse_navigation_limit = Number("MOUSE_NAVIGATION_LMT")
+    mouse_navigation_limit: Constant[MouseNavigationLimit] = Constant(
+        "MOUSE_NAVIGATION_LMT", MouseNavigationLimit
+    )
     current_record_visual_attribute_group = Text("REC_VAT_GRP_NAM")
     savepoint_mode = Bool("SVPNT_MODE")
     title = Text("TITLE")
     use_3d_controls = Bool("USE_3D_CNTRLS")
-    validation_unit = Number("VALIDATION_UNIT")
+    validation_unit: Constant[ValidationUnit] = Constant(
+        "VALIDATION_UNIT", ValidationUnit
+    )
     title_string_id = Number("TITLE_STRID")
-    interaction_mode = Number("INTERACTION_MODE")
+    interaction_mode: Constant[InteractionMode] = Constant(
+        "INTERACTION_MODE", InteractionMode
+    )
     maximum_query_time = Number("MAX_QRY_TIME")
     maximum_records_fetched = Number("MAX_RECS_FETCHED")
-    isolation_mode = Number("ISOLATION_MODE")
+    isolation_mode: Constant[IsolationMode] = Constant("ISOLATION_MODE", IsolationMode)
     parent_objects_module = Text("PAR_MODULE")
     parent_objects_module_type = Number("PAR_MODTYP")
     parent_object_name = Text("PAR_NAM")
     parent_objects_file_name = Text("PAR_FLNAM")
     parent_objects_file_path = Text("PAR_FLPATH")
-    runtime_compatibility_mode = Number("RUNTIME_COMP")
+    runtime_compatibility_mode: Constant[RuntimeCompatibilityMode] = Constant(
+        "RUNTIME_COMP", RuntimeCompatibilityMode
+    )
     parent_objects_type = Number("PAR_TYP")
     help_book_title = Text("HELP_BOOK_TITLE")
     defer_required_enforcement = Number("NEWDEFER_REQ_ENF")
@@ -132,19 +150,21 @@ class Alert(GenericObject):
     button_1_label = Text("BTN_1_LBL")
     button_2_label = Text("BTN_2_LBL")
     button_3_label = Text("BTN_3_LBL")
-    default_alert_button = Number("DFLT_ALT_BTN")
+    default_alert_button: Constant[DefaultAlertButton] = Constant(
+        "DFLT_ALT_BTN", DefaultAlertButton
+    )
     message = Text("ALT_MSG")
-    alert_style = Number("ALT_STY")
+    alert_style: Constant[AlertStyle] = Constant("ALT_STY", AlertStyle)
     background_color = Text("BACK_COLOR")
     case_info = Unknown("CLIENT_INFO")
     comments = Text("COMMENT")
-    direction = Number("LANG_DIR")
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     name = Text("NAME")
     next_object: Obj[Alert] = Object("NEXT")
@@ -171,12 +191,12 @@ class Canvas(GenericObject):
     object_type = FormsObjects.canvas
 
     background_color = Text("BACK_COLOR")
-    bevel = Number("BEVEL")
+    bevel: Constant[Bevel] = Constant("BEVEL", Bevel)
     graphics: ObjectList[Graphic] = Subobjects("GRAPHIC")
     case_info = Unknown("CLIENT_INFO")
-    canvas_type = Number("CNV_TYP")
+    canvas_type: Constant[CanvasType] = Constant("CNV_TYP", CanvasType)
     comments = Text("COMMENT")
-    direction = Number("LANG_DIR")
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     visible = Bool("VISIBLE")
     display_viewport = Bool("DISP_VIEWPORT")
     viewport_x_position = Number("VPRT_X_POS")
@@ -184,9 +204,9 @@ class Canvas(GenericObject):
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     height = Number("HEIGHT")
     show_horizontal_scroll_bar = Bool("SHOW_HORZ_SCRLBR")
@@ -211,8 +231,10 @@ class Canvas(GenericObject):
     popup_menu_object: Obj[BaseObject] = Object("POPUP_MNU_OBJ")
     owning_module: Obj[Module] = Object("MODULE")
     source_object: Obj[PropertyClass] = Object("SOURCE")
-    tab_attachment_edge = Number("TAB_ATT_EDGE")
-    corner_style = Number("TAB_STY")
+    tab_attachment_edge: Constant[TabAttachmentEdge] = Constant(
+        "TAB_ATT_EDGE", TabAttachmentEdge
+    )
+    corner_style: Constant[CornerStyle] = Constant("TAB_STY", CornerStyle)
     parent_objects_module = Text("PAR_MODULE")
     parent_objects_module_type = Number("PAR_MODTYP")
     parent_object_name = Text("PAR_NAM")
@@ -244,15 +266,17 @@ class DataBlock(GenericObject):
     enforce_column_security = Bool("ENFRC_COL_SECURITY")
     comments = Text("COMMENT")
     delete_allowed = Bool("DEL_ALLOWED")
-    direction = Number("LANG_DIR")
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     fill_pattern = Text("FILL_PAT")
     foreground_color = Text("FORE_COLOR")
     insert_allowed = Bool("INSRT_ALLOWED")
     items: ObjectList[Item] = Subobjects("ITEM")
-    key_mode = Number("KEY_MODE")
-    locking_mode = Number("LOCK_MODE")
+    key_mode: Constant[KeyMode] = Constant("KEY_MODE", KeyMode)
+    locking_mode: Constant[LockingMode] = Constant("LOCK_MODE", LockingMode)
     name = Text("NAME")
-    navigation_style = Number("NAVIGATION_STY")
+    navigation_style: Constant[NavigationStyle] = Constant(
+        "NAVIGATION_STY", NavigationStyle
+    )
     next_object: Obj[DataBlock] = Object("NEXT")
     next_navigation_data_block = Text("NXT_NAVIGATION_BLK_NAM")
     next_data_block_object: Obj[DataBlock] = Object("NXT_NAVIGATION_BLK_OBJ")
@@ -264,12 +288,16 @@ class DataBlock(GenericObject):
     number_of_records_buffered = Number("RECS_BUFFERED_COUNT")
     number_of_records_displayed = Number("RECS_DISP_COUNT")
     query_array_size = Number("RECS_FETCHED_COUNT")
-    record_orientation = Number("REC_ORNT")
+    record_orientation: Constant[RecordOrientation] = Constant(
+        "REC_ORNT", RecordOrientation
+    )
     current_record_visual_attribute_group = Text("REC_VAT_GRP_NAM")
     relation_object: Obj[Relation] = Object("REL")
     reverse_direction = Bool("REV_DIR")
     scroll_bar_canvas = Text("SCRLBR_CNV_NAM")
-    scroll_bar_orientation = Number("SCRLBR_ORNT")
+    scroll_bar_orientation: Constant[ScrollBarOrientation] = Constant(
+        "SCRLBR_ORNT", ScrollBarOrientation
+    )
     scroll_bar_width = Number("SCRLBR_WID")
     scroll_bar_x_position = Number("SCRLBR_X_POS")
     scroll_bar_y_position = Number("SCRLBR_Y_POS")
@@ -288,9 +316,13 @@ class DataBlock(GenericObject):
     dml_data_target_name = Text("DML_DAT_NAM")
     query_data_source_name = Text("QRY_DAT_SRC_NAM")
     database_data_block = Bool("DB_BLK")
-    query_data_source_type = Number("QRY_DAT_SRC_TYP")
+    query_data_source_type: Constant[QueryDataSourceType] = Constant(
+        "QRY_DAT_SRC_TYP", QueryDataSourceType
+    )
     query_all_records = Bool("QRY_ALL_RECS")
-    dml_data_target_type = Number("DML_DAT_TYP")
+    dml_data_target_type: Constant[DMLDataTargetType] = Constant(
+        "DML_DAT_TYP", DMLDataTargetType
+    )
     dml_array_size = Number("DML_ARY_SIZ")
     insert_procedure_name = Text("INSRT_PROC_NAM")
     update_procedure_name = Text("UPDT_PROC_NAM")
@@ -336,7 +368,9 @@ class FormParameter(GenericObject):
 
     case_info = Unknown("CLIENT_INFO")
     comments = Text("COMMENT")
-    parameter_data_type = Number("PARAM_DAT_TYP")
+    parameter_data_type: Constant[ParameterDataType] = Constant(
+        "PARAM_DAT_TYP", ParameterDataType
+    )
     parameter_initial_value = Text("PARAM_INIT_VAL")
     name = Text("NAME")
     next_object: Obj[FormParameter] = Object("NEXT")
@@ -360,18 +394,18 @@ class Graphic(GenericObject):
     object_type = FormsObjects.graphic
 
     background_color = Text("BACK_COLOR")
-    bevel = Number("BEVEL")
+    bevel: Constant[Bevel] = Constant("BEVEL", Bevel)
     graphics: ObjectList[Graphic] = Subobjects("GRAPHIC")
     case_info = Unknown("CLIENT_INFO")
-    image_format = Number("IMG_FMT")
-    image_depth = Number("IMG_DPTH")
-    direction = Number("LANG_DIR")
+    image_format: Constant[ImageFormat] = Constant("IMG_FMT", ImageFormat)
+    image_depth: Constant[ImageDepth] = Constant("IMG_DPTH", ImageDepth)
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     fill_pattern = Text("FILL_PAT")
     foreground_color = Text("FORE_COLOR")
     height = Number("HEIGHT")
     name = Text("NAME")
     next_object: Obj[Graphic] = Object("NEXT")
-    display_quality = Number("DISP_QLTY")
+    display_quality: Constant[DisplayQuality] = Constant("DISP_QLTY", DisplayQuality)
     number_of_records_displayed = Number("RECS_DISP_COUNT")
     distance_between_records = Number("DIST_BTWN_RECS")
     scroll_bar_width = Number("SCRLBR_WID")
@@ -381,9 +415,9 @@ class Graphic(GenericObject):
     width = Number("WIDTH")
     x_position = Number("X_POS")
     y_position = Number("Y_POS")
-    graphics_type = Number("GRAPHICS_TYP")
+    graphics_type: Constant[GraphicsType] = Constant("GRAPHICS_TYP", GraphicsType)
     closed = Bool("CLOSED")
-    arrow_style = Number("ARROW_STY")
+    arrow_style: Constant[ArrowStyle] = Constant("ARROW_STY", ArrowStyle)
     x_corner_radius = Number("CORNER_RADIUS_X")
     y_corner_radius = Number("CORNER_RADIUS_Y")
     start_angle = Number("INTERNAL_STRT_ANGLE")
@@ -396,14 +430,20 @@ class Graphic(GenericObject):
     clip_width = Number("CLIP_WID")
     clip_height = Number("CLIP_HGT")
     points: ObjectList[Point] = Subobjects("POINT")
-    frame_title_reading_order = Number("TTL_READING_ORDR")
-    frame_title_alignment = Number("FRAME_TTL_ALIGN")
+    frame_title_reading_order: Constant[ReadingOrder] = Constant(
+        "TTL_READING_ORDR", ReadingOrder
+    )
+    frame_title_alignment: Constant[FrameTitleAlignment] = Constant(
+        "FRAME_TTL_ALIGN", FrameTitleAlignment
+    )
     frame_title_offset = Number("FRAME_TTL_OFST")
     frame_title_spacing = Number("FRAME_TTL_SPCING")
     frame_title = Text("FRAME_TTL")
-    layout_style = Number("LAYOUT_STY")
-    frame_alignment = Number("FRAME_ALIGN")
-    single_object_alignment = Number("SNGL_OBJ_ALIGN")
+    layout_style: Constant[LayoutStyle] = Constant("LAYOUT_STY", LayoutStyle)
+    frame_alignment: Constant[FrameAlignment] = Constant("FRAME_ALIGN", FrameAlignment)
+    single_object_alignment: Constant[SingleObjectAlignment] = Constant(
+        "SNGL_OBJ_ALIGN", SingleObjectAlignment
+    )
     vertical_fill = Bool("VERT_FILL")
     maximum_objects_per_line = Number("MAX_OBJS")
     allow_expansion = Bool("ALLOW_EXPANSION")
@@ -413,30 +453,40 @@ class Graphic(GenericObject):
     horizontal_object_offset = Number("HORZ_OBJ_OFST")
     start_prompt_offset = Number("STRT_PRMPT_OFST")
     top_prompt_offset = Number("TOP_PRMPT_OFST")
-    start_prompt_alignment = Number("STRT_PRMPT_ALIGN")
-    top_prompt_alignment = Number("TOP_PRMPT_ALIGN")
+    start_prompt_alignment: Constant[PromptAlignment] = Constant(
+        "STRT_PRMPT_ALIGN", PromptAlignment
+    )
+    top_prompt_alignment: Constant[PromptAlignment] = Constant(
+        "TOP_PRMPT_ALIGN", PromptAlignment
+    )
     allow_multi_line_prompts = Bool("ALLOW_MLT_LIN_PRMPTS")
     allow_top_attached_prompts = Bool("ALLOW_TOP_ATT_PRMPTS")
     allow_start_attached_prompts = Bool("ALLOW_STRT_ATT_PRMPTS")
-    update_layout = Number("UPDT_LAYOUT")
+    update_layout: Constant[UpdateLayout] = Constant("UPDT_LAYOUT", UpdateLayout)
     line_width = Number("INTERNAL_LIN_WID")
     rotation_angle = Number("INTERNAL_ROTATION_ANGLE")
     edge_foreground_color = Text("EDGE_FORE_COLOR")
     edge_background_color = Text("EDGE_BACK_COLOR")
     edge_pattern = Text("EDGE_PAT")
-    dash_style = Number("DASH_STY")
-    cap_style = Number("CAP_STY")
-    join_style = Number("JOIN_STY")
-    line_spacing = Number("LIN_SPCING")
+    dash_style: Constant[DashStyle] = Constant("DASH_STY", DashStyle)
+    cap_style: Constant[CapStyle] = Constant("CAP_STY", CapStyle)
+    join_style: Constant[JoinStyle] = Constant("JOIN_STY", JoinStyle)
+    line_spacing: Constant[LineSpacing] = Constant("LIN_SPCING", LineSpacing)
     custom_spacing = Number("CSTM_SPCING")
     fixed_bounding_box = Bool("FIXED_BOUNDING_BX")
     wrap_text = Bool("WRAP_TXT")
     bounding_box_scaleable = Bool("BOUNDING_BX_SCALABLE")
     font_scaleable = Bool("FONT_SCALEABLE")
-    horizontal_origin = Number("HORZ_ORGN")
-    vertical_origin = Number("VERT_ORGN")
-    horizontal_justification = Number("HORZ_JST")
-    vertical_justification = Number("VERT_JST")
+    horizontal_origin: Constant[HorizontalOrigin] = Constant(
+        "HORZ_ORGN", HorizontalOrigin
+    )
+    vertical_origin: Constant[VerticalOrigin] = Constant("VERT_ORGN", VerticalOrigin)
+    horizontal_justification: Constant[Justification] = Constant(
+        "HORZ_JST", Justification
+    )
+    vertical_justification: Constant[Justification] = Constant(
+        "VERT_JST", Justification
+    )
     compound_text_object: Obj[CompoundText] = Object("CMPTXT")
     tab_page = Text("TBP_NAM")
     tab_page_name: Obj[BaseObject] = Object("TBP_OBJ")
@@ -450,22 +500,32 @@ class Graphic(GenericObject):
     frame_title_fill_pattern = Text("FRAME_TTL_FILL_PAT")
     frame_title_font_name = Text("FRAME_TTL_FONT_NAM")
     frame_title_font_size = Number("FRAME_TTL_FONT_SIZ")
-    frame_title_font_style = Number("FRAME_TTL_FONT_STY")
-    frame_title_font_weight = Number("FRAME_TTL_FONT_WGHT")
-    frame_title_font_spacing = Number("FRAME_TTL_FONT_SPCING")
-    scroll_bar_alignment = Number("SCRLBR_ALIGN")
+    frame_title_font_style: Constant[FontStyle] = Constant(
+        "FRAME_TTL_FONT_STY", FontStyle
+    )
+    frame_title_font_weight: Constant[FontWeight] = Constant(
+        "FRAME_TTL_FONT_WGHT", FontWeight
+    )
+    frame_title_font_spacing: Constant[FontSpacing] = Constant(
+        "FRAME_TTL_FONT_SPCING", FontSpacing
+    )
+    scroll_bar_alignment: Constant[ScrollBarAlignment] = Constant(
+        "SCRLBR_ALIGN", ScrollBarAlignment
+    )
     shrinkwrap = Bool("SHRINKWRAP")
     graphic_object_font_name = Text("GRA_FONT_NAM")
     graphic_object_font_size = Number("GRA_FONT_SIZ")
-    graphic_object_font_style = Number("GRA_FONT_STY")
+    graphic_object_font_style: Constant[FontStyle] = Constant("GRA_FONT_STY", FontStyle)
     graphic_object_text = Text("GRA_TEXT")
     parent_objects_module = Text("PAR_MODULE")
     parent_objects_module_type = Number("PAR_MODTYP")
     parent_object_name = Text("PAR_NAM")
     parent_objects_file_name = Text("PAR_FLNAM")
     parent_objects_file_path = Text("PAR_FLPATH")
-    graphic_font_weight = Number("GRA_FONT_WGHT")
-    graphic_font_spacing = Number("GRA_FONT_SPCING")
+    graphic_font_weight: Constant[FontWeight] = Constant("GRA_FONT_WGHT", FontWeight)
+    graphic_font_spacing: Constant[FontSpacing] = Constant(
+        "GRA_FONT_SPCING", FontSpacing
+    )
     parent_objects_type = Number("PAR_TYP")
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
@@ -476,27 +536,33 @@ class Item(GenericObject):
     # auto-generated
     object_type = FormsObjects.item
 
-    justification = Number("JUSTIFICATION")
+    justification: Constant[Justification] = Constant("JUSTIFICATION", Justification)
     automatic_skip = Bool("AUTO_SKP")
     background_color = Text("BACK_COLOR")
     database_item = Bool("DB_ITM")
-    bevel = Number("BEVEL")
+    bevel: Constant[Bevel] = Constant("BEVEL", Bevel)
     mirror_item_object: Obj[BaseObject] = Object("SYNC_ITM_OBJ")
     canvas = Text("CNV_NAM")
     canvas_object_pointer: Obj[Canvas] = Object("CNV_OBJ")
     case_info = Unknown("CLIENT_INFO")
     case_insensitive_query = Bool("CASE_INSENSITIVE_QRY")
-    case_restriction = Number("CASE_RSTRCTION")
-    check_box_mapping_of_other_values = Number("CHK_BX_OTHER_VALS")
+    case_restriction: Constant[CaseRestriction] = Constant(
+        "CASE_RSTRCTION", CaseRestriction
+    )
+    check_box_mapping_of_other_values: Constant[
+        CheckBoxMappingofOtherValues
+    ] = Constant("CHK_BX_OTHER_VALS", CheckBoxMappingofOtherValues)
     value_when_checked = Text("CHKED_VAL")
     synchronize_with_item = Text("SYNC_ITM_NAM")
     comments = Text("COMMENT")
-    image_format = Number("IMG_FMT")
-    image_depth = Number("IMG_DPTH")
+    image_format: Constant[ImageFormat] = Constant("IMG_FMT", ImageFormat)
+    image_depth: Constant[ImageDepth] = Constant("IMG_DPTH", ImageDepth)
     prompt_foreground_color = Text("PRMPT_FORE_COLOR")
     default_button = Bool("DFLT_BTN")
-    initial_keyboard_state = Number("INIT_KBRD_DIR")
-    direction = Number("LANG_DIR")
+    initial_keyboard_state: Constant[InitialKeyboardState] = Constant(
+        "INIT_KBRD_DIR", InitialKeyboardState
+    )
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     visible = Bool("VISIBLE")
     editor = Text("EDT_NAM")
     editor_object_pointer: Obj[Editor] = Object("EDT_OBJ")
@@ -506,13 +572,13 @@ class Item(GenericObject):
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     format_mask = Text("FMT_MSK")
     filename = Text("FLNAM")
-    execution_mode = Number("EXEC_MODE")
+    execution_mode: Constant[ExecutionMode] = Constant("EXEC_MODE", ExecutionMode)
     height = Number("HEIGHT")
     highest_allowed_value = Text("HIGHEST_ALLOWED_VAL")
     hint = Text("HINT")
@@ -520,9 +586,9 @@ class Item(GenericObject):
     iconic = Bool("ICONIC")
     icon_filename = Text("ICON_FLNAM")
     insert_allowed = Bool("INSRT_ALLOWED")
-    item_type = Number("ITM_TYP")
+    item_type: Constant[ItemType] = Constant("ITM_TYP", ItemType)
     copy_value_from_item = Text("COPY_VAL_FROM_ITM")
-    data_type = Number("DAT_TYP")
+    data_type: Constant[DataType] = Constant("DAT_TYP", DataType)
     initial_value = Text("INIT_VAL")
     keep_cursor_position = Bool("KEEP_CRSR_POS")
     label = Text("LABEL")
@@ -534,9 +600,11 @@ class Item(GenericObject):
     list_x_position = Number("LOV_X_POS")
     list_y_position = Number("LOV_Y_POS")
     lowest_allowed_value = Text("LOWEST_ALLOWED_VAL")
-    list_style = Number("LST_STY")
+    list_style: Constant[ListStyle] = Constant("LST_STY", ListStyle)
     maximum_length = Number("MAX_LEN")
-    compression_quality = Number("CMPRSSION_QLTY")
+    compression_quality: Constant[CompressionQuality] = Constant(
+        "CMPRSSION_QLTY", CompressionQuality
+    )
     access_key = Text("ACCESS_KEY")
     mouse_navigate = Bool("MOUSE_NAVIGATE")
     multi_line = Bool("MLT_LIN")
@@ -553,9 +621,9 @@ class Item(GenericObject):
     query_allowed = Bool("QRY_ALLOWED")
     query_length = Number("QRY_LEN")
     query_only = Bool("QRY_ONLY")
-    display_quality = Number("DISP_QLTY")
+    display_quality: Constant[DisplayQuality] = Constant("DISP_QLTY", DisplayQuality)
     radio_button_object: Obj[RadioButton] = Object("RAD_BUT")
-    reading_order = Number("READING_ORDR")
+    reading_order: Constant[ReadingOrder] = Constant("READING_ORDR", ReadingOrder)
     distance_between_records = Number("DIST_BTWN_RECS")
     record_group = Text("REC_GRP_NAM")
     record_group_object_pointer: Obj[RecordGroup] = Object("REC_GRP_OBJ")
@@ -564,7 +632,7 @@ class Item(GenericObject):
     required = Bool("REQUIRED")
     prompt_font_name = Text("PRMPT_FONT_NAM")
     conceal_data = Bool("CONCEAL_DATA")
-    sizing_style = Number("SIZING_STY")
+    sizing_style: Constant[SizingStyle] = Constant("SIZING_STY", SizingStyle)
     prompt_font_size = Number("PRMPT_FONT_SIZ")
     triggers: ObjectList[Trigger] = Subobjects("TRIGGER")
     value_when_unchecked = Text("UNCHKED_VAL")
@@ -572,36 +640,50 @@ class Item(GenericObject):
     update_only_if_null = Bool("UPDT_IF_NULL")
     visual_attribute_group = Text("VAT_NAM")
     va_object: Obj[VisualAttribute] = Object("VAT_OBJ")
-    prompt_font_style = Number("PRMPT_FONT_STY")
-    calculation_mode = Number("CALC_MODE")
-    prompt_font_weight = Number("PRMPT_FONT_WGHT")
-    prompt_font_spacing = Number("PRMPT_FONT_SPCING")
+    prompt_font_style: Constant[FontStyle] = Constant("PRMPT_FONT_STY", FontStyle)
+    calculation_mode: Constant[CalculationMode] = Constant("CALC_MODE", CalculationMode)
+    prompt_font_weight: Constant[FontWeight] = Constant("PRMPT_FONT_WGHT", FontWeight)
+    prompt_font_spacing: Constant[FontSpacing] = Constant(
+        "PRMPT_FONT_SPCING", FontSpacing
+    )
     column_name = Text("COL_NAM")
-    prompt_display_style = Number("PRMPT_DISP_STY")
+    prompt_display_style: Constant[PromptDisplayStyle] = Constant(
+        "PRMPT_DISP_STY", PromptDisplayStyle
+    )
     show_vertical_scroll_bar = Bool("SHOW_VERT_SCRLBR")
     width = Number("WIDTH")
-    wrap_style = Number("WRAP_STY")
+    wrap_style: Constant[WrapStyle] = Constant("WRAP_STY", WrapStyle)
     x_position = Number("X_POS")
     y_position = Number("Y_POS")
     display_hint_automatically = Bool("AUTO_HINT")
     tooltip = Text("TOOLTIP")
     current_record_va_pointer: Obj[VisualAttribute] = Object("REC_VAT_GRP_OBJ")
     prompt = Text("PRMPT")
-    prompt_reading_order = Number("PRMPT_READING_ORDR")
-    prompt_justification = Number("PRMPT_JST")
+    prompt_reading_order: Constant[ReadingOrder] = Constant(
+        "PRMPT_READING_ORDR", ReadingOrder
+    )
+    prompt_justification: Constant[Justification] = Constant("PRMPT_JST", Justification)
     previous_object: Obj[Item] = Object("PREVIOUS")
-    prompt_attachment_edge = Number("PRMPT_ATT_EDGE")
+    prompt_attachment_edge: Constant[PromptAttachmentEdge] = Constant(
+        "PRMPT_ATT_EDGE", PromptAttachmentEdge
+    )
     prompt_attachment_offset = Number("PRMPT_ATT_OFST")
-    prompt_alignment = Number("PRMPT_ALIGN")
-    prompt_alignment_offset = Number("PRMPT_ALIGN_OFST")
+    prompt_alignment: Constant[PromptAlignment] = Constant(
+        "PRMPT_ALIGN", PromptAlignment
+    )
+    prompt_alignment_offset: Constant[PromptAlignment] = Constant(
+        "PRMPT_ALIGN_OFST", PromptAlignment
+    )
     owning_object: Obj[BaseObject] = Object("OWNER")
     formula = Text("FORMULA")
-    summary_function = Number("SUMM_FUNC")
+    summary_function: Constant[SummaryFunction] = Constant("SUMM_FUNC", SummaryFunction)
     summarized_item = Text("SUMM_ITM_NAM")
     number_of_items_displayed = Number("ITMS_DISP")
     tab_page = Text("TBP_NAM")
     tab_page_name: Obj[BaseObject] = Object("TBP_OBJ")
-    communication_mode = Number("COMM_MODE")
+    communication_mode: Constant[CommunicationMode] = Constant(
+        "COMM_MODE", CommunicationMode
+    )
     data_source_data_block = Text("DAT_SRC_BLK")
     data_source_x_axis = Text("DAT_SRC_X_AXS")
     data_source_y_axis = Text("DAT_SRC_Y_AXS")
@@ -617,7 +699,7 @@ class Item(GenericObject):
     owning_module: Obj[Module] = Object("MODULE")
     source_object: Obj[PropertyClass] = Object("SOURCE")
     count_of_list_element_items = Number("LST_ELEMENT_COUNT")
-    keyboard_state = Number("KBRD_STATE")
+    keyboard_state: Constant[KeyboardState] = Constant("KBRD_STATE", KeyboardState)
     summarized_block = Text("SUMM_BLK_NAM")
     parent_objects_module = Text("PAR_MODULE")
     parent_objects_module_type = Number("PAR_MODTYP")
@@ -636,7 +718,9 @@ class Item(GenericObject):
     implementation_class = Text("IMPL_CLASS")
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
-    data_length_semantics = Number("DATA_LEN_SEMANTICS")
+    data_length_semantics: Constant[DataLengthSemantics] = Constant(
+        "DATA_LEN_SEMANTICS", DataLengthSemantics
+    )
     row_banding_frequency = Number("ROW_BANDING_FREQ")
     cursor_style = Number("CURSOR_STYLE")
 
@@ -672,7 +756,7 @@ class ProgramUnit(GenericObject):
     parent_object_name = Text("PAR_NAM")
     parent_objects_file_name = Text("PAR_FLNAM")
     parent_objects_file_path = Text("PAR_FLPATH")
-    program_unit_type = Number("PGU_TYP")
+    program_unit_type: Constant[ProgramUnitType] = Constant("PGU_TYP", ProgramUnitType)
     parent_objects_type = Number("PAR_TYP")
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
@@ -716,9 +800,9 @@ class RadioButton(GenericObject):
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     height = Number("HEIGHT")
     label = Text("LABEL")
@@ -733,21 +817,33 @@ class RadioButton(GenericObject):
     prompt_font_size = Number("PRMPT_FONT_SIZ")
     visual_attribute_group = Text("VAT_NAM")
     va_object: Obj[VisualAttribute] = Object("VAT_OBJ")
-    prompt_font_style = Number("PRMPT_FONT_STY")
-    prompt_font_weight = Number("PRMPT_FONT_WGHT")
-    prompt_font_spacing = Number("PRMPT_FONT_SPCING")
-    prompt_display_style = Number("PRMPT_DISP_STY")
+    prompt_font_style: Constant[FontStyle] = Constant("PRMPT_FONT_STY", FontStyle)
+    prompt_font_weight: Constant[FontWeight] = Constant("PRMPT_FONT_WGHT", FontWeight)
+    prompt_font_spacing: Constant[FontSpacing] = Constant(
+        "PRMPT_FONT_SPCING", FontSpacing
+    )
+    prompt_display_style: Constant[PromptDisplayStyle] = Constant(
+        "PRMPT_DISP_STY", PromptDisplayStyle
+    )
     width = Number("WIDTH")
     x_position = Number("X_POS")
     y_position = Number("Y_POS")
     prompt = Text("PRMPT")
-    prompt_reading_order = Number("PRMPT_READING_ORDR")
-    prompt_justification = Number("PRMPT_JST")
+    prompt_reading_order: Constant[ReadingOrder] = Constant(
+        "PRMPT_READING_ORDR", ReadingOrder
+    )
+    prompt_justification: Constant[Justification] = Constant("PRMPT_JST", Justification)
     previous_object: Obj[RadioButton] = Object("PREVIOUS")
-    prompt_attachment_edge = Number("PRMPT_ATT_EDGE")
+    prompt_attachment_edge: Constant[PromptAttachmentEdge] = Constant(
+        "PRMPT_ATT_EDGE", PromptAttachmentEdge
+    )
     prompt_attachment_offset = Number("PRMPT_ATT_OFST")
-    prompt_alignment = Number("PRMPT_ALIGN")
-    prompt_alignment_offset = Number("PRMPT_ALIGN_OFST")
+    prompt_alignment: Constant[PromptAlignment] = Constant(
+        "PRMPT_ALIGN", PromptAlignment
+    )
+    prompt_alignment_offset: Constant[PromptAlignment] = Constant(
+        "PRMPT_ALIGN_OFST", PromptAlignment
+    )
     owning_object: Obj[BaseObject] = Object("OWNER")
     prompt_va_object: Obj[VisualAttribute] = Object("PRMPT_VAT_OBJ")
     prompt_visual_attribute_group = Text("PRMPT_VAT_NAM")
@@ -776,7 +872,9 @@ class Relation(GenericObject):
     case_info = Unknown("CLIENT_INFO")
     comments = Text("COMMENT")
     deferred = Bool("DEFERRED")
-    delete_record_behavior = Number("DEL_REC")
+    delete_record_behavior: Constant[DeleteRecordBehavior] = Constant(
+        "DEL_REC", DeleteRecordBehavior
+    )
     detail_data_block = Text("DETAIL_BLK")
     join_condition = Text("JOIN_COND")
     name = Text("NAME")
@@ -786,7 +884,7 @@ class Relation(GenericObject):
     owning_object: Obj[BaseObject] = Object("OWNER")
     owning_module: Obj[Module] = Object("MODULE")
     source_object: Obj[PropertyClass] = Object("SOURCE")
-    relation_type = Number("REL_TYPE")
+    relation_type: Constant[RelationType] = Constant("REL_TYPE", RelationType)
     detail_reference_item = Text("DETAIL_ITEMREF")
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
@@ -834,7 +932,9 @@ class Trigger(GenericObject):
 
     case_info = Unknown("CLIENT_INFO")
     comments = Text("COMMENT")
-    execution_hierarchy = Number("EXEC_HIERARCHY")
+    execution_hierarchy: Constant[ExecutionHierarchy] = Constant(
+        "EXEC_HIERARCHY", ExecutionHierarchy
+    )
     fire_in_enter_query_mode = Bool("FIRE_IN_QRY")
     name = Text("NAME")
     next_object: Obj[Trigger] = Object("NEXT")
@@ -842,7 +942,7 @@ class Trigger(GenericObject):
     display_in_keyboard_help = Bool("DISP_IN_KBRD_HLP")
     keyboard_help_text = Text("KBRD_HLP_TXT")
     trigger_step_object: Obj[BaseObject] = Object("TRIG_STEP")
-    trigger_style = Number("TRG_STY")
+    trigger_style: Constant[TriggerStyle] = Constant("TRG_STY", TriggerStyle)
     trigger_text = Text("TRG_TXT")
     previous_object: Obj[Trigger] = Object("PREVIOUS")
     owning_object: Obj[BaseObject] = Object("OWNER")
@@ -876,9 +976,9 @@ class VisualAttribute(GenericObject):
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     prompt_background_color = Text("PRMPT_BACK_COLOR")
     name = Text("NAME")
@@ -886,22 +986,32 @@ class VisualAttribute(GenericObject):
     next_object: Obj[VisualAttribute] = Object("NEXT")
     prompt_font_name = Text("PRMPT_FONT_NAM")
     prompt_font_size = Number("PRMPT_FONT_SIZ")
-    prompt_font_style = Number("PRMPT_FONT_STY")
-    prompt_font_weight = Number("PRMPT_FONT_WGHT")
-    prompt_font_spacing = Number("PRMPT_FONT_SPCING")
+    prompt_font_style: Constant[FontStyle] = Constant("PRMPT_FONT_STY", FontStyle)
+    prompt_font_weight: Constant[FontWeight] = Constant("PRMPT_FONT_WGHT", FontWeight)
+    prompt_font_spacing: Constant[FontSpacing] = Constant(
+        "PRMPT_FONT_SPCING", FontSpacing
+    )
     previous_object: Obj[VisualAttribute] = Object("PREVIOUS")
     owning_object: Obj[BaseObject] = Object("OWNER")
     owning_module: Obj[Module] = Object("MODULE")
     source_object: Obj[PropertyClass] = Object("SOURCE")
-    visual_attribute_type = Number("VAT_TYP")
+    visual_attribute_type: Constant[VisualAttributeType] = Constant(
+        "VAT_TYP", VisualAttributeType
+    )
     frame_title_foreground_color = Text("FRAME_TTL_FORE_COLOR")
     frame_title_background_color = Text("FRAME_TTL_BACK_COLOR")
     frame_title_fill_pattern = Text("FRAME_TTL_FILL_PAT")
     frame_title_font_name = Text("FRAME_TTL_FONT_NAM")
     frame_title_font_size = Number("FRAME_TTL_FONT_SIZ")
-    frame_title_font_style = Number("FRAME_TTL_FONT_STY")
-    frame_title_font_weight = Number("FRAME_TTL_FONT_WGHT")
-    frame_title_font_spacing = Number("FRAME_TTL_FONT_SPCING")
+    frame_title_font_style: Constant[FontStyle] = Constant(
+        "FRAME_TTL_FONT_STY", FontStyle
+    )
+    frame_title_font_weight: Constant[FontWeight] = Constant(
+        "FRAME_TTL_FONT_WGHT", FontWeight
+    )
+    frame_title_font_spacing: Constant[FontSpacing] = Constant(
+        "FRAME_TTL_FONT_SPCING", FontSpacing
+    )
     parent_objects_module = Text("PAR_MODULE")
     parent_objects_module_type = Number("PAR_MODTYP")
     parent_object_name = Text("PAR_NAM")
@@ -924,18 +1034,18 @@ class Window(GenericObject):
     object_type = FormsObjects.window
 
     background_color = Text("BACK_COLOR")
-    bevel = Number("BEVEL")
+    bevel: Constant[Bevel] = Constant("BEVEL", Bevel)
     case_info = Unknown("CLIENT_INFO")
     close_allowed = Bool("CLS_ALLOWED")
     comments = Text("COMMENT")
-    direction = Number("LANG_DIR")
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     fill_pattern = Text("FILL_PAT")
     resize_allowed = Bool("RESIZE_ALLOWED")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     height = Number("HEIGHT")
     show_horizontal_scroll_bar = Bool("SHOW_HORZ_SCRLBR")
@@ -955,7 +1065,7 @@ class Window(GenericObject):
     show_vertical_scroll_bar = Bool("SHOW_VERT_SCRLBR")
     vertical_toolbar_canvas = Text("VTB_CNV_NAME")
     width = Number("WIDTH")
-    window_style = Number("WIN_STY")
+    window_style: Constant[WindowStyle] = Constant("WIN_STY", WindowStyle)
     primary_canvas = Text("PRMRY_CNV")
     x_position = Number("X_POS")
     y_position = Number("Y_POS")
@@ -984,9 +1094,9 @@ class DataSourceArgument(GenericObject):
     case_info = Unknown("CLIENT_INFO")
     next_object: Obj[DataSourceArgument] = Object("NEXT")
     previous_object: Obj[DataSourceArgument] = Object("PREVIOUS")
-    argument_mode = Number("DSA_MODE")
+    argument_mode: Constant[ArgumentMode] = Constant("DSA_MODE", ArgumentMode)
     argument_name = Text("DSA_NAM")
-    argument_type = Number("DSA_TYP")
+    argument_type: Constant[ArgumentType] = Constant("DSA_TYP", ArgumentType)
     argument_value = Text("DSA_VAL")
     argument_type_name = Text("DSA_TYP_NAM")
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
@@ -1003,7 +1113,7 @@ class DataSourceColumn(GenericObject):
     next_object: Obj[DataSourceColumn] = Object("NEXT")
     previous_object: Obj[DataSourceColumn] = Object("PREVIOUS")
     data_source_column_name = Text("DSC_NAM")
-    data_source_column_type = Number("DSC_TYP")
+    data_source_column_type: Constant[ColumnType] = Constant("DSC_TYP", ColumnType)
     length = Number("DSC_LEN")
     mandatory = Bool("DSC_MANDATORY")
     precision = Number("DSC_PRECISION")
@@ -1026,9 +1136,9 @@ class Editor(GenericObject):
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     height = Number("HEIGHT")
     show_horizontal_scroll_bar = Bool("SHOW_HORZ_SCRLBR")
@@ -1039,7 +1149,7 @@ class Editor(GenericObject):
     va_object: Obj[VisualAttribute] = Object("VAT_OBJ")
     show_vertical_scroll_bar = Bool("SHOW_VERT_SCRLBR")
     width = Number("WIDTH")
-    wrap_style = Number("WRAP_STY")
+    wrap_style: Constant[WrapStyle] = Constant("WRAP_STY", WrapStyle)
     x_position = Number("X_POS")
     y_position = Number("Y_POS")
     previous_object: Obj[Editor] = Object("PREVIOUS")
@@ -1069,17 +1179,17 @@ class LOV(GenericObject):
     case_info = Unknown("CLIENT_INFO")
     column_mapping_object: Obj[LOVColumnMap] = Object("COL_MAP")
     comments = Text("COMMENT")
-    direction = Number("LANG_DIR")
+    direction: Constant[Direction] = Constant("LANG_DIR", Direction)
     fill_pattern = Text("FILL_PAT")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     foreground_color = Text("FORE_COLOR")
     height = Number("HEIGHT")
     filter_before_display = Bool("FLTR_BEFORE_DISP")
-    list_type = Number("LST_TYP")
+    list_type: Constant[ListType] = Constant("LST_TYP", ListType)
     name = Text("NAME")
     next_object: Obj[LOV] = Object("NEXT")
     old_lov_text = Text("OLD_LOV_TXT")
@@ -1159,21 +1269,21 @@ class MenuItem(GenericObject):
     keyboard_accelerator = Text("KBRD_ACC")
     case_info = Unknown("CLIENT_INFO")
     command_text = Text("COM_TXT")
-    command_type = Number("COM_TYP")
+    command_type: Constant[CommandType] = Constant("COM_TYP", CommandType)
     comments = Text("COMMENT")
     visible = Bool("VISIBLE")
     display_without_privilege = Bool("DISP_NO_PRIV")
     enabled = Bool("ENABLED")
     font_name = Text("FONT_NAM")
     font_size = Number("FONT_SIZ")
-    font_style = Number("FONT_STY")
-    font_weight = Number("FONT_WGHT")
-    font_spacing = Number("FONT_SPCING")
+    font_style: Constant[FontStyle] = Constant("FONT_STY", FontStyle)
+    font_weight: Constant[FontWeight] = Constant("FONT_WGHT", FontWeight)
+    font_spacing: Constant[FontSpacing] = Constant("FONT_SPCING", FontSpacing)
     hint = Text("HINT")
     icon_filename = Text("ICON_FLNAM")
     label = Text("LABEL")
-    magic_item = Number("MAGIC_ITM")
-    menu_item_type = Number("MNU_ITM_TYP")
+    magic_item: Constant[MagicItem] = Constant("MAGIC_ITM", MagicItem)
+    menu_item_type: Constant[ItemType] = Constant("MNU_ITM_TYP", ItemType)
     menu_item_radio_group = Text("MNU_ITM_RAD_GRP")
     name = Text("NAME")
     next_object: Obj[MenuItem] = Object("NEXT")
@@ -1256,7 +1366,9 @@ class RecordGroup(GenericObject):
     name = Text("NAME")
     next_object: Obj[RecordGroup] = Object("NEXT")
     record_group_query = Text("REC_GRP_QRY")
-    record_group_type = Number("REC_GRP_TYP")
+    record_group_type: Constant[RecordGroupType] = Constant(
+        "REC_GRP_TYP", RecordGroupType
+    )
     previous_object: Obj[RecordGroup] = Object("PREVIOUS")
     owning_object: Obj[BaseObject] = Object("OWNER")
     owning_module: Obj[Module] = Object("MODULE")
@@ -1278,7 +1390,7 @@ class RecordGroupColspec(GenericObject):
     object_type = FormsObjects.record_group_colspec
 
     case_info = Unknown("CLIENT_INFO")
-    column_data_type = Number("COL_DAT_TYP")
+    column_data_type: Constant[ColumnDataType] = Constant("COL_DAT_TYP", ColumnDataType)
     maximum_length = Number("MAX_LEN")
     name = Text("NAME")
     next_object: Obj[RecordGroupColspec] = Object("NEXT")
@@ -1287,7 +1399,9 @@ class RecordGroupColspec(GenericObject):
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
     column_value: ObjectList[ColumnValue] = Subobjects("COLUMN_VALUE")
-    data_length_semantics = Number("DATA_LEN_SEMANTICS")
+    data_length_semantics: Constant[DataLengthSemantics] = Constant(
+        "DATA_LEN_SEMANTICS", DataLengthSemantics
+    )
 
 
 @forms_object
@@ -1298,17 +1412,21 @@ class Report(GenericObject):
     case_info = Unknown("CLIENT_INFO")
     comments = Text("COMMENT")
     filename = Text("FLNAM")
-    execution_mode = Number("EXEC_MODE")
+    execution_mode: Constant[ExecutionMode] = Constant("EXEC_MODE", ExecutionMode)
     name = Text("NAME")
     next_object: Obj[Report] = Object("NEXT")
     previous_object: Obj[Report] = Object("PREVIOUS")
     owning_object: Obj[BaseObject] = Object("OWNER")
-    communication_mode = Number("COMM_MODE")
+    communication_mode: Constant[CommunicationMode] = Constant(
+        "COMM_MODE", CommunicationMode
+    )
     data_source_data_block = Text("DAT_SRC_BLK")
     query_name = Text("QUERY_NAME")
     owning_module: Obj[Module] = Object("MODULE")
     source_object: Obj[PropertyClass] = Object("SOURCE")
-    report_destination_type = Number("RPT_DESTINATION_TYP")
+    report_destination_type: Constant[ReportDestinationType] = Constant(
+        "RPT_DESTINATION_TYP", ReportDestinationType
+    )
     report_destination_name = Text("RPT_DESTINATION_NAM")
     report_destination_format = Text("RPT_DESTINATION_FMT")
     report_server = Text("RPT_SRVR")
@@ -1379,14 +1497,14 @@ class Event(GenericObject):
     parent_objects_type = Number("PAR_TYP")
     persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
-    event_type = Number("EVENT_TYPE")
+    event_type: Constant[EventType] = Constant("EVENT_TYPE", EventType)
     subscription_name = Text("EVENT_SUBS_NAME")
-    scope = Number("EVENT_SCOPE")
+    scope: Constant[Scope] = Constant("EVENT_SCOPE", Scope)
     auto_subscribe = Bool("EVENT_ENABLED")
     event_implementation_class = Text("EVENT_IMPLCLASS")
     correlation_id = Text("EVENT_CORRID")
     priority_mode = Number("EVENT_PRIORITY_MODE")
-    view_mode = Number("EVENT_VIEW_MODE")
+    view_mode: Constant[ViewMode] = Constant("EVENT_VIEW_MODE", ViewMode)
 
 
 @forms_object

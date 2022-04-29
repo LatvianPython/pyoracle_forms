@@ -68,7 +68,7 @@ def new_module(context):
 
 @pytest.fixture(scope="function")
 def make_item():
-    def _make_item(new_data_block, name):
+    def _make_item(new_data_block, name) -> Item:
         return Item.create(new_data_block, name)
 
     return _make_item
@@ -104,12 +104,12 @@ def new_canvas(make_canvas):
 
 
 @pytest.fixture(scope="function")
-def new_data_block(make_data_block):
+def new_data_block(make_data_block) -> DataBlock:
     return make_data_block("BLK")
 
 
 @pytest.fixture(scope="function")
-def new_item(new_data_block, make_item):
+def new_item(new_data_block, make_item) -> Item:
     return make_item(new_data_block, "ITM")
 
 
