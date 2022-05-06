@@ -170,25 +170,25 @@ get_text: Getter[bytes] = getter("d2fobgt_GetTextProp", String)
 def load_module(form_path: str) -> c_void_p:
     return handled_api_function(
         "d2ffmdld_Load", (c_void_p, c_char_p, c_bool), return_value_index=0
-    )(c_void_p(), form_path.encode("utf-8"), False)
+    )(c_void_p(), form_path.encode(context.encoding), False)
 
 
 def create_module(name: str) -> c_void_p:
     return handled_api_function(
         "d2ffmdcr_Create", (c_void_p, c_char_p), return_value_index=0
-    )(c_void_p(), name.encode("utf-8"))
+    )(c_void_p(), name.encode(context.encoding))
 
 
 def save_module(module: Module, path: str) -> None:
     handled_api_function("d2ffmdsv_Save", (c_void_p, c_char_p, c_bool))(
-        module, path.encode("utf-8"), False
+        module, path.encode(context.encoding), False
     )
 
 
 def create(owner: BaseObject, name: str, obj_number: int) -> c_void_p:
     return handled_api_function(
         "d2fobcr_Create", (c_void_p, c_void_p, c_char_p, c_int), return_value_index=1
-    )(owner, c_void_p(), name.encode("utf-8"), obj_number)
+    )(owner, c_void_p(), name.encode(context.encoding), obj_number)
 
 
 def destroy(generic_object: BaseObject) -> None:
@@ -217,7 +217,7 @@ def get_constant(function_name: str) -> GetConstant:
         constant_value = handled_api_function(
             function_name, (c_int, c_void_p), return_value_index=1
         )(constant_property, c_char_p())
-        return (constant_value.value or b"").decode("utf-8")
+        return (constant_value.value or b"").decode(context.encoding)
 
     return _get_constant
 
@@ -234,14 +234,14 @@ def property_type(property_number: int) -> int:
 def property_constant_number(property_const_name: str) -> int:
     return handled_api_function(
         "d2fprgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
-    )(property_const_name.encode("utf-8"), c_int()).value
+    )(property_const_name.encode(context.encoding), c_int()).value
 
 
 def object_number(obj_name: str) -> int:
     return int(
         handled_api_function(
             "d2fobgcv_GetConstValue", (c_char_p, c_void_p), return_value_index=1
-        )(obj_name.encode("utf-8"), c_int()).value
+        )(obj_name.encode(context.encoding), c_int()).value
     )
 
 
