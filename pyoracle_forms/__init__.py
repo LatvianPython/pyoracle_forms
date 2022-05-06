@@ -143,7 +143,7 @@ from .constants import EventType
 from .constants import Scope
 from .constants import ViewMode
 
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:

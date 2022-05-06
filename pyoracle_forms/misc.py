@@ -204,32 +204,9 @@ class Subobjects(Generic[T]):
         raise AttributeError("can't set attribute")
 
 
-# todo: kinda redundant since i have property_types.Properties
-def property_attribute(
-    property_number: int,
-) -> Tuple[str, Union[Common, Subobjects[BaseObject]]]:
-    constant_name = property_constant_name(property_number)
-    const_name = f"D2FP_{constant_name}"
+def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:  # type: ignore
     try:
-        obj_property = ObjectProperties(const_name)
-    except ValueError:
-        prop_name = (
-            "_".join(property_name(property_number).lower().split())
-            .replace("'", "")
-            .replace("-", "_")
-            .replace("/", "_")
-        )
-        value_type = ValueTypes(property_type(property_number=property_number))
-        klass = properties[value_type]
-        return prop_name, klass(constant_name)
-    else:
-        prop_name = obj_property.name
-        return prop_name, Subobjects(property_constant_name(property_number))
-
-
-def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:  # type: ignore
-    try:
-        obj_type = api_objects[cls.object_type.value]
+        obj_type = api_objects[klass.object_type.value]
     except KeyError:
         # todo: clean up dirty hack
         #  mostly for column_value, which seems to be not documented by orcl anyway
@@ -239,32 +216,7 @@ def object_type(cls: Type[BaseObject], api_objects: Dict) -> Tuple[Dict, int]:  
     else:
         object_number = obj_type["object_number"]
 
-    return obj_type, object_number
-
-
-def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:  # type: ignore
-    obj_type, klass._object_number = object_type(klass, api_objects)
-
-    # todo: at this point, forms should be initialized, should be able to dynamically
-    #  add properties..?
-    for forms_object_property in obj_type["properties"]:
-
-        property_number = forms_object_property["property_number"]
-
-        attribute: Union[str, Union[Common, Subobjects[BaseObject]]]
-        # todo: probably do not even need this function call anymore...
-        prop_name, attribute = property_attribute(property_number)
-
-        if prop_name and "(obsolete)" not in prop_name:
-            try:
-                prop_name = Properties(property_number).name.rstrip("_")
-            except ValueError:  # pragma: no cover
-                raise RuntimeError(f"Unrecognized property ({prop_name})")
-
-            if prop_name in dir(klass):
-                continue
-            setattr(klass, prop_name, attribute)
-
+    klass._object_number = object_number
     return klass
 
 
