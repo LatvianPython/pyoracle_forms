@@ -10,6 +10,7 @@ from pyoracle_forms import (
     Window,
     initialize_context,
     PropertyClass,
+    Library,
 )
 from pyoracle_forms import context as ctx
 
@@ -25,6 +26,12 @@ def context():
 def module(context):
     with Module.load(path="./tests/test_modules/simple_module.fmb") as module:
         yield module
+
+
+@pytest.fixture(scope="session")
+def library(context):
+    with Library.load(path="./tests/test_modules/library.pll") as library:
+        yield library
 
 
 @pytest.fixture(scope="session")

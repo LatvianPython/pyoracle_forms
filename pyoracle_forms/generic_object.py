@@ -40,6 +40,8 @@ class FormsObjects(enum.Enum):
     data_source_column = "D2FFO_DAT_SRC_COL"
     editor = "D2FFO_EDITOR"
     event = "D2FFO_EVENT"
+    library = "D2FFO_LIBRARY_MODULE"
+    library_program_unit = "D2FFO_LIB_PROG_UNIT"
     lov = "D2FFO_LOV"
     lov_column_map = "D2FFO_LV_COLMAP"
     menu = "D2FFO_MENU"

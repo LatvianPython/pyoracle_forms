@@ -20,6 +20,8 @@ from .forms_objects import FormParameter
 from .forms_objects import GenericObject
 from .forms_objects import Graphic
 from .forms_objects import Item
+from .forms_objects import Library
+from .forms_objects import LibraryProgramUnit
 from .forms_objects import LOV
 from .forms_objects import LOVColumnMap
 from .forms_objects import Menu
@@ -143,7 +145,7 @@ from .constants import EventType
 from .constants import Scope
 from .constants import ViewMode
 
-__version__ = "0.3.8"
+__version__ = "0.4.1"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:

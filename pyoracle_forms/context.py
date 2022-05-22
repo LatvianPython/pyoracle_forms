@@ -167,6 +167,12 @@ get_object: Getter[BaseObject] = getter("d2fobgo_GetObjProp", c_void_p)
 get_text: Getter[bytes] = getter("d2fobgt_GetTextProp", String)
 
 
+def load_library(library_path: str) -> c_void_p:
+    return handled_api_function(
+        "d2flibld_Load", (c_void_p, c_char_p), return_value_index=0
+    )(c_void_p(), library_path.encode(context.encoding))
+
+
 def load_module(form_path: str) -> c_void_p:
     return handled_api_function(
         "d2ffmdld_Load", (c_void_p, c_char_p, c_bool), return_value_index=0

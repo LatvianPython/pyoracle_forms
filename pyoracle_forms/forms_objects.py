@@ -7,6 +7,7 @@ from typing import Optional, Type, Union, List, TypeVar
 from .context import create_module
 from .context import load_module
 from .context import save_module
+from .context import load_library
 from .generic_object import GenericObject, BaseObject, FormsObjects
 from .misc import (
     forms_object,
@@ -127,6 +128,50 @@ class Module(BaseObject):
 
 
 @forms_object
+class Library(BaseObject):
+    object_type = FormsObjects.library
+
+    attached_libraries: ObjectList[AttachedLibrary] = Subobjects("ATT_LIB")
+    pl_sql_library_location = Text("LIB_LOC")
+    pl_sql_library_source: Constant[PLSQLLibrarySource] = Constant(
+        "LIB_SRC", PLSQLLibrarySource
+    )
+    next_object: Obj[Library] = Object("NEXT")
+    previous_object: Obj[Library] = Object("PREVIOUS")
+    program_units: ObjectList[LibraryProgramUnit] = Subobjects("LIB_PROG_UNIT")
+
+    def __init__(self, module: Union[c_void_p, BaseObject], path: Optional[str] = None):
+        super().__init__(module)
+        self.path = path
+
+    def __enter__(self) -> Library:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
+        self.destroy()
+
+    @classmethod
+    def load(cls, path: str) -> Library:
+        return cls(load_library(path), path=path)
+
+
+@forms_object
+class LibraryProgramUnit(GenericObject):
+    # auto-generated
+    object_type = FormsObjects.library_program_unit
+
+    name = Text("NAME")
+    next_object: Obj[LibraryProgramUnit] = Object("NEXT")
+    program_unit_text = Text("PGU_TXT")
+    program_unit_type: Constant[ProgramUnitType] = Constant("PGU_TYP", ProgramUnitType)
+
+
+@forms_object
 class AttachedLibrary(GenericObject):
     # auto-generated
     object_type = FormsObjects.attached_library
@@ -185,7 +230,7 @@ class Alert(GenericObject):
     persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
 
 
-class Any:
+class Any(GenericObject):
     keyboard_accelerator = Text("KBRD_ACC")
     alerts: Subobjects[Alert] = Subobjects("ALERT")
     justification = Number("JUSTIFICATION")
@@ -734,7 +779,7 @@ class Canvas(GenericObject):
 
 # todo: todo: undocumented, no .h file
 @forms_object
-class CompoundText(GenericObject, Any):
+class CompoundText(Any):
     # auto-generated
     object_type = FormsObjects.compound_text
 
@@ -1506,7 +1551,7 @@ class VisualAttribute(GenericObject):
 
 
 @forms_object
-class VisualState(GenericObject, Any):
+class VisualState(Any):
     # auto-generated
     object_type = FormsObjects.visual_state
 
@@ -1991,6 +2036,6 @@ class Event(GenericObject):
 
 
 @forms_object
-class ColumnValue(GenericObject, Any):
+class ColumnValue(Any):
     # auto-generated
     object_type = FormsObjects.column_value

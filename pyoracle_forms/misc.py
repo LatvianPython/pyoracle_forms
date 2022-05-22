@@ -36,8 +36,10 @@ from .constants import Justification
 
 if TYPE_CHECKING:  # pragma: no cover
     from . import Module
+    from . import Library
 
-registered_objects: Dict[str, Union[Type[GenericObject], Type["Module"]]] = {}
+objects = Union[Type["Module"], Type["Library"], Type[GenericObject]]
+registered_objects: Dict[str, objects] = {}
 
 
 class ObjectProperties(enum.Enum):
@@ -60,7 +62,9 @@ class ObjectProperties(enum.Enum):
     data_source_arguments = "D2FP_DAT_SRC_ARG"
     data_source_columns = "D2FP_DAT_SRC_COL"
     editors = "D2FP_EDITOR"
-    event = "D2FP_EVENT"
+    events = "D2FP_EVENT"
+    libraries = "D2FFO_LIBRARY_MODULE"
+    library_program_units = "D2FFO_LIB_PROG_UNIT"
     lovs = "D2FP_LOV"
     lov_column_maps = "D2FP_LV_COLMAP"
     menus = "D2FP_MENU"
@@ -70,7 +74,7 @@ class ObjectProperties(enum.Enum):
     record_groups = "D2FP_REC_GRP"
     record_group_colspecs = "D2FP_COL_SPEC"
     reports = "D2FP_REPORT"
-    column_value = "D2FP_COLUMN_VALUE"
+    column_values = "D2FP_COLUMN_VALUE"
 
 
 class Common:
@@ -172,7 +176,7 @@ properties = {
 }
 
 
-def get_object_constructor(obj: BaseObject) -> Union[Type[Module], Type[GenericObject]]:
+def get_object_constructor(obj: BaseObject) -> objects:
     obj_name = object_name(query_type(obj))
     klass = registered_objects.get(obj_name, GenericObject)
     return klass
@@ -220,8 +224,6 @@ def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObjec
     return klass
 
 
-def forms_object(
-    klass: Union[Type[Module], Type[GenericObject]]
-) -> Union[Type[Module], Type[GenericObject]]:
+def forms_object(klass: objects) -> objects:
     registered_objects[klass.object_type.value[6:]] = klass
     return klass
