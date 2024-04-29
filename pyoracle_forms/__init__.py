@@ -148,7 +148,7 @@ from .constants import Scope
 from .constants import ViewMode
 
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:
