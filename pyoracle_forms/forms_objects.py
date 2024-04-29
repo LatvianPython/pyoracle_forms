@@ -8,6 +8,7 @@ from .context import create_module
 from .context import load_module
 from .context import save_module
 from .context import load_library
+from .context import load_object_library
 from .generic_object import GenericObject, BaseObject, FormsObjects
 from .misc import (
     forms_object,
@@ -18,6 +19,7 @@ from .misc import (
     Subobjects,
     Unknown,
     Constant,
+    ObjectLibraryTabObjects,
 )
 from .constants import *
 
@@ -25,6 +27,7 @@ from .constants import *
 # satisfy both MyPy and PyCharm IDE autocomplete
 U = TypeVar("U")
 ObjectList = Union[List[U], Subobjects[U]]
+ObjectLibraryTabObjectList = Union[List[U], ObjectLibraryTabObjects]
 Obj = Union[U, Object[U]]
 
 
@@ -158,6 +161,63 @@ class Library(BaseObject):
     @classmethod
     def load(cls, path: str) -> Library:
         return cls(load_library(path), path=path)
+
+
+@forms_object
+class ObjectLibrary(GenericObject):
+    # auto-generated
+    object_type = FormsObjects.object_library
+
+    object_library_tabs: ObjectList[ObjectLibraryTab] = Subobjects("OBJ_LIB_TAB")
+
+    case_info = Unknown("CLIENT_INFO")
+    comments = Text("COMMENT")
+    name = Text("NAME")
+    next_object: Object[ObjectLibrary] = Object("NEXT")
+    previous_object: Object[ObjectLibrary] = Object("PREVIOUS")
+    count_of_objects = Number("OBJ_COUNT")
+    persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
+    persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
+
+    def __init__(self, module: Union[c_void_p, BaseObject], path: Optional[str] = None):
+        super().__init__(module)
+        self.path = path
+
+    def __enter__(self) -> ObjectLibrary:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
+        self.destroy()
+
+    @classmethod
+    def load(cls, path: str) -> ObjectLibrary:
+        return cls(load_object_library(path), path=path)
+
+
+@forms_object
+class ObjectLibraryTab(GenericObject):
+    # auto-generated
+    object_type = FormsObjects.object_library_tab
+
+    # object_library_tabs: ObjectList[ObjectLibraryTab] = Subobjects("OBJ_LIB_TAB")
+    objects: ObjectLibraryTabObjectList[
+        ObjectLibraryTabObjects
+    ] = ObjectLibraryTabObjects()
+
+    case_info = Unknown("CLIENT_INFO")
+    comments = Text("COMMENT")
+    label = Text("LABEL")
+    name = Text("NAME")
+    next_object: Object[ObjectLibraryTab] = Object("NEXT")
+    previous_object: Object[ObjectLibraryTab] = Object("PREVIOUS")
+    count_of_objects = Number("OBJ_COUNT")
+    persistent_client_info_storage = Unknown("PERSIST_CLIENT_INFO")
+    persistent_client_info_storage_length = Number("PERSIST_CLT_INF_LEN")
 
 
 @forms_object

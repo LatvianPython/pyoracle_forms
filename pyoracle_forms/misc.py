@@ -16,7 +16,7 @@ from typing import (
     Optional,
 )
 
-from .context import context, property_type
+from .context import context, property_type, find_library_tab_object_by_position
 from .context import get_boolean
 from .context import get_number
 from .context import get_object
@@ -30,11 +30,13 @@ from .context import set_boolean
 from .context import set_number
 from .context import set_object
 from .context import set_text
+from .context import find_library_object_by_position
 from .generic_object import BaseObject, ValueTypes, GenericObject
 from .property_types import Properties
 from .constants import Justification
 
 if TYPE_CHECKING:  # pragma: no cover
+    from . import ObjectLibraryTab
     from . import Module
     from . import Library
 
@@ -206,6 +208,27 @@ class Subobjects(Generic[T]):
 
     def __set__(self, instance: BaseObject, value: List[BaseObject]) -> NoReturn:
         raise AttributeError("can't set attribute")
+
+
+class ObjectLibraryTabObjects:
+    def __get__(
+        self, instance: ObjectLibraryTab, owner: Type[ObjectLibraryTab]
+    ) -> List[BaseObject]:
+        def gen_subobjects() -> Iterable[BaseObject]:
+            for i in range(1, instance.count_of_objects + 1):
+                first_child = find_library_tab_object_by_position(instance, i)
+
+                klass = get_object_constructor(BaseObject(first_child))
+
+                child = klass(first_child)
+
+                yield child
+
+        subobjects = list(gen_subobjects())
+        return subobjects
+
+    def __set__(self, instance: BaseObject, value: List[BaseObject]) -> NoReturn:
+        raise AttributeError("can't set attribute")  # pragma: nocover
 
 
 def add_properties(klass: Type[BaseObject], api_objects: Dict) -> Type[BaseObject]:  # type: ignore

@@ -21,7 +21,7 @@ from .forms_api import dlls
 if TYPE_CHECKING:  # pragma: no cover
     from ctypes import _FuncPointer
     from .generic_object import BaseObject
-    from .forms_objects import Module
+    from .forms_objects import Module, ObjectLibrary, ObjectLibraryTab
 
 T = TypeVar("T")
 
@@ -179,6 +179,12 @@ def load_module(form_path: str) -> c_void_p:
     )(c_void_p(), form_path.encode(context.encoding), False)
 
 
+def load_object_library(object_library_path: str) -> c_void_p:
+    return handled_api_function(
+        "d2folbld_Load", (c_void_p, c_char_p, c_bool), return_value_index=0
+    )(c_void_p(), object_library_path.encode(context.encoding), False)
+
+
 def create_module(name: str) -> c_void_p:
     return handled_api_function(
         "d2ffmdcr_Create", (c_void_p, c_char_p), return_value_index=0
@@ -261,3 +267,30 @@ def set_subclass(
 
 def remove_subclass(to_un_subclass: BaseObject) -> None:
     handled_api_function("d2fobus_UnSubClass", (c_void_p,))(to_un_subclass)
+
+
+def find_library_object_by_position(
+    object_library: ObjectLibrary, position: int
+) -> c_void_p:
+    return handled_api_function(
+        "d2folbf2_Findobjbypos", (c_void_p, c_int, c_void_p), return_value_index=2
+    )(
+        object_library, position, c_void_p()
+    )  # pragma: nocover
+
+
+def find_library_tab_object_by_position(
+    object_library: ObjectLibraryTab, position: int
+) -> c_void_p:
+    return handled_api_function(
+        "d2foltf2_Findobjbypos", (c_void_p, c_int, c_void_p), return_value_index=2
+    )(object_library, position, c_void_p())
+
+
+def duplicate(new_owner: BaseObject, source: BaseObject, new_name: str) -> c_void_p:
+    # d2fobdu_Duplicate(ctx, new_owner, pd2fob_src, & pd2fob_dst, new_name)
+    return handled_api_function(
+        "d2fobdu_Duplicate",
+        (c_void_p, c_void_p, c_void_p, c_char_p),
+        return_value_index=2,
+    )(new_owner, source, c_void_p(), new_name.encode(context.encoding))

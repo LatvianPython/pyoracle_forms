@@ -12,6 +12,7 @@ from .context import set_subclass
 from .context import move
 from .context import query_type
 from .context import is_subclassed
+from .context import duplicate
 
 from .property_types import Properties
 
@@ -48,6 +49,8 @@ class FormsObjects(enum.Enum):
     menu_item = "D2FFO_MENU_ITEM"
     object_group = "D2FFO_OBJ_GROUP"
     object_child = "D2FFO_OBG_CHILD"
+    object_library = "D2FFO_OBJ_LIB"
+    object_library_tab = "D2FFO_OBJ_LIB_TAB"
     record_group = "D2FFO_REC_GROUP"
     record_group_colspec = "D2FFO_RG_COLSPEC"
     report = "D2FFO_REPORT"
@@ -97,8 +100,8 @@ class BaseObject:
     def query_type(self) -> int:
         return query_type(self)
 
-    def duplicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
-        raise NotImplementedError()
+    def duplicate(self, new_owner: GenericObject, new_name: str) -> BaseObject:
+        return self.__class__(duplicate(new_owner, self, new_name))
 
     def replicate(self, new_owner: GenericObject, new_name: str) -> NoReturn:
         raise NotImplementedError()

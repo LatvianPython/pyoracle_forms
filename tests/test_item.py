@@ -73,16 +73,15 @@ def test_constant_constant(new_item):
     assert Justification.start == new_item.justification
 
 
-@pytest.mark.xfail
 def test_duplicate(new_item):
-    duplicated = new_item.duplicate(new_item.owning_object, "DUPLICATED_ITM")
+    duplicated = new_item.duplicate(new_item.owning_object, "DUPLICATED_ITEM")
 
     assert duplicated.name == "DUPLICATED_ITEM"
 
 
 @pytest.mark.xfail
 def test_replicate(new_item):
-    replicated = new_item.replicate(new_item.owning_object, "REPLICATED_ITM")
+    replicated = new_item.replicate(new_item.owning_object, "REPLICATED_ITEM")
 
     assert replicated.name == "REPLICATED_ITEM"
 

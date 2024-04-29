@@ -27,6 +27,8 @@ from .forms_objects import LOVColumnMap
 from .forms_objects import Menu
 from .forms_objects import MenuItem
 from .forms_objects import Module
+from .forms_objects import ObjectLibrary
+from .forms_objects import ObjectLibraryTab
 from .forms_objects import ObjectChild
 from .forms_objects import ObjectGroup
 from .forms_objects import Point
@@ -145,7 +147,8 @@ from .constants import EventType
 from .constants import Scope
 from .constants import ViewMode
 
-__version__ = "0.4.1"
+
+__version__ = "0.5.1"
 
 
 def initialize_context(version: str = "12c", encoding: str = "utf-8") -> None:

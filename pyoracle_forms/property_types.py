@@ -345,6 +345,7 @@ class Properties(enum.IntEnum):  # pragma: no cover
     dml_array_size = 381
     tooltip_visual_attribute_group = 382
     tooltip_va_object = 383
+    object_library_tab = 418
     insert_procedure_name = 419
     update_procedure_name = 422
     delete_procedure_name = 425
@@ -412,6 +413,7 @@ class Properties(enum.IntEnum):  # pragma: no cover
     parent_object_name = 499
     parent_objects_file_name = 500
     parent_objects_file_path = 501
+    count_of_objects = 502
     count_of_roles = 503
     program_unit_type = 504
     submenu_name = 505
